@@ -18,15 +18,15 @@ RUN docker-php-ext-install mysqli
 # Install PECL extensions
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
-
+RUN echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/php.ini
+RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/php.ini
 
 # Install Composer.
 #RUN cd ~ && curl -sS https://getcomposer.org/installer | php
 #RUN cp ~/composer.phar /usr/local/bin/composer
 #RUN chmod +x /usr/local/bin/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-
 
 # Manually set up the apache environment variables
 ENV APACHE_LOG_DIR /var/log/apache2
