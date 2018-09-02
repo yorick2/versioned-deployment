@@ -14,7 +14,10 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projectsCollection = Project::latest()->get();
+
+
+        return view('projects.index',compact('projectsCollection'));
     }
 
     /**
@@ -46,7 +49,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return view('projects.show', compact('project'));
     }
 
     /**
