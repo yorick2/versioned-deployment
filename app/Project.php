@@ -10,4 +10,9 @@ class Project extends Model
     {
         return '/projects/'.$this->id;
     }
+
+    public function servers()
+    {
+        return $this->hasMany(Server::class);
+    }
 }

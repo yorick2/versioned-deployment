@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Project;
 use App\Server;
 use Illuminate\Http\Request;
 
@@ -12,9 +13,9 @@ class ServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Project $project)
     {
-        //
+        return view('servers.index',compact('project'));
     }
 
     /**
@@ -44,9 +45,9 @@ class ServerController extends Controller
      * @param  \App\Server  $server
      * @return \Illuminate\Http\Response
      */
-    public function show(Server $server)
+    public function show($product_id,Server $server)
     {
-        //
+        return view('servers.show', compact('server'));
     }
 
     /**

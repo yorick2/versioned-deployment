@@ -9,20 +9,24 @@ class ProjectTest extends TestCase
 {
     use DatabaseMigrations;
 
+    public function setup()
+    {
+        parent::setUp();
+        $this->project = factory('App\Project')->create();
+    }
+
     public function testAUserCanSeeAllProjects()
     {
-        $project = factory('App\Project')->create();
         $response = $this->get('/projects');
         $response->assertStatus(200);
-        $response->assertSee($project->Name);
+        $response->assertSee($this->project->Name);
     }
 
     public function testAUserCanViewASingleProject()
     {
-        $project = factory('App\Project')->create();
-        $response = $this->get('/projects/'.$project->id);
+        $response = $this->get('/projects/'.$this->project->id);
         $response->assertStatus(200);
-        $response->assertSee($project->Name);
+        $response->assertSee($this->project->Name);
     }
 
 

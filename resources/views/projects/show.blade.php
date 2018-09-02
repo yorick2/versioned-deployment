@@ -8,7 +8,18 @@
                     <div class="card-header">{{$project->name}}</div>
 
                     <div class="card-body">
-                        <div><span>repository:</span> {{$project->repository}}</div>
+                        <div>
+                            <span>created at:</span>
+                            <div>
+                                {{$project->created_at}} ({{$project->created_at->diffForHumans()}})
+                            </div>
+                        </div>
+                        <div>
+                            <span>repository:</span>
+                            <div>
+                                {{$project->repository}}
+                            </div>
+                        </div>
                         <div>
                             <span>notes:</span>
                             <div>
