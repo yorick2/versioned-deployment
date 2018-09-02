@@ -1,4 +1,4 @@
-FROM php:7.1.21-apache
+FROM php:7.2.9-apache
 # user guid for the base container
 # https://github.com/docker-library/docs/blob/master/php/README.md
 
