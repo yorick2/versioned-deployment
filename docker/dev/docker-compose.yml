@@ -3,7 +3,7 @@ version: '3'
 services:
         web:
                 build: .
-                container_name: "php7.2"
+                container_name: "php7.1"
                 ports:
                 - "8000:80"
                 volumes:
