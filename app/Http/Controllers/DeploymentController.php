@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Deployment;
+use App\Project;
+use App\Server;
 use Illuminate\Http\Request;
 
 class DeploymentController extends Controller
@@ -12,9 +14,9 @@ class DeploymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Project $project,Server $server)
     {
-        //
+        return view('deployments.index',compact('server'));
     }
 
     /**
@@ -44,9 +46,9 @@ class DeploymentController extends Controller
      * @param  \App\Deployment  $deployment
      * @return \Illuminate\Http\Response
      */
-    public function show(Deployment $deployment)
+    public function show(Project $project,Server $server,Deployment $deployment)
     {
-        //
+        return view('deployments.show', compact('deployment'));
     }
 
     /**

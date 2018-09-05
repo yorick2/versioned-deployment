@@ -22,3 +22,5 @@ Route::get('/projects', 'ProjectController@index')->name('Projects');
 Route::get('/projects/{project}', 'ProjectController@show');
 Route::get('/projects/{project}/servers', 'ServerController@index');
 Route::get('/projects/{project}/servers/{server}', 'ServerController@show');
+Route::get('/projects/{project}/servers/{server}/deployments', 'DeploymentController@index');
+Route::get('/projects/{project}/servers/{server}/deployments/{deployment}', 'DeploymentController@show');

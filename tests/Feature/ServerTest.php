@@ -9,7 +9,7 @@ class ServerTest extends TestCase
 {
     use DatabaseMigrations;
 
-    private $project;
+    protected $server;
 
     public function setup()
     {

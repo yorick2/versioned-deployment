@@ -9,6 +9,8 @@ class ProjectTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $project;
+
     public function setup()
     {
         parent::setUp();
