@@ -19,14 +19,14 @@ class ServerTest extends TestCase
 
     public function testAUserCanSeeAllServersForProject()
     {
-        $response = $this->get('/projects/'.$this->server->project_id.'/servers');
+        $response = $this->get($this->server->project->path().'/servers/');
         $response->assertStatus(200);
         $response->assertSee($this->server->name);
     }
 
     public function testAUserCanViewASingleServer()
     {
-        $response = $this->get('/projects/'.$this->server->project_id.'/servers/'.$this->server->id);
+        $response = $this->get($this->server->path());
         $response->assertStatus(200);
         $response->assertSee($this->server->Name);
     }

@@ -26,7 +26,7 @@ class ProjectTest extends TestCase
 
     public function testAUserCanViewASingleProject()
     {
-        $response = $this->get('/projects/'.$this->project->id);
+        $response = $this->get($this->project->path());
         $response->assertStatus(200);
         $response->assertSee($this->project->Name);
     }

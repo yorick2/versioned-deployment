@@ -11,6 +11,11 @@ class Server extends Model
         return '/projects/'.$this->project_id.'/servers/'.$this->id;
     }
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
     public function deployments()
     {
         return $this->hasMany(Deployment::class);
