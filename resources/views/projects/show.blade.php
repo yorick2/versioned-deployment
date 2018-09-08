@@ -15,6 +15,11 @@
                             </div>
                         </div>
                         <div>
+                            <div>created by:</div>
+                            <div class="owner">{{$project->owner->name}}</div>
+                        </div>
+                        <div><a href="{{$project->path()}}/servers">Go to servers</a></div>
+                        <div>
                             <span>repository:</span>
                             <div>
                                 {{$project->repository}}

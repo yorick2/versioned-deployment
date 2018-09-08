@@ -20,4 +20,9 @@ class Server extends Model
     {
         return $this->hasMany(Deployment::class);
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }

@@ -15,4 +15,9 @@ class Project extends Model
     {
         return $this->hasMany(Server::class);
     }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
 }
