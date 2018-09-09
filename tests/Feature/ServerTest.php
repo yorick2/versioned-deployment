@@ -27,6 +27,12 @@ class ServerTest extends TestCase
         $response->assertSee($this->server->name);
     }
 
+    public function testAnUnauthenticatedUserCanNotSeeAllServersForProject()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->get($this->server->project->path().'/servers/');
+    }
+
     public function testAnAuthenticatedUserCanViewASingleServer()
     {
         $this->be($this->user);
@@ -35,16 +41,24 @@ class ServerTest extends TestCase
         $response->assertSee($this->server->Name);
     }
 
-    public function testAnUnauthenticatedUserCanNotSeeAllServersForProject()
-    {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->get($this->server->project->path().'/servers/');
-    }
-
     public function testAnUnauthenticatedUserCanNotViewASingleServer()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->get($this->server->path());
+    }
+
+    public function testAnAuthenticatedUserCanViewServerCreatePage()
+    {
+        $this->be($this->user);
+        $response = $this->get(route('CreateServer',['project'=> $this->server->project]));
+        $response->assertStatus(200);
+        $response->assertSee($this->server->project->Name);
+    }
+
+    public function testAnUnauthenticatedUserCanNotViewServerCreatePage()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->get(route('CreateServer',['project'=> $this->server->project]));
     }
 
 

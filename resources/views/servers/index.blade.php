@@ -12,6 +12,7 @@
                             <li><a href="{{$server->path()}}">{{$server->name}}</a></li>
                             <hr/>
                         @endforeach
+                        <a href="{{ route('CreateServer',['project'=> $project]) }}" class="btn btn-default">Create</a>
                     </div>
                 </div>
             </div>
