@@ -24,3 +24,5 @@ Route::get('/projects/{project}/servers', 'ServerController@index');
 Route::get('/projects/{project}/servers/{server}', 'ServerController@show');
 Route::get('/projects/{project}/servers/{server}/deployments', 'DeploymentController@index');
 Route::get('/projects/{project}/servers/{server}/deployments/{deployment}', 'DeploymentController@show');
+
+Route::post('/projects/{project}/create-server', 'ServerController@store');

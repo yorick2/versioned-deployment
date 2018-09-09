@@ -17,8 +17,8 @@ class CreateDeploymentsTable extends Migration
             $table->increments('id');
             $table->integer('server_id');
             $table->integer('user_id');
-            $table->boolean('success');
-            $table->text('notes');
+            $table->boolean('success')->nullable();
+            $table->text('notes')->nullable();
             $table->text('output');
             $table->timestamps();
         });

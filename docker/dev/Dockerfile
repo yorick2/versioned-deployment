@@ -13,6 +13,8 @@ RUN apt-get update && apt-get install -y \
     libmcrypt-dev \
     git \
     zlib1g-dev \
+    sqlite3 \
+    libsqlite3-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,8 +24,9 @@ RUN docker-php-ext-install \
     tokenizer \
     zip \
     mysqli \
-    pdo \
+ #   pdo \
     pdo_mysql
+
 
 # Enable rewrite module
 RUN a2enmod rewrite

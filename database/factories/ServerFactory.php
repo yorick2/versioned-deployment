@@ -12,6 +12,7 @@ $factory->define(App\Server::class, function (Faker $faker) {
        },
        'name' => $faker->unique()->word(),
        'deploy_host' => 'example.com',
+       'deploy_port' => '22',
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',
        'deploy_password' => 'password',

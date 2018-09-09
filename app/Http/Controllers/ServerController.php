@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class ServerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -30,13 +35,23 @@ class ServerController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Project $project)
     {
-        //
+        $project->addServer([
+            'project_id' => $project->id,
+            'user_id' => auth()->id(),
+            'name' => request('name'),
+            'deploy_host' => request('deploy_host'),
+            'deploy_port' => request('deploy_port'),
+            'deploy_location' => request('deploy_location'),
+            'deploy_user' => request('deploy_user'),
+            'deploy_password' => request('deploy_password'),
+            'notes' => request('notes')
+        ]);
+        return back(); // redirect back
     }
 
     /**

@@ -18,7 +18,7 @@ class CreateProjectsTable extends Migration
             $table->integer('user_id');
             $table->string('name');
             $table->string('repository');
-            $table->text('notes');
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
