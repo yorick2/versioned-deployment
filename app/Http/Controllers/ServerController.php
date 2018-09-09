@@ -16,6 +16,7 @@ class ServerController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Project $project
      * @return \Illuminate\Http\Response
      */
     public function index(Project $project)
@@ -26,11 +27,12 @@ class ServerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Project $project
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Project $project)
     {
-        //
+        return view('servers.create',compact('project'));
     }
 
     /**
