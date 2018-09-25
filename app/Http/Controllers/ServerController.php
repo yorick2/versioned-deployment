@@ -62,32 +62,42 @@ class ServerController extends Controller
      * @param  \App\Server  $server
      * @return \Illuminate\Http\Response
      */
-    public function show($product_id,Server $server)
+    public function show(Project $project, Server $server)
     {
-        return view('servers.show', compact('server'));
+        return view('servers.show', compact('project', 'server'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Server  $server
-     * @return \Illuminate\Http\Response
+     * @param $product_id
+     * @param Server $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Server $server)
+    public function edit(Project $project, Server $server)
     {
-        //
+        return view('servers.edit', compact('project', 'server'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Server  $server
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @param Server $server
+     * @return Server
      */
-    public function update(Request $request, Server $server)
+    public function update(Project $project, Server $server)
     {
-        //
+        $server->update(request([
+            'name',
+            'deploy_host',
+            'deploy_port',
+            'deploy_location',
+            'deploy_user',
+            'deploy_password',
+            'notes'
+        ]));
+        return redirect(route('ServersIndex',compact('project')));
     }
 
     /**

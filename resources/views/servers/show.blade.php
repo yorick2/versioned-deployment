@@ -8,6 +8,7 @@
                     <div class="card-header">{{$server->name}}</div>
                     <div class="card-body">
                         <div>
+                            <div><a href="{{ route('EditServer',['project'=> $project,'server'=>$server]) }}" class="btn btn-default">Edit</a></div>
                             <div>
                                 <span>created at:</span>
                                 <div>
