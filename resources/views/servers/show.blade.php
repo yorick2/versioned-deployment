@@ -5,10 +5,24 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{$server->name}}</div>
+                    <div class="card-header">
+                        <div class="level">
+                            <h1>{{$server->name}}</h1>
+                            <div class="float-right">
+                                <form action="{{$server->path()}}" method="post">
+                                    {{csrf_field()}}
+                                    {{method_field('DELETE')}}
+                                    <button type="submit" class="btn btn-link">Delete</button>
+                                </form>
+                            </div>
+                            <div class="float-right">
+                                <a href="{{ route('EditServer',['project'=> $project,'server'=>$server]) }}" class="btn btn-default">Edit</a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <div>
-                            <div><a href="{{ route('EditServer',['project'=> $project,'server'=>$server]) }}" class="btn btn-default">Edit</a></div>
+
                             <div>
                                 <span>created at:</span>
                                 <div>

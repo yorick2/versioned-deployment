@@ -103,11 +103,18 @@ class ServerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Server  $server
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @param Server $server
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
      */
-    public function destroy(Server $server)
+    public function destroy(Project $project, Server $server)
     {
-        //
+        $server->deployments()->delete();
+        $server->delete();
+        if(request()->wantsJson()) {
+            return response([],204);
+        }
+        return redirect(route('ServersIndex',compact('project')));
     }
 }

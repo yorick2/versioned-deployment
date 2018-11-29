@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
-class updateServersTest extends TestCase
+class manageServersTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -63,4 +63,22 @@ class updateServersTest extends TestCase
         $this->patch($server->path(),[]);
     }
 
+    public function testAnAuthenticatedUserCanDeleteAServerForAProject()
+    {
+        $this->be($this->user);
+        $server = factory('App\Server')->create();
+        factory('App\Deployment', 3)->create(['server_id' => $server->id]);
+        $response = $this->json('DELETE', $server->path());
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('servers',['id' => $server->id]);
+        $this->assertDatabaseMissing('deployments',['server_id' => $server->id]);
+    }
+
+    public function testAnUnAuthenticatedUserCanNotDeleteAServerForAProject()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $server = factory('App\Server')->create();
+        $response = $this->json('DELETE', $server->path());
+        $response->assertRedirect('/login');
+    }
 }
