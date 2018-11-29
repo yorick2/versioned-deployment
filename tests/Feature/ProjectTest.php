@@ -27,6 +27,13 @@ class ProjectTest extends TestCase
         $response->assertSee($this->project->Name);
     }
 
+
+    public function testAnUnauthenticatedUserCanNotSeeAllProjects()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->get('/projects');
+    }
+
     public function testAnAuthenticatedUserCanViewASingleProject()
     {
         $this->be($this->user);
@@ -35,13 +42,7 @@ class ProjectTest extends TestCase
         $response->assertSee($this->project->Name);
     }
 
-    public function testAnUnauthenticatedUserCanSeeAllProjects()
-    {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->get('/projects');
-    }
-
-    public function testAnUnauthenticatedUserCanViewASingleProject()
+    public function testAnUnauthenticatedUserCanNotViewASingleProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->get($this->project->path());

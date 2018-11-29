@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    protected $projectModel;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->projectModel = new Project();
     }
 
     /**
@@ -30,24 +33,27 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view('projects.create');
     }
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        $this->projectModel->create([
+            'user_id' => auth()->id(),
+            'name' => request('name'),
+            'repository' => request('repository'),
+            'notes' => request('notes')
+        ]);
+        return redirect(route('Projects'));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Project  $project
      * @return \Illuminate\Http\Response
      */
     public function show(Project $project)
@@ -58,34 +64,47 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function edit(Project $project)
     {
-        //
+        return view('projects.edit', compact('project'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return Project
      */
-    public function update(Request $request, Project $project)
+    public function update(Project $project)
     {
-        //
+        $project->update(request([
+            'name',
+            'repository',
+            'notes'
+        ]));
+        return redirect(route('Projects'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Project  $project
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
      */
     public function destroy(Project $project)
     {
-        //
+        $project->servers()->each(function ($project) {
+            $project->deployments()->delete();
+        });
+        $project->servers()->delete();
+        $project->delete();
+        if(request()->wantsJson()) {
+            return response([],204);
+        }
+        return redirect(route('Projects'));
     }
 }

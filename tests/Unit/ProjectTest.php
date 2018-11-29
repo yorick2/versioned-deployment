@@ -24,7 +24,7 @@ class ProjectTest extends TestCase
         $this->assertInstanceOf('App\User',$this->project->owner);
     }
 
-    public function testAUserCanAddAServer(){
+    public function testCanAddAServer(){
         $this->project->addServer([
             'name' => 'foo',
             'user_id' => 1,
@@ -44,6 +44,10 @@ class ProjectTest extends TestCase
             'notes' => 'some notes'
         ]);
         $this->assertCount(2, $this->project->servers);
-
     }
+
+    public function testItHasAUrlPath(){
+        $this->assertEquals('/projects/'.$this->project->slug, $this->project->path());
+    }
+
 }

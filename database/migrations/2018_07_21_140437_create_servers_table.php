@@ -15,7 +15,8 @@ class CreateServersTable extends Migration
     {
         Schema::create('servers', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('project_id');
+//            $table->string('slug')->unique();
+            $table->integer('project_id')->unsigned();
             $table->integer('user_id');
             $table->string('name');
             $table->string('deploy_host');
@@ -25,6 +26,9 @@ class CreateServersTable extends Migration
             $table->string('deploy_password');
             $table->text('notes')->nullable();
             $table->timestamps();
+        });
+        Schema::table('servers', function($table) {
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
 

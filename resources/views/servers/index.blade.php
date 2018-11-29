@@ -5,14 +5,22 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Servers</div>
-
+                    <div class="card-header">
+                        <div class="level">
+                            <h1>Servers</h1>
+                            <div class="float-right">
+                                <a href="{{ route('CreateServer',['project'=> $project]) }}" class="btn btn-default">Create</a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
-                        @foreach($project->servers as $server)
-                            <li><a href="{{$server->path()}}">{{$server->name}}</a></li>
-                            <hr/>
-                        @endforeach
-                        <a href="{{ route('CreateServer',['project'=> $project]) }}" class="btn btn-default">Create</a>
+                        <ul class="list-group list-group-flush">
+                            @foreach($project->servers as $server)
+                                <li class="list-group-item">
+                                    <a href="{{$server->path()}}">{{$server->name}}</a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             </div>
