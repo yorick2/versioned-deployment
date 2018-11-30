@@ -7,12 +7,9 @@ use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
-    protected $projectModel;
-
     public function __construct()
     {
         $this->middleware('auth');
-        $this->projectModel = new Project();
     }
 
     /**
@@ -42,8 +39,9 @@ class ProjectController extends Controller
      */
     public function store()
     {
-        $this->projectModel->create([
+        Project::create([
             'user_id' => auth()->id(),
+            'slug' => request('name'),
             'name' => request('name'),
             'repository' => request('repository'),
             'notes' => request('notes')
@@ -53,6 +51,7 @@ class ProjectController extends Controller
 
     /**
      * Display the specified resource.
+     * @param Project $project
      *
      * @return \Illuminate\Http\Response
      */

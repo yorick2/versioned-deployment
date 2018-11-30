@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Project;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -17,6 +18,21 @@ class manageProjectsTest extends TestCase
         parent::setUp();
         $this->project = factory('App\Project')->create();
         $this->user = factory('App\User')->create();
+    }
+
+    public function testItRequiresAUniqueSlug()
+    {
+        $this->be($this->user);
+        $project = factory('App\Project')->create(['name' => 'foo bar', 'slug' => 'foo-bar']);
+        $dataArray = $project->toArray();
+        $this->assertEquals($project->fresh()->slug, 'foo-bar');
+        $this->post('/create-project', $dataArray);
+        $this->assertTrue(Project::whereSlug('foo-bar-2')->exists());
+        $this->post('/create-project', $dataArray);
+        $this->assertTrue(Project::whereSlug('foo-bar-3')->exists());
+        factory('App\Project')->create(['name' => 'foo bar', 'slug' => 'foo-bar-10']);
+        $this->post('/create-project', $dataArray);
+        $this->assertTrue(Project::whereSlug('foo-bar-11')->exists());
     }
 
     public function testAnAuthenticatedUserCanCreateAProject()

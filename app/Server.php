@@ -14,7 +14,7 @@ class Server extends Model
      */
     public function path()
     {
-        return '/projects/'.$this->project_id.'/servers/'.$this->id;
+        return $this->project()->first()->path().'/servers/'.$this->slug;
     }
 
     /**
@@ -40,4 +40,45 @@ class Server extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = $value;
+        $slug = str_slug($value);
+        $slugExists = static::where([
+            ['slug', '=', $slug],
+            ['project_id', '=', $this->project_id]
+        ])->exists();
+        if($slugExists){
+            $slug = $this->incrementSlug($value);
+        }
+        $this->attributes['slug'] = $slug;
+    }
+
+    /**
+     * @param string $name
+     * @return string|string[]|null
+     */
+    public function incrementSlug($name){
+        $maxSlug = static::where([
+            ['name', '=', $name],
+            ['project_id', '=', $this->project_id],
+        ])->latest('id')->value('slug');
+        if (is_numeric(substr($maxSlug,-1))){
+            return preg_replace_callback('/(\d+)$/',function ($matches) {
+                return $matches[1] + 1;
+            }, $maxSlug);
+        }
+        $slug = str_slug($name);
+        return "{$slug}-2";
+    }
+
 }

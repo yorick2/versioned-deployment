@@ -24,4 +24,10 @@ class ServerTest extends TestCase
         $this->assertInstanceOf('App\User',$this->server->owner);
     }
 
+    public function testItHasAUrlPath(){
+        $this->assertEquals(
+            "/projects/{$this->server->project()->first()->slug}/servers/{$this->server->slug}",
+            $this->server->path()
+        );
+    }
 }

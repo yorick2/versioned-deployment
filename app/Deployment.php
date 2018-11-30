@@ -11,8 +11,7 @@ class Deployment extends Model
      */
     public function path()
     {
-        $server = $this->server()->first();
-        return '/projects/'.$server->project_id.'/servers/'.$this->server_id.'/deployments/'.$this->id;
+        return $this->server()->first()->path().'/deployments/'.$this->id;
     }
 
     /**

@@ -44,6 +44,7 @@ class ServerController extends Controller
     {
         $project->addServer([
             'project_id' => $project->id,
+            'slug' => request('name'),
             'user_id' => auth()->id(),
             'name' => request('name'),
             'deploy_host' => request('deploy_host'),
@@ -70,7 +71,7 @@ class ServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param $product_id
+     * @param Project$project
      * @param Server $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */

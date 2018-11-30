@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Server;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -17,6 +18,69 @@ class manageServersTest extends TestCase
         parent::setUp();
         $this->project = factory('App\Project')->create();
         $this->user = factory('App\User')->create();
+    }
+
+    /**
+     * check the slug is unique for its project
+     * - check for multiple projects
+     * - check for numbers added to the slug of over 1 digit (10+)
+     * - check the slug is not based on last server added
+     */
+    public function testItRequiresAUniqueSlugForAProject()
+    {
+        $this->be($this->user);
+        $project1 = factory('App\Project')->create();
+        $server = factory('App\Server')->create([
+            'name' => 'foo bar',
+            'slug' => 'foo-bar',
+            'project_id' => $project1->id
+        ]);
+        $dataArray1 = $server->toArray();
+        $this->assertEquals($server->fresh()->slug, 'foo-bar');
+        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->assertTrue(Server::whereSlug('foo-bar-2')->exists());
+        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->assertTrue(Server::whereSlug('foo-bar-3')->exists());
+
+
+        $project2 = factory('App\Project')->create();
+        $server = factory('App\Server')->create([
+            'name' => 'foo bar',
+            'slug' => 'foo-bar',
+            'project_id' => $project2->id
+        ]);
+        $dataArray2 = $server->toArray();
+        $this->assertTrue(Server::where([
+            ['slug', '=', 'foo-bar'],
+            ['project_id', '=', $project2->id],
+        ])->exists());
+        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->assertTrue(Server::where([
+            ['slug', '=', 'foo-bar-2'],
+            ['project_id', '=', $project2->id],
+        ])->exists());
+        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->assertTrue(Server::where([
+            ['slug', '=', 'foo-bar-3'],
+            ['project_id', '=', $project2->id],
+        ])->exists());
+        factory('App\Server')->create([
+            'name' => 'foo bar',
+            'slug' => 'foo-bar-10',
+            'project_id' => $project2->id
+        ]);
+        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->assertTrue(Server::where([
+            ['slug', '=', 'foo-bar-11'],
+            ['project_id', '=', $project2->id],
+        ])->exists());
+
+
+        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->assertTrue(Server::where([
+            ['slug', '=', 'foo-bar-4'],
+            ['project_id', '=', $project1->id],
+        ])->exists());
     }
 
     public function testAnAuthenticatedUserCanCreateAServerForAProject()
