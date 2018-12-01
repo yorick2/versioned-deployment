@@ -19,3 +19,12 @@ services:
                         MYSQL_PASSWORD: devpass
                 ports:
                         - "9906:3306"
+        deploy-target:
+                build: ./deploy-target
+                container_name: "deploy=target"
+                ports:
+                - "8001:80"
+                volumes:
+                - ../..:/var/www/html
+                - .:/code
+                - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
