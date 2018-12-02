@@ -17,7 +17,7 @@ $factory->define(App\Server::class, function (Faker $faker) {
        'deploy_port' => '22',
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',
-       'deploy_password' => 'password',
+       'deploy_password' => 'password1',
        'notes' => $faker->paragraph
    ];
 });

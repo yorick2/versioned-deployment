@@ -19,3 +19,15 @@ services:
                         MYSQL_PASSWORD: devpass
                 ports:
                         - "9906:3306"
+        example.com:
+                build:
+                        context: ./deploy-target
+                        args:
+                                SSH_MASTER_USER: test
+                                SSH_MASTER_PASS: password1
+                container_name: "example.com"
+                ports:
+                - "8001:80"
+                - "2222:22"
+                volumes:
+                - .:/code
