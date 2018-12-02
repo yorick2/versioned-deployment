@@ -4,6 +4,10 @@ FROM php:7.2.9-apache
 
 MAINTAINER Name<email>
 
+
+ARG SSH_MASTER_USER
+ARG SSH_MASTER_PASS
+
 # install required programs
 RUN apt-get update && apt-get install -y \
     curl \
@@ -15,6 +19,8 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev \
     sqlite3 \
     libsqlite3-dev \
+    sudo \
+    openssh-server \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -31,14 +37,6 @@ RUN docker-php-ext-install \
 # Enable rewrite module
 RUN a2enmod rewrite
 
-
-# Install PECL extensions
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
-RUN echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini
-RUN echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/php.ini
-RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/php.ini
-
 # Install Composer.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -47,29 +45,21 @@ ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
+# add ssh
+COPY ssh_config /etc/ssh/ssh_config
+COPY sshd_config /etc/ssh/sshd_config
 
-ONBUILD RUN composer install
-#ONBUILD RUN composer install \
-#    --prefer-dist \
-#    --optimize-autoloader \
-#    --no-scripts \
-#    --no-dev \
-#    --profile \
-#    --ignore-platform-reqs \
-#    -vvv
+COPY user.sh /usr/local/bin/user.sh
+RUN chmod +x /usr/local/bin/user.sh
+RUN /usr/local/bin/user.sh
+RUN rm /usr/local/bin/user.sh
 
-ONBUILD RUN php artisan clear-compiled
-ONBUILD RUN php artisan optimize
-ONBUILD RUN php artisan config:cache
-ONBUILD RUN php artisan migrate
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Configure directory permissions for the web server
-ONBUILD RUN chgrp -R www-data storage /var/www/html/bootstrap/cache
-ONBUILD RUN chmod -R ug+rwx storage /var/www/html/bootstrap/cache
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-ONBUILD RUN chgrp -R www-data storage /var/www/html/storage
-ONBUILD RUN chmod -R ug+rwx storage /var/www/html/storage
+CMD tail -f /dev/null
 
-# Configure data volume
-ONBUILD VOLUME /var/www/html/storage/framework/sessions
-ONBUILD VOLUME /var/www/html/storage/logs
+
+
