@@ -4,7 +4,6 @@ FROM php:7.2.9-apache
 
 MAINTAINER Name<email>
 
-
 ARG SSH_MASTER_USER
 ARG SSH_MASTER_PASS
 
@@ -54,12 +53,13 @@ RUN chmod +x /usr/local/bin/user.sh
 RUN /usr/local/bin/user.sh
 RUN rm /usr/local/bin/user.sh
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+## allow access to web folder
+RUN chmod -R g+rwx /var/www
+RUN chmod -R g+rwx /var/www/html
+RUN chown :${SSH_MASTER_USER} /var/www/html
+RUN echo '<?php echo phpinfo(); ' > /var/www/html/index.php
+RUN chown ${SSH_MASTER_USER}:${SSH_MASTER_USER} /var/www/html/index.php
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-CMD tail -f /dev/null
-
-
-
+# run services you want to continue to run in a single string of commands,
+# which finishes with a command non ending. This is cos docker closes services when complete.
+CMD service ssh start && apache2ctl start && tail -f /dev/null
