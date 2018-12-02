@@ -54,7 +54,7 @@ class ServerController extends Controller
             'deploy_password' => request('deploy_password'),
             'notes' => request('notes')
         ]);
-        return back(); // redirect back
+        return redirect(route('ServersIndex',compact('project')));
     }
 
     /**

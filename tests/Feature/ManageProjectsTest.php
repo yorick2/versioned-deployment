@@ -26,12 +26,12 @@ class manageProjectsTest extends TestCase
         $project = factory('App\Project')->create(['name' => 'foo bar', 'slug' => 'foo-bar']);
         $dataArray = $project->toArray();
         $this->assertEquals($project->fresh()->slug, 'foo-bar');
-        $this->post('/create-project', $dataArray);
+        $this->post(route('SubmitCreateProject'), $dataArray);
         $this->assertTrue(Project::whereSlug('foo-bar-2')->exists());
-        $this->post('/create-project', $dataArray);
+        $this->post(route('SubmitCreateProject'), $dataArray);
         $this->assertTrue(Project::whereSlug('foo-bar-3')->exists());
         factory('App\Project')->create(['name' => 'foo bar', 'slug' => 'foo-bar-10']);
-        $this->post('/create-project', $dataArray);
+        $this->post(route('SubmitCreateProject'), $dataArray);
         $this->assertTrue(Project::whereSlug('foo-bar-11')->exists());
     }
 
@@ -39,21 +39,21 @@ class manageProjectsTest extends TestCase
     {
         $this->be($this->user);
         $unsavedProject = factory('App\Project')->make();
-        $this->post('/create-project', $unsavedProject->toArray());
-        $this->get('projects')->assertSee($unsavedProject->name);
+        $this->post(route('SubmitCreateProject'), $unsavedProject->toArray());
+        $this->get(route('Projects'))->assertSee($unsavedProject->name);
     }
 
     public function testAnUnAuthenticatedUserCanNotCreateAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post('/create-project', []);
+        $this->post(route('SubmitCreateProject'), []);
     }
 
     public function testAnAuthenticatedUserCanEditAProject()
     {
         $this->be($this->user);
         $project = factory('App\Project')->create();
-        $this->patch($project->path(),[
+        $this->patch(route('SubmitEditProject',['project'=> $project]),[
             'name' => 'edited name',
             'repository' => 'git@github.com:w3c/csswg-test.git',
             'notes' => 'I was edited'
@@ -67,8 +67,8 @@ class manageProjectsTest extends TestCase
     public function testAnUnAuthenticatedUserCanNotEditAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $server = factory('App\Project')->create();
-        $this->patch($server->path(),[]);
+        $project = factory('App\Project')->create();
+        $this->patch(route('SubmitEditProject',['project'=> $project]),[]);
     }
 
     public function testAnAuthenticatedUserCanDeleteAProject()

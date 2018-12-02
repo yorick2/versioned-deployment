@@ -12,11 +12,13 @@ class ServerTest extends TestCase
     use DatabaseMigrations;
 
     protected $server;
+    protected $project;
 
     public function setup()
     {
         parent::setUp();
-        $this->server = factory('App\Server')->create();
+        $this->project = factory('App\Project')->create();
+        $this->server = factory('App\Server')->create(['project_id'=>$this->project->id]);
     }
 
     public function testItHasAnOwner()
@@ -26,7 +28,7 @@ class ServerTest extends TestCase
 
     public function testItHasAUrlPath(){
         $this->assertEquals(
-            "/projects/{$this->server->project()->first()->slug}/servers/{$this->server->slug}",
+            route('ShowServer',['server'=> $this->server, 'project' => $this->project], false),
             $this->server->path()
         );
     }

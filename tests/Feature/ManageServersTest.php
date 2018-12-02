@@ -11,12 +11,14 @@ class manageServersTest extends TestCase
     use DatabaseMigrations;
 
     protected $project;
+    protected $server;
     protected $user;
 
     public function setup()
     {
         parent::setUp();
         $this->project = factory('App\Project')->create();
+        $this->server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         $this->user = factory('App\User')->create();
     }
 
@@ -26,7 +28,7 @@ class manageServersTest extends TestCase
      * - check for numbers added to the slug of over 1 digit (10+)
      * - check the slug is not based on last server added
      */
-    public function testItRequiresAUniqueSlugForAProject()
+    public function testItRequiresAUniqueSlugForThisProject()
     {
         $this->be($this->user);
         $project1 = factory('App\Project')->create();
@@ -37,9 +39,9 @@ class manageServersTest extends TestCase
         ]);
         $dataArray1 = $server->toArray();
         $this->assertEquals($server->fresh()->slug, 'foo-bar');
-        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->post(route('SubmitCreateServer',['project'=> $project1]) , $dataArray1);
         $this->assertTrue(Server::whereSlug('foo-bar-2')->exists());
-        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->post(route('SubmitCreateServer',['project'=> $project1])  , $dataArray1);
         $this->assertTrue(Server::whereSlug('foo-bar-3')->exists());
 
 
@@ -54,12 +56,12 @@ class manageServersTest extends TestCase
             ['slug', '=', 'foo-bar'],
             ['project_id', '=', $project2->id],
         ])->exists());
-        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->post(route('SubmitCreateServer',['project'=> $project2]), $dataArray2);
         $this->assertTrue(Server::where([
             ['slug', '=', 'foo-bar-2'],
             ['project_id', '=', $project2->id],
         ])->exists());
-        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->post(route('SubmitCreateServer',['project'=> $project2]), $dataArray2);
         $this->assertTrue(Server::where([
             ['slug', '=', 'foo-bar-3'],
             ['project_id', '=', $project2->id],
@@ -69,14 +71,14 @@ class manageServersTest extends TestCase
             'slug' => 'foo-bar-10',
             'project_id' => $project2->id
         ]);
-        $this->post($project2->path().'/create-server' , $dataArray2);
+        $this->post(route('SubmitCreateServer',['project'=> $project2]), $dataArray2);
         $this->assertTrue(Server::where([
             ['slug', '=', 'foo-bar-11'],
             ['project_id', '=', $project2->id],
         ])->exists());
 
 
-        $this->post($project1->path().'/create-server' , $dataArray1);
+        $this->post(route('SubmitCreateServer',['project'=> $project1]) , $dataArray1);
         $this->assertTrue(Server::where([
             ['slug', '=', 'foo-bar-4'],
             ['project_id', '=', $project1->id],
@@ -87,21 +89,21 @@ class manageServersTest extends TestCase
     {
         $this->be($this->user);
         $unsavedServer = factory('App\Server')->make();
-        $this->post($unsavedServer->project->path().'/create-server', $unsavedServer->toArray());
-        $this->get($unsavedServer->project->path().'/servers')->assertSee($unsavedServer->name);
+        $this->post(route('SubmitCreateServer',['project'=> $unsavedServer->project]), $unsavedServer->toArray());
+        $this->get(route('ServersIndex',['project'=> $unsavedServer->project]) )->assertSee($unsavedServer->name);
     }
 
     public function testAnUnAuthenticatedUserCanNotCreateAServerForAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post($this->project->path().'/create-server', []);
+        $this->post(route('SubmitCreateServer',['project'=> $this->project]), []);
     }
 
     public function testAnAuthenticatedUserCanEditAServerForAProject()
     {
         $this->be($this->user);
-        $server = factory('App\Server')->create();
-        $this->patch($server->path(),[
+        $server = factory('App\Server')->create(['project_id'=>$this->project->id]);
+        $this->patch(route('SubmitEditServer',['server'=>$server, 'project'=> $this->project]) ,[
             'name' => 'edited name',
             'deploy_host' => 'http://edited.com',
             'deploy_port' => '123',
@@ -123,16 +125,15 @@ class manageServersTest extends TestCase
     public function testAnUnAuthenticatedUserCanNotEditAServerForAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $server = factory('App\Server')->create();
-        $this->patch($server->path(),[]);
+        $this->patch(route('SubmitEditServer',['server'=>$this->server, 'project'=> $this->project]),[]);
     }
 
     public function testAnAuthenticatedUserCanDeleteAServerForAProject()
     {
         $this->be($this->user);
-        $server = factory('App\Server')->create();
+        $server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         factory('App\Deployment', 3)->create(['server_id' => $server->id]);
-        $response = $this->json('DELETE', $server->path());
+        $response = $this->json('DELETE',route('DestroyServer',['server'=>$server, 'project'=> $this->project]));
         $response->assertStatus(204);
         $this->assertDatabaseMissing('servers',['id' => $server->id]);
         $this->assertDatabaseMissing('deployments',['server_id' => $server->id]);
@@ -141,8 +142,8 @@ class manageServersTest extends TestCase
     public function testAnUnAuthenticatedUserCanNotDeleteAServerForAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $server = factory('App\Server')->create();
-        $response = $this->json('DELETE', $server->path());
+        $server = factory('App\Server')->create(['project_id'=>$this->project->id]);
+        $response = $this->json('DELETE', route('DestroyServer',['server'=>$server, 'project'=> $this->project]));
         $response->assertRedirect('/login');
     }
 }

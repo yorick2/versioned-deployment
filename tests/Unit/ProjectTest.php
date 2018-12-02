@@ -47,7 +47,7 @@ class ProjectTest extends TestCase
     }
 
     public function testItHasAUrlPath(){
-        $this->assertEquals('/projects/'.$this->project->slug, $this->project->path());
+        $this->assertEquals(route('ShowProject',['project'=> $this->project], false), $this->project->path());
     }
 
 }
