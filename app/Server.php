@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Null_;
 
 class Server extends Model
 {
@@ -46,6 +47,16 @@ class Server extends Model
         return 'slug';
     }
 
+    public function setDeployPasswordAttribute($value){
+        if (!strlen($value)){
+            return;
+        }
+        $this->attributes['deploy_password'] = $value;
+        $connection = new SshConnection($this->toArray());
+        $connection->connectWithPassword();
+        $connection->addSshKey();
+    }
+
     /**
      * @param string $value
      */
@@ -82,6 +93,32 @@ class Server extends Model
         }
         $slug = str_slug($name);
         return "{$slug}-2";
+    }
+
+    public function executeDeployment(array $deploymentData)
+    {
+        $project = $this->project()->first();
+        $deployments = $this->deployments();
+        $deployment = $deployments->create([
+            'server_id' => $this->id,
+            'user_id' => $deploymentData['user_id'],
+            'success' => null,
+            'notes' => $deploymentData['notes']
+        ]);
+        try {
+            $deployment->fresh();
+            $deploymentMethod = new DeploymentMethod();
+            $response = $deploymentMethod->execute($deployment);
+            $this->patch(
+                route('SubmitEditDeployment',['deployment'=>$deployment,'server'=>$this, 'project'=> $project])
+                ,['output' => $response['output'],'success' => $response['success']]
+            );
+        } catch (Exception $e) {
+            $this->patch(
+                route('SubmitEditDeployment',['deployment'=>$deployment,'server'=>$this, 'project'=> $project])
+                ,['output' => $e, 'success' => 'fail']
+            );
+        }
     }
 
 }

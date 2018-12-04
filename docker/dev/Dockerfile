@@ -11,10 +11,13 @@ RUN apt-get update && apt-get install -y \
     git\
     # install php extensions
     libmcrypt-dev \
-    git \
     zlib1g-dev \
     sqlite3 \
     libsqlite3-dev \
+    libssh2-1 \
+    libssh2-1-dev \
+    sshpass \
+    && pecl install ssh2-1.1.2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,9 +27,11 @@ RUN docker-php-ext-install \
     tokenizer \
     zip \
     mysqli \
+#    php-ssh2 \
  #   pdo \
     pdo_mysql
 
+RUN docker-php-ext-enable ssh2
 
 # Enable rewrite module
 RUN a2enmod rewrite
@@ -38,6 +43,11 @@ RUN docker-php-ext-enable xdebug
 RUN echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/php.ini
 RUN echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/php.ini
 RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/php.ini
+
+# create ssh keys
+RUN mkdir -p /home/www-data/.ssh
+RUN ssh-keygen -t rsa -f /home/www-data/.ssh/id_rsa -P ''
+RUN chown www-data:www-data -R /home/www-data
 
 # Install Composer.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -73,3 +83,4 @@ ONBUILD RUN chmod -R ug+rwx storage /var/www/html/storage
 # Configure data volume
 ONBUILD VOLUME /var/www/html/storage/framework/sessions
 ONBUILD VOLUME /var/www/html/storage/logs
+

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Deployment extends Model
 {
+    protected $guarded = [];
+
     /**
      * @return string
      */
@@ -29,4 +31,5 @@ class Deployment extends Model
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
 }

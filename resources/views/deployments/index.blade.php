@@ -5,8 +5,14 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Deployments</div>
-
+                    <div class="card-header">
+                        <div class="level">
+                            <h1>Deployments</h1>
+                            <div class="float-right">
+                                <a href="{{ route('CreateDeployment',['project'=> $project,'server'=> $server]) }}" class="btn btn-default">Deploy</a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
                             @foreach($server->deployments as $deployment)

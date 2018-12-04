@@ -23,12 +23,12 @@ class manageServersTest extends TestCase
     }
 
     /**
-     * check the slug is unique for its project
+     * check the slug for a server is unique for its project
      * - check for multiple projects
      * - check for numbers added to the slug of over 1 digit (10+)
      * - check the slug is not based on last server added
      */
-    public function testItRequiresAUniqueSlugForThisProject()
+    public function testAServerRequiresAUniqueSlugForThisProject()
     {
         $this->be($this->user);
         $project1 = factory('App\Project')->create();

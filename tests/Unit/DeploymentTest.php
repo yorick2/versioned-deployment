@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\SshConnection;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -14,7 +15,6 @@ class DeploymentTest extends TestCase
     protected $project;
     protected $server;
     protected $deployment;
-
     public function setup()
     {
         parent::setUp();
@@ -38,4 +38,29 @@ class DeploymentTest extends TestCase
             $this->deployment->path()
         );
     }
+
+    public function testCanCreateSshConnection()
+    {
+
+        $cmd = 'echo foo';
+        $connection = new SshConnection([
+            'host' => 'example.com',
+            'user' => 'test',
+            'password' => 'password1',
+            'port' => 22
+        ]);
+        $connection->connect();
+        $response = $connection->execute($cmd);
+        $this->assertEquals($response,'foo');
+    }
+    public function testCanSendBashRequest(){}
+    public function testBashRequestSuccessfullyRuns(){}
+    public function testSharedFilesSynced(){}
+    public function testCurrentSymlinksWork(){}
+    public function testFailureDuringSshAccessReportedToOutput(){}
+    public function testFailureDuringSshAccessReportedToSuccessField(){}
+    public function testFailureDuringBashReportedToOutput(){}
+    public function testFailureDuringBashReportedToSuccessField(){}
+    public function testFailureWithPhpReportedToOutput(){}
+    public function testFailureWithPhpReportedToSuccessField(){}
 }
