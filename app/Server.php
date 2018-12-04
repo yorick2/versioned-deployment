@@ -52,6 +52,9 @@ class Server extends Model
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
+        if($this->getOriginal('name') == $this->getAttribute('name')) {
+            return;
+        }
         $slug = str_slug($value);
         $slugExists = static::where([
             ['slug', '=', $slug],

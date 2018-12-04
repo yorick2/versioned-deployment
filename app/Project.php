@@ -54,6 +54,9 @@ class Project extends Model
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
+        if($this->getOriginal('name') == $this->getAttribute('name')) {
+            return;
+        }
         if(static::whereSlug($slug = str_slug($value))->exists()){
             $slug = $this->incrementSlug($value);
         }
