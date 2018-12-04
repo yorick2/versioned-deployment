@@ -23,7 +23,6 @@ class CreateServersTable extends Migration
             $table->string('deploy_port')->nullable();
             $table->string('deploy_location');
             $table->string('deploy_user');
-            $table->string('deploy_password');
             $table->text('notes')->nullable();
             $table->timestamps();
         });

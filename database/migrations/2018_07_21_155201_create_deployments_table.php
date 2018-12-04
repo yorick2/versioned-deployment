@@ -20,7 +20,7 @@ class CreateDeploymentsTable extends Migration
             $table->integer('user_id');
             $table->boolean('success')->nullable();
             $table->text('notes')->nullable();
-            $table->text('output');
+            $table->text('output')->nullable();
             $table->timestamps();
         });
         Schema::table('deployments', function($table) {

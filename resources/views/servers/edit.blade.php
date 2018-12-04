@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="deploy_password form-group row">
                                     <label for="deploy_password" class="col-md-3 col-form-label text-md-right">password</label>
-                                    <input name="deploy_password" class="col-md-7" type="text" value="{{$server->deploy_password}}"/>
+                                    <input name="deploy_password" class="col-md-7" type="password" value="{{$server->deploy_password}}"/>
                                 </div>
                                 <div class="notes">
                                     <textarea name="notes" class="form-control" placeholder="notes" value="{{$server->notes}}"></textarea>
