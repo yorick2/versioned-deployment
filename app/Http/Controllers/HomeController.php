@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\SshConnection;
+use Couchbase\SearchSortScore;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +25,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $connection = new SshConnection();
+        $publicKey = file_get_contents($connection->getPublicKeyLocation());
+        return view('home', compact('publicKey'));
     }
 }

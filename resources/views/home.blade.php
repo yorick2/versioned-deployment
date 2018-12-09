@@ -14,7 +14,10 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    In order to deploy to a server you will need to add this key to your servers authorized_keys file
+                    <hr/>
+                    <div>{{$publicKey}}</div>
+                    <hr/>
                 </div>
             </div>
         </div>

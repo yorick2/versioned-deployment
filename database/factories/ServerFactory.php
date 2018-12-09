@@ -17,6 +17,10 @@ $factory->define(App\Server::class, function (Faker $faker) {
        'deploy_port' => '22',
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',
+       'shared' => 'test/text.txt
+                    test/test2.txt
+                    pub/test.txt',
+       'commands' => 'touch test.txt',
        'notes' => $faker->paragraph
    ];
 });

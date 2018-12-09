@@ -10,7 +10,7 @@ $factory->define(App\Project::class, function (Faker $faker) {
         'user_id' => function(){
             return factory('App\User')->create()->id;
         },
-        'repository' => 'git@github.com:w3c/csswg-test.git',
+        'repository' => 'https://github.com/octocat/Hello-World',
         'notes' => $faker->paragraph
     ];
 });

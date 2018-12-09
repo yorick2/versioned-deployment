@@ -47,16 +47,6 @@ class Server extends Model
         return 'slug';
     }
 
-    public function setDeployPasswordAttribute($value){
-        if (!strlen($value)){
-            return;
-        }
-        $this->attributes['deploy_password'] = $value;
-        $connection = new SshConnection($this->toArray());
-        $connection->connectWithPassword();
-        $connection->addSshKey();
-    }
-
     /**
      * @param string $value
      */
