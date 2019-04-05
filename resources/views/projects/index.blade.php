@@ -12,7 +12,8 @@
                                 <a href="{{ route('CreateProject') }}" class="btn btn-default">Create</a>
                             </div>
                         </div>
-                    </div><div class="card-body">
+                    </div>
+                    <div class="card-body">
                         <ul class="list-group list-group-flush">
                             @foreach($projectsCollection as $project)
                                 <li class="list-group-item">

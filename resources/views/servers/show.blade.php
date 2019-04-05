@@ -8,6 +8,9 @@
                     <div class="card-header">
                         <div class="level">
                             <h1>{{$server->name}}</h1>
+                            <div class="float-left">
+                                <a  class="btn btn-default pl-0" href="{{$server->path()}}/deployments">Deployments</a>
+                            </div>
                             <div class="float-right">
                                 <form action="{{$server->path()}}" method="post">
                                     {{csrf_field()}}
@@ -33,7 +36,6 @@
                                 <div>created by:</div>
                                 <div class="owner">{{$server->owner->name}}</div>
                             </div>
-                            <div><a href="{{$server->path()}}/deployments">Go to deployments</a></div>
                             <span>notes:</span>
                             <div>
                                 {{$server->notes}}

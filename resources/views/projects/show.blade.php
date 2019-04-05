@@ -8,6 +8,9 @@
                     <div class="card-header">
                         <div class="level">
                             <h1>{{$project->name}}</h1>
+                            <div class="float-left">
+                                <a class="btn btn-default pl-0" href="{{$project->path()}}/servers">Servers</a>
+                            </div>
                             <div class="float-right">
                                 <form action="{{$project->path()}}" method="post">
                                     {{csrf_field()}}
@@ -31,7 +34,6 @@
                             <div>created by:</div>
                             <div class="owner">{{$project->owner->name}}</div>
                         </div>
-                        <div><a href="{{$project->path()}}/servers">Go to servers</a></div>
                         <div>
                             <span>repository:</span>
                             <div>
