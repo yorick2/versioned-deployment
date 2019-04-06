@@ -27,39 +27,43 @@
                     </li>
                 @endguest
             </ul>
-            <div class="dropdown navbar-nav">
-                <a id="navbarDropdown" class="nav-link dropdown-toggle pl-0" href="#" role="button"
-                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                    {{ Auth::user()->name }} <span class="caret"></span>
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{{ route('logout') }}"
-                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        {{ __('Logout') }}
+            @auth
+                <div class="dropdown navbar-nav">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle pl-0" href="#" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        {{ Auth::user()->name }} <span class="caret"></span>
                     </a>
 
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                        @csrf
-                    </form>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            {{ __('Logout') }}
+                        </a>
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
                 </div>
-            </div>
+            @endauth
         </div>
     </div>
 </nav >
-<div class="container">
-    <ol class="breadcrumb bg-transparent pl-0 pr-0 mb-0">
-        <?php $segments = ''; ?>
-        <?php $i=0; ?>
-        <?php $requestSegments = Request::segments(); ?>
-        <?php if(count($requestSegments) > 1) : ?>
-            <?php foreach($requestSegments as $segment): ?>
-                <?php $segments .= '/'.$segment; ?>
-                <li>
-                    <a class="text-dark" href="{{ url($segments) }}"><?php if($i!=0): ?>&nbsp;&gt;&nbsp;<?php endif; ?>{{$segment}}</a>
-                </li>
-                <?php $i++; ?>
-            <?php endforeach ?>
-        <?php endif; ?>
-    </ol>
-</div>
+@auth
+    <div class="container">
+        <ol class="breadcrumb bg-transparent pl-0 pr-0 mb-0">
+            <?php $segments = ''; ?>
+            <?php $i=0; ?>
+            <?php $requestSegments = Request::segments(); ?>
+            <?php if(count($requestSegments) > 1) : ?>
+                <?php foreach($requestSegments as $segment): ?>
+                    <?php $segments .= '/'.$segment; ?>
+                    <li>
+                        <a class="text-dark" href="{{ url($segments) }}"><?php if($i!=0): ?>&nbsp;&gt;&nbsp;<?php endif; ?>{{$segment}}</a>
+                    </li>
+                    <?php $i++; ?>
+                <?php endforeach ?>
+            <?php endif; ?>
+        </ol>
+    </div>
+@endauth
