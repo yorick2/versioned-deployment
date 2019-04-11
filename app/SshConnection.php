@@ -73,12 +73,8 @@ class SshConnection extends Model
     }
 
     public function disconnect() {
-        $this->exec('echo "EXITING" && exit;');
+        $this->execute('echo "EXITING" && exit;');
         $this->sshConnection = null;
     }
-
-//    public function __destruct() {
-//        $this->disconnect();
-//    }
 
 }

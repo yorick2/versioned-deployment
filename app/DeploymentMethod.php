@@ -27,9 +27,4 @@ class DeploymentMethod extends Model
         return $this->git->deploy($deployment);
     }
 
-    public function cloneRepository ($repository)
-    {
-
-    }
-
 }

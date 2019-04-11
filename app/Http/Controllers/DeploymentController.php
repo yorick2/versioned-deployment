@@ -48,7 +48,7 @@ class DeploymentController extends Controller
             'user_id' => auth()->id(),
             'notes' => request('notes')
         ]);
-        return redirect(route('ServersIndex',compact('server')));
+        return redirect(route('DeploymentsIndex',compact('server','project')));
     }
 
     /**

@@ -13,7 +13,7 @@ $factory->define(App\Server::class, function (Faker $faker) {
        },
        'name' => $name,
        'slug' => str_slug($name),
-       'deploy_host' => '172.21.0.2',
+       'deploy_host' => 'example.com',
        'deploy_port' => '22',
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',

@@ -87,7 +87,6 @@ class Server extends Model
 
     public function executeDeployment(array $deploymentData)
     {
-        $project = $this->project()->first();
         $deployments = $this->deployments();
         $deployment = $deployments->create([
             'server_id' => $this->id,
@@ -99,15 +98,15 @@ class Server extends Model
             $deployment->fresh();
             $deploymentMethod = new DeploymentMethod();
             $response = $deploymentMethod->execute($deployment);
-            $this->patch(
-                route('SubmitEditDeployment',['deployment'=>$deployment,'server'=>$this, 'project'=> $project])
-                ,['output' => $response['output'],'success' => $response['success']]
-            );
+            $deployment->update([
+                'success' => $response['success'],
+                'output' => json_encode($response['output'])
+            ]);
         } catch (Exception $e) {
-            $this->patch(
-                route('SubmitEditDeployment',['deployment'=>$deployment,'server'=>$this, 'project'=> $project])
-                ,['output' => $e, 'success' => 'fail']
-            );
+            $deployment->update([
+                'success' => 0,
+                'output' => ''
+            ]);
         }
     }
 
