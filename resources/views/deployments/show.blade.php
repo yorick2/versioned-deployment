@@ -36,6 +36,9 @@
                                 <div>
                                     @foreach(json_decode($deployment->output) as $key => $output)
                                         <section>
+                                            @if(isset($output->name))
+                                                <h1 class="h5">{{$output->name}}</h1>
+                                            @endif
                                             <div class="form-group row">
                                                 @if ($deployment->success  === 1)
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">success:</label>

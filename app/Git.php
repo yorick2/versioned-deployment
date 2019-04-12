@@ -15,6 +15,7 @@ class Git
      */
     protected $server;
 
+    
     /**
      * @return bool
      */
@@ -35,7 +36,7 @@ class Git
         $repository = $this->server->project()->first()->repository;
         $refFolder = "${location}/.gitcache/".preg_replace("/[^a-zA-Z0-9]/", "-", $repository);
         $cmd = "cd {$location} && mkdir -p $refFolder && echo folders created";
-        $this->responses[] = $this->connection->execute($cmd);
+        $this->responses[] = array_merge(['name'=>'make mirror (cache) folder'], $this->connection->execute($cmd));
         $cmd = <<<'EOF'
         function cloneGit() {
             local repositoryUrl="${1}";
@@ -51,24 +52,28 @@ class Git
             echo mirror creation complete
         }
 EOF;
-        $refFolder = "${location}/.gitcache/".preg_replace("/[^a-zA-Z0-9]/", "-", $repository);
         $cmd .= "\n cloneGit $repository $refFolder";
-        $this->responses[] = $this->connection->execute($cmd);
+        $this->responses[] = array_merge(['name'=>'clone into mirror (cache) folder'], $this->connection->execute($cmd));
         return $this->responses;
     }
 
     protected function getServerDate(){
         $location = $this->server->deploy_location;
-        $this->responses[] = $res = $this->connection->execute("date +%F_%H-%M-%S");
+        $this->responses[] = $res = array_merge(
+            ['name'=>'get server date'],
+            $this->connection->execute("date +%F_%H-%M-%S")
+        );
         $this->serverDate = str_replace_last("\n",'',$res['message']);
-        $cmd = "cd {$location} && mkdir -p releases/{$this->serverDate} && mkdir shared && echo folders created";
-        $this->responses[] = $this->connection->execute($cmd);
     }
 
     protected function cloneAndCheckout(){
         $location = $this->server->deploy_location;
         $repository = $this->server->project()->first()->repository;
-//        $commitRef = "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"; //deleteme
+        $commitRef = "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"; //deleteme
+
+        # its a bit safer to cd into the location folder and create the release folder from there
+        $cmd = "cd {$location} && mkdir -p releases/{$this->serverDate} && mkdir shared && echo folders created";
+        $this->responses[] = array_merge(['name'=>'make release folder'], $this->connection->execute($cmd));
 
         $cmd = <<<'EOF'
         function deployGit() {
@@ -85,7 +90,10 @@ EOF;
         $releaseLocation = "{$location}/releases/{$this->serverDate}";
         $refFolder = "${location}/.gitcache/".preg_replace("/[^a-zA-Z0-9]/", "-", $repository);
         $cmd .= "\n deployGit $repository $refFolder $commitRef $releaseLocation";
-        $this->responses[] = $this->connection->execute($cmd);
+        $this->responses[] = array_merge(
+            ['name'=>'clone into release folder using the mirror repository'],
+            $this->connection->execute($cmd)
+        );
     }
 
     public function deploy($deployment){
@@ -100,12 +108,26 @@ EOF;
         $this->getServerDate();
         $this->cloneAndCheckout();
 
-        $this->responses[] = $this->connection->execute("###### links files from shared ######");
-        $this->responses[] = $this->connection->execute("###### do their cmds ######");
-        $this->responses[] = $this->connection->execute("cd $location && rm previous ");
-        $this->responses[] = $this->connection->execute("cd $location && mv current previous");
-        $this->responses[] = $this->connection->execute("cd $location && ln -s $location/releases/$this->serverDate current");
-
+        $this->responses[] = array_merge(
+            ['name'=>'links files from shared folder --> to do'],
+            $this->connection->execute("###### links files from shared ######")
+        );
+        $this->responses[] = array_merge(
+            ['name'=>'custom commands --> to do'],
+            $this->connection->execute("###### do their cmds ######")
+        );
+        $this->responses[] = array_merge(
+            ['name'=>'remove oldest release --> to do'],
+            $this->connection->execute("###### remove oldest release if threshold reached ######")
+        );
+        $cmd = "cd $location \
+        && rm previous \
+        && mv current previous \
+        && ln -s $location/releases/$this->serverDate current";
+        $this->responses[] = array_merge(
+            ['name'=>'update current and previous links'],
+            $this->connection->execute($cmd)
+        );
         $this->connection->disconnect();
 
         return ['output' => $this->responses, 'success' => true];
