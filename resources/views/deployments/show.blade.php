@@ -46,7 +46,11 @@
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">failed:</label>
                                                 @endif
                                                 <div class="col-sm-10">
-                                                    <textarea type="text" readonly class="form-control status success" id="message-{{$key}}">{{$output->message}}</textarea>
+                                                    @if(strpos($output->message,"\n"))
+                                                        <textarea type="text" readonly class="form-control status success" id="message-{{$key}}">{{$output->message}}</textarea>
+                                                    @else
+                                                        <input type="text" readonly class="form-control status success" id="message-{{$key}}" value="{{$output->message}}" />
+                                                    @endif
                                                 </div>
                                             </div>
                                         </section>

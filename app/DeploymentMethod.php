@@ -6,25 +6,75 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeploymentMethod extends Model
 {
+    /**
+     * @var array
+     */
     protected $guarded = [];
 
-    private $git;
+    /**
+     * @var array
+     */
+    protected $responses = [];
 
-
-    public function __construct(
-        array $attributes = []
-    ) {
-        $this->git = new Git();
-        parent::__construct($attributes);
-    }
+    /**
+     * @var SshConnection
+     */
+    protected $connection;
 
     /**
      * @param $deployment
      * @return array
      */
-    public function execute($deployment)
+    public function execute(Deployment $deployment)
     {
-        return $this->git->deploy($deployment);
+        if($this->getSshConnection($deployment->server) === false) {
+            return ['output' => $this->responses, 'success' => false];
+        }
+
+        $server = $deployment->server;
+        $location = $server->deploy_location;
+        $git = new Git(
+            $this->connection,
+            $server
+        );
+
+        $this->responses = array_merge($this->responses, $git->deploy($deployment));
+
+        $this->responses[] = array_merge(
+            ['name'=>'links files from shared folder --> to do'],
+            $this->connection->execute("###### links files from shared ######")
+        );
+        $this->responses[] = array_merge(
+            ['name'=>'custom commands --> to do'],
+            $this->connection->execute("###### do their cmds ######")
+        );
+        $this->responses[] = array_merge(
+            ['name'=>'remove oldest release --> to do'],
+            $this->connection->execute("###### remove oldest release if threshold reached ######")
+        );
+        $cmd = "cd $location \
+        && rm previous \
+        && mv current previous \
+        && ln -s $location/releases/$this->serverDate current";
+        $this->responses[] = array_merge(
+            ['name'=>'update current and previous links'],
+            $this->connection->execute($cmd)
+        );
+        $this->connection->disconnect();
+
+        return ['output' => $this->responses, 'success' => true];
     }
 
+    /**
+     * @param $server
+     * @return bool
+     */
+    protected function getSshConnection($server){
+        $this->connection = new SshConnection($server->toArray());
+        $this->responses[] = $this->connection->connect();
+        if ($this->responses[0]['success'] == 0 ) {
+            return false;
+        }
+        return true;
+    }
 }
