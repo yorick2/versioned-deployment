@@ -27,7 +27,7 @@
                             <div class="form-group row">
                                 <label for="notes" class="col-sm-2 col-form-label">notes:</label>
                                 <div class="col-sm-10">
-                                    <textarea type="text" readonly class="form-control status success" id="notes" value="{{$deployment->notes}}"></textarea>
+                                    <textarea type="text" readonly class="form-control status success" id="notes">{{$deployment->notes}}</textarea>
                                 </div>
                             </div>
                             <div>

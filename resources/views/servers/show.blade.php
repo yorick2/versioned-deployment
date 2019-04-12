@@ -24,23 +24,26 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div>
-
-                            <div>
-                                <span>created at:</span>
-                                <div>
-                                    {{$server->created_at}} ({{$server->created_at->diffForHumans()}})
+                        <form>
+                            <div class="form-group row">
+                                <label for="created_at" class="col-sm-2 col-form-label">created at:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control" id="created_at" value="{{$server->created_at}} ({{$server->created_at->diffForHumans()}})">
                                 </div>
                             </div>
-                            <div>
-                                <div>created by:</div>
-                                <div class="owner">{{$server->owner->name}}</div>
+                            <div class="form-group row">
+                                <label for="created_by" class="col-sm-2 col-form-label">created by:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control" id="created_by" value="{{$server->owner->name}}">
+                                </div>
                             </div>
-                            <span>notes:</span>
-                            <div>
-                                {{$server->notes}}
+                            <div class="form-group row">
+                                <label for="notes" class="col-sm-2 col-form-label">notes:</label>
+                                <div class="col-sm-10">
+                                    <textarea type="text" readonly class="form-control status success" id="notes">{{$server->notes}}</textarea>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
