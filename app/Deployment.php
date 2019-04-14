@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Deployment extends Model
 {
+    /**
+     * @var array
+     */
     protected $guarded = [];
 
     /**

@@ -15,6 +15,12 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="commit" class="col-sm-2 col-form-label">commit hash:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control" id="commit" value="{{$deployment->commit}}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="status" class="col-sm-2 col-form-label">status:</label>
                                 <div class="col-sm-10">
                                     @if ($deployment->success  === 1)

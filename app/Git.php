@@ -64,15 +64,32 @@ class Git
         $this->cloneAndCheckout($deployment);
         return $this->responses;
     }
-    
+
     /**
      * @return array
      */
-    public function updateCache(){
+    public function getGitLog(){
+        $this->updateCache();
+        $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' master";
+        $res = $this->connection->execute($cmd);
+        $log = explode("\n", $res['message']);
+        for($i=0;$i<count($log);$i++){
+            if (strpos( $log[$i], ';') === false) {
+                continue;
+            }
+            list($key, $val) = explode(' ; ', $log[$i]);
+            $gitLogArray[$key] = $val;
+        }
+        return $gitLogArray;
+    }
+
+    /**
+     * @return array
+     */
+    protected function updateCache(){
         $this->location = $this->server->deploy_location;
         $repository = $this->server->project()->first()->repository;
-        $refFolder = "{$this->location}/.gitcache/".preg_replace("/[^a-zA-Z0-9]/", "-", $repository);
-        $cmd = "cd {$this->location} && mkdir -p $refFolder && echo folders created";
+        $cmd = "cd {$this->location} && mkdir -p $this->refFolder && echo folders created";
         $this->responses[] = array_merge(
             $this->connection->execute($cmd),
             ['name'=>'make mirror (cache) folder']
@@ -92,7 +109,7 @@ class Git
             echo mirror creation complete
         }
 EOF;
-        $cmd .= "\n cloneGit $repository $refFolder";
+        $cmd .= "\n cloneGit $repository $this->refFolder";
         $this->responses[] = array_merge(
             $this->connection->execute($cmd),
             ['name'=>'clone into mirror (cache) folder']
@@ -113,8 +130,7 @@ EOF;
      */
     protected function cloneAndCheckout(Deployment $deployment){
         $repository = $this->server->project()->first()->repository;
-//        $commitRef = $deployment->commit;
-        $commitRef = "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d"; //deleteme
+        $commitRef = $deployment->commit;
 
         # its a bit safer to cd into the location folder and create the release folder from there
         $cmd = "cd {$this->location} && mkdir -p releases/{$this->serverDate} && mkdir shared && echo folders created";

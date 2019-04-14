@@ -91,6 +91,7 @@ class Server extends Model
         $deployment = $deployments->create([
             'server_id' => $this->id,
             'user_id' => $deploymentData['user_id'],
+            'commit' => $deploymentData['commit'],
             'success' => null,
             'notes' => $deploymentData['notes']
         ]);
@@ -108,6 +109,7 @@ class Server extends Model
                 'output' => ''
             ]);
         }
+        return $deployment;
     }
 
 }

@@ -10,6 +10,7 @@ $factory->define(App\Deployment::class, function (Faker $faker) {
         'user_id' => function(){
             return factory('App\User')->create()->id;
         },
+        'commit' => $faker->password,
         'success' => $faker->boolean,
         'notes' => $faker->paragraph,
         'output' => $faker->paragraph

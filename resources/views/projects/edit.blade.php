@@ -20,7 +20,7 @@
                                     <input name="repository" class="col-md-7" type="text" placeholder="git@github.com:w3c/csswg-test.git" value="{{$project->repository}}" required/>
                                 </div>
                                 <div class="notes">
-                                    <textarea name="notes" class="form-control" placeholder="notes" value="{{$project->notes}}"></textarea>
+                                    <textarea name="notes" class="form-control" placeholder="notes">{{$project->notes}}</textarea>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-default">save</button>

@@ -15,9 +15,9 @@ class CreateDeploymentsTable extends Migration
     {
         Schema::create('deployments', function (Blueprint $table) {
             $table->increments('id');
-//            $table->string('slug')->unique();
             $table->integer('server_id')->unsigned();
             $table->integer('user_id');
+            $table->text('commit');
             $table->boolean('success')->nullable();
             $table->text('notes')->nullable();
             $table->text('output')->nullable();

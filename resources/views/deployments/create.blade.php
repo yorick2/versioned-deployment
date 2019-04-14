@@ -14,7 +14,15 @@
                         <hr>
                         <form method="post" action="{{route('SubmitCreateDeployment',['server'=>$server, 'project'=>$project])}}">
                             @csrf
-                            <div class="">
+                            <div class="repository form-group row">
+                                <label for="commit" class="col-form-label">commit:</label>
+                                <select name="commit" class="form-control form-control-lg" id="exampleFormControlSelect1">
+                                    @foreach($gitLog as $ref => $text)
+                                        <option value="{{$ref}}">{{$text}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <div class="notes">
                                     <textarea name="notes" class="form-control" placeholder="notes"></textarea>
                                 </div>

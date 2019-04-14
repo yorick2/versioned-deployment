@@ -6,6 +6,8 @@ use App\Deployment;
 use App\DeploymentMethod;
 use App\Project;
 use App\Server;
+use App\Git;
+use App\SshConnection;
 use Illuminate\Http\Request;
 
 class DeploymentController extends Controller
@@ -29,12 +31,23 @@ class DeploymentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Project $project
      * @param Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create(Project $project, Server $server)
     {
-        return view('deployments.create',compact('server','project'));
+        $gitLog = [];
+        $connection = new SshConnection($server->toArray());
+        $response = $connection->connect();
+        if ($response['success'] != 0 ) {
+            $git = new Git(
+                $connection,
+                $server
+            );
+            $gitLog = $git->getGitLog();
+        }
+        return view('deployments.create',compact('server','project','gitLog'));
     }
 
     /**
@@ -44,11 +57,13 @@ class DeploymentController extends Controller
      */
     public function store(Project $project, Server $server)
     {
-        $server->executeDeployment([
+        $deployment = $server->executeDeployment([
             'user_id' => auth()->id(),
-            'notes' => request('notes')
+            'notes' => request('notes'),
+            'commit' => request('commit')
         ]);
-        return redirect(route('DeploymentsIndex',compact('server','project')));
+        return view('deployments.show', compact('project','server', 'deployment'));
+//        return redirect(route('DeploymentsIndex',compact('server','project')));
     }
 
     /**

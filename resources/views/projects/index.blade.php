@@ -18,7 +18,7 @@
                             @foreach($projectsCollection as $project)
                                 <li class="list-group-item">
                                     <a href="{{$project->path()}}">{{$project->name}}</a>
-                                    </li>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
