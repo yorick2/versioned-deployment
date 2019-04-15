@@ -48,14 +48,29 @@ class DeploymentMethod extends Model
             ['name'=>'custom commands --> to do'],
             $this->connection->execute("###### do their cmds ######")
         );
+        $cmd = 'function removeOldReleases() {
+            local i f;
+            i=1;
+            cd '.$location.';
+            for folder in $(ls -r releases); do
+                if [[ ! -d releases/${folder} ]]; then
+                    continue;
+                fi
+                if [[ ${i} -gt 5 ]]; then 
+                    rm -rf releases/${folder};
+                fi;
+                ((i++));
+            done;
+        }
+        removeOldReleases;';
         $this->responses[] = array_merge(
-            ['name'=>'remove oldest release --> to do'],
-            $this->connection->execute("###### remove oldest release if threshold reached ######")
+            ['name'=>'remove oldest release'],
+            $this->connection->execute($cmd)
         );
         $cmd = "cd $location \
         && rm previous \
         && mv current previous \
-        && ln -s $location/releases/$this->serverDate current";
+        && ln -s $location/{$git->getCurrentReleaseLocation()} current";
         $this->responses[] = array_merge(
             ['name'=>'update current and previous links'],
             $this->connection->execute($cmd)

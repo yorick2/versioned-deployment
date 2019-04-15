@@ -60,9 +60,15 @@ class Git
      */
     public function deploy(Deployment $deployment){
         $this->updateCache();
-        $this->getServerDate();
         $this->cloneAndCheckout($deployment);
         return $this->responses;
+    }
+
+    /**
+     * @return string relative location of the current release
+     */
+    public function getCurrentReleaseLocation(){
+        return "{$this->location}/releases/{$this->getServerDate()}";
     }
 
     /**
@@ -118,11 +124,15 @@ EOF;
     }
 
     protected function getServerDate(){
+        if($this->serverDate){
+            return $this->serverDate;
+        }
         $this->responses[] = $res = array_merge(
             ['name'=>'get server date'],
             $this->connection->execute("date +%F_%H-%M-%S")
         );
         $this->serverDate = str_replace_last("\n",'',$res['message']);
+        return $this->serverDate;
     }
 
     /**
@@ -133,7 +143,7 @@ EOF;
         $commitRef = $deployment->commit;
 
         # its a bit safer to cd into the location folder and create the release folder from there
-        $cmd = "cd {$this->location} && mkdir -p releases/{$this->serverDate} && mkdir shared && echo folders created";
+        $cmd = "cd {$this->location} && mkdir -p {$this->getCurrentReleaseLocation()} && mkdir shared && echo folders created";
         $this->responses[] = array_merge(['name'=>'make release folder'], $this->connection->execute($cmd));
 
         $cmd = <<<'EOF'
@@ -148,7 +158,7 @@ EOF;
             echo git clone created;
         }
 EOF;
-        $releaseLocation = "{$this->location}/releases/{$this->serverDate}";
+        $releaseLocation = "{$this->location}/{$this->getCurrentReleaseLocation()}";
         $cmd .= "\n deployGit $repository $this->refFolder $commitRef $releaseLocation";
         $this->responses[] = array_merge(
             ['name'=>'clone into release folder using the mirror repository'],
