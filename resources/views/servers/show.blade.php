@@ -25,22 +25,46 @@
                     </div>
                     <div class="card-body">
                         <form>
-                            <div class="form-group row">
-                                <label for="created_at" class="col-sm-2 col-form-label">created at:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control" id="created_at" value="{{$server->created_at}} ({{$server->created_at->diffForHumans()}})">
+
+                            <div class="">
+                                <div class="name form-group row">
+                                    <label for="name" class="col-sm-2 col-form-label text-md-right">name</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="name" class="form-control" type="text" value="{{$server->name}}"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="created_by" class="col-sm-2 col-form-label">created by:</label>
-                                <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control" id="created_by" value="{{$server->owner->name}}">
+                                <div class="deploy_host form-group row">
+                                    <label for="deploy_host" class="col-md-2 col-form-label text-md-right">host</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="deploy_host" class="form-control" value="{{$server->deploy_host}}"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="notes" class="col-sm-2 col-form-label">notes:</label>
-                                <div class="col-sm-10">
-                                    <textarea type="text" readonly class="form-control status success" id="notes">{{$server->notes}}</textarea>
+                                <div class="deploy_port form-group row">
+                                    <label for="deploy_port" class="col-md-2 col-form-label text-md-right">port</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="deploy_port" class="form-control" type="number" placeholder="22"  value="{{$server->deploy_port}}"/>
+                                    </div>
+                                </div>
+                                <div class="deploy_location form-group row">
+                                    <label for="deploy_location" class="col-md-2 col-form-label text-md-right">folder</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="deploy_location" class="form-control" type="text" placeholder="/vaw/www" value="{{$server->deploy_location}}"/>
+                                    </div>
+                                </div>
+                                <div class="deploy_user form-group row">
+                                    <label for="deploy_user" class="col-md-2 col-form-label text-md-right">user</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="deploy_user" class="form-control" type="text" value="{{$server->deploy_user}}"/>
+                                    </div>
+                                </div>
+                                <div class="deploy_branch form-group row">
+                                    <label for="deploy_branch" class="col-md-2 col-form-label text-md-right">branch name</label>
+                                    <div class="col-sm-10">
+                                        <input readonly name="deploy_branch" class="form-control" type="text" value="{{$server->deploy_branch}}"/>
+                                    </div>
+                                </div>
+                                <div class="notes">
+                                    <textarea readonly name="notes" class="form-control" placeholder="notes">{{$server->notes}}</textarea>
                                 </div>
                             </div>
                         </form>

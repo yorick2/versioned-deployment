@@ -17,10 +17,10 @@ $factory->define(App\Server::class, function (Faker $faker) {
        'deploy_port' => '22',
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',
-       'shared' => 'test/text.txt
-                    test/test2.txt
-                    pub/test.txt',
-       'commands' => 'touch test.txt',
+       'deploy_branch' => 'master',
+       'shared' => 'test/text.txt, test/test2.txt, pub/test.txt',
+       'pre_deploy_commands' => 'touch placeholder.txt',
+       'post_deploy_commands' => 'rm -r cache/*; rm placeholder.txt;',
        'notes' => $faker->paragraph
    ];
 });

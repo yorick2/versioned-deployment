@@ -62,8 +62,8 @@ class DeploymentController extends Controller
             'notes' => request('notes'),
             'commit' => request('commit')
         ]);
-        return view('deployments.show', compact('project','server', 'deployment'));
-//        return redirect(route('DeploymentsIndex',compact('server','project')));
+        // used as it shows the right url path in the breadcrumbs
+        return redirect(route('ShowDeployment',compact('server','project', 'deployment')));
     }
 
     /**

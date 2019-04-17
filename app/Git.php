@@ -76,7 +76,7 @@ class Git
      */
     public function getGitLog(){
         $this->updateCache();
-        $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' master";
+        $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' {$this->server->deploy_branch}";
         $res = $this->connection->execute($cmd);
         $log = explode("\n", $res['message']);
         for($i=0;$i<count($log);$i++){

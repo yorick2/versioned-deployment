@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\GitLocal;
 use App\Project;
 use App\Server;
 use Illuminate\Http\Request;
@@ -32,7 +33,9 @@ class ServerController extends Controller
      */
     public function create(Project $project)
     {
-        return view('servers.create',compact('project'));
+        $gitLocalModel = new GitLocal();
+        $gitBranches  = $gitLocalModel->getGitBranches($project->repository);
+        return view('servers.create',compact('project','gitBranches'));
     }
 
     /**
@@ -51,7 +54,10 @@ class ServerController extends Controller
             'deploy_port' => request('deploy_port'),
             'deploy_location' => request('deploy_location'),
             'deploy_user' => request('deploy_user'),
-            'deploy_password' => request('deploy_password'),
+            'deploy_branch' => request('deploy_branch'),
+            'shared' => '',
+            'pre_deploy_commands' => '',
+            'post_deploy_commands' => '',
             'notes' => request('notes')
         ]);
         return redirect(route('ServersIndex',compact('project')));
@@ -77,7 +83,9 @@ class ServerController extends Controller
      */
     public function edit(Project $project, Server $server)
     {
-        return view('servers.edit', compact('project', 'server'));
+        $gitLocalModel = new GitLocal();
+        $gitBranches  = $gitLocalModel->getGitBranches($project->repository);
+        return view('servers.edit', compact('project', 'server','gitBranches'));
     }
 
     /**
@@ -95,7 +103,10 @@ class ServerController extends Controller
             'deploy_port',
             'deploy_location',
             'deploy_user',
-            'deploy_password',
+            'deploy_branch',
+            'shared',
+            'pre_deploy_commands',
+            'post_deploy_commands',
             'notes'
         ]));
         return redirect(route('ServersIndex',compact('project')));
