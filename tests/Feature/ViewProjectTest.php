@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ProjectTest extends TestCase
+class ViewProjectTest extends TestCase
 {
     use DatabaseMigrations;
 
@@ -46,6 +46,21 @@ class ProjectTest extends TestCase
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->get(route('ShowProject',['project'=> $this->project]));
+    }
+
+
+    public function testAnAuthenticatedUserCanViewProjectCreatePage()
+    {
+        $this->be($this->user);
+        $response = $this->get(route('CreateProject'));
+        $response->assertStatus(200);
+        $response->assertSee('Add Project');
+    }
+
+    public function testAnUnauthenticatedUserCanNotViewProjectCreatePage()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->get(route('CreateProject'));
     }
 
 }

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeploymentMethod extends Model
+class DeploymentAction extends Model
 {
     /**
      * @var array

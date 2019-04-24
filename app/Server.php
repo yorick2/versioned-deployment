@@ -85,6 +85,7 @@ class Server extends Model
         return "{$slug}-2";
     }
 
+
     public function executeDeployment(array $deploymentData)
     {
         $deployments = $this->deployments();
@@ -97,8 +98,8 @@ class Server extends Model
         ]);
         try {
             $deployment->fresh();
-            $deploymentMethod = new DeploymentMethod();
-            $response = $deploymentMethod->execute($deployment);
+            $deploymentAction = new DeploymentAction();
+            $response = $deploymentAction->execute($deployment);
             $deployment->update([
                 'success' => $response['success'],
                 'output' => json_encode($response['output'])
