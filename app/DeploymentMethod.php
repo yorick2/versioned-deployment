@@ -62,24 +62,9 @@ class DeploymentMethod extends Model
             $this->connection->execute("cd  {$this->git->getCurrentReleaseLocation()} && "
                 . $server->post_deploy_commands)
         );
-        $cmd = 'function removeOldReleases() {
-            local i f;
-            i=1;
-            cd '.$this->location.';
-            for folder in $(ls -r releases); do
-                if [[ ! -d releases/${folder} ]]; then
-                    continue;
-                fi
-                if [[ ${i} -gt 5 ]]; then 
-                    rm -rf releases/${folder};
-                fi;
-                ((i++));
-            done;
-        }
-        removeOldReleases;';
         $this->responses[] = array_merge(
             ['name'=>'remove oldest release'],
-            $this->connection->execute($cmd)
+            $this->removeOldReleases()
         );
         $cmd = "cd $this->location \
         && rm previous \
@@ -124,5 +109,27 @@ class DeploymentMethod extends Model
             $command .= "ln -s {$this->location}/shared/{$fileName} {$this->git->getCurrentReleaseLocation()}/{$fileName}";
         }
         return $this->connection->execute($command);
+    }
+
+    /**
+     * @return array
+     */
+    protected function removeOldReleases(){
+        $cmd = 'function removeOldReleases() {
+            local i f;
+            i=1;
+            cd '.$this->location.';
+            for folder in $(ls -r releases); do
+                if [[ ! -d releases/${folder} ]]; then
+                    continue;
+                fi
+                if [[ ${i} -gt 5 ]]; then 
+                    rm -rf releases/${folder};
+                fi;
+                ((i++));
+            done;
+        }
+        removeOldReleases;';
+        return $this->connection->execute($cmd);
     }
 }

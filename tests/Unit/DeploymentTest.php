@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Git;
 use App\SshConnection;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -15,12 +16,20 @@ class DeploymentTest extends TestCase
     protected $project;
     protected $server;
     protected $deployment;
+    protected $connection;
+
     public function setup()
     {
         parent::setUp();
         $this->project = factory('App\Project')->create();
         $this->server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         $this->deployment = factory('App\Deployment')->create(['server_id'=>$this->server->id]);
+        $this->connection = new SshConnection([
+            'deploy_host' => 'example.com',
+            'deploy_user' => 'test',
+            'deploy_port' => 22
+        ]);
+        $this->connection->connect();
     }
 
     public function testItHasAnOwner()
@@ -41,26 +50,41 @@ class DeploymentTest extends TestCase
 
     public function testCanCreateSshConnection()
     {
-
-        $cmd = 'echo foo';
-        $connection = new SshConnection([
-            'host' => 'example.com',
-            'user' => 'test',
-            'password' => 'password1',
-            'port' => 22
-        ]);
-        $connection->connect();
-        $response = $connection->execute($cmd);
-        $this->assertEquals($response,'foo');
+        $response = $this->connection->execute('echo foo');
+        $this->assertStringStartsWith('foo', $response['message']);
     }
-    public function testCanSendBashRequest(){}
-    public function testBashRequestSuccessfullyRuns(){}
-    public function testSharedFilesSynced(){}
-    public function testCurrentSymlinksWork(){}
-    public function testFailureDuringSshAccessReportedToOutput(){}
-    public function testFailureDuringSshAccessReportedToSuccessField(){}
-    public function testFailureDuringBashReportedToOutput(){}
-    public function testFailureDuringBashReportedToSuccessField(){}
-    public function testFailureWithPhpReportedToOutput(){}
-    public function testFailureWithPhpReportedToSuccessField(){}
+
+//    public function testUpdateMirrorWorks(){}
+
+    public function testGitCloneWorks()
+    {
+        $git = new Git(
+            $this->connection,
+            $this->server
+        );
+        $deployment_one = factory('App\Deployment')->create([
+            'server_id' => $this->server->id,
+            'commit' => '553c2077f0edc3d5dc5d17262f6aa498e69d6f8e',
+        ]);
+        $git->deploy($deployment_one);
+        $response = $this->connection->execute("cd {$git->getCurrentReleaseLocation()} && git rev-parse HEAD");
+        $this->assertStringStartsWith('553c2077f0edc3d5dc5d17262f6aa498e69d6f8e', $response['message']);
+        $git = new Git(
+            $this->connection,
+            $this->server
+        );
+        $deployment_two = factory('App\Deployment')->create([
+            'server_id' => $this->server->id,
+            'commit' => '7fd1a60b01f91b314f59955a4e4d4e80d8edf11d',
+        ]);
+        $git->deploy($deployment_two);
+        $response = $this->connection->execute("cd {$git->getCurrentReleaseLocation()} && git rev-parse HEAD");
+        $this->assertStringStartsWith('7fd1a60b01f91b314f59955a4e4d4e80d8edf11d', $response['message']);
+    }
+
+//    public function testPreDeploymentCustomCommandsWorks(){}
+//    public function testPostDeploymentCustomCommandsWorks(){}
+//    public function testSharedFilesSynced(){}
+//    public function testCurrentSymlinksWork(){}
+//    public function testPreviousSymlinksWork(){}
 }
