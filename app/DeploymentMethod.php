@@ -22,7 +22,17 @@ class DeploymentMethod extends Model
     protected $connection;
 
     /**
-     * @param $deployment
+     * @var Git
+     */
+    protected $git;
+
+    /**
+     * @var string
+     */
+    protected $location;
+
+    /**
+     * @param Deployment $deployment
      * @return array
      */
     public function execute(Deployment $deployment)
@@ -32,26 +42,30 @@ class DeploymentMethod extends Model
         }
 
         $server = $deployment->server;
-        $location = $server->deploy_location;
-        $git = new Git(
+        $this->location = $server->deploy_location;
+        $this->git = new Git(
             $this->connection,
             $server
         );
 
-        $this->responses = array_merge($this->responses, $git->deploy($deployment));
-
         $this->responses[] = array_merge(
-            ['name'=>'links files from shared folder --> to do'],
-            $this->connection->execute("###### links files from shared ######")
+            ['name'=>'pre-deploy custom commands'],
+            $this->connection->execute($server->pre_deploy_commands)
+        );
+        $this->responses = array_merge($this->responses, $this->git->deploy($deployment));
+        $this->responses[] = array_merge(
+            ['name'=>'links files from shared folder'],
+            $this->linkSharedFiles($server->shared_files)
         );
         $this->responses[] = array_merge(
-            ['name'=>'custom commands --> to do'],
-            $this->connection->execute("###### do their cmds ######")
+            ['name'=>'pre-deploy custom commands'],
+            $this->connection->execute("cd  {$this->git->getCurrentReleaseLocation()} && "
+                . $server->post_deploy_commands)
         );
         $cmd = 'function removeOldReleases() {
             local i f;
             i=1;
-            cd '.$location.';
+            cd '.$this->location.';
             for folder in $(ls -r releases); do
                 if [[ ! -d releases/${folder} ]]; then
                     continue;
@@ -67,10 +81,10 @@ class DeploymentMethod extends Model
             ['name'=>'remove oldest release'],
             $this->connection->execute($cmd)
         );
-        $cmd = "cd $location \
+        $cmd = "cd $this->location \
         && rm previous \
         && mv current previous \
-        && ln -s $location/{$git->getCurrentReleaseLocation()} current";
+        && ln -s {$this->git->getCurrentReleaseLocation()} current";
         $this->responses[] = array_merge(
             ['name'=>'update current and previous links'],
             $this->connection->execute($cmd)
@@ -81,7 +95,7 @@ class DeploymentMethod extends Model
     }
 
     /**
-     * @param $server
+     * @param Server $server
      * @return bool
      */
     protected function getSshConnection($server){
@@ -91,5 +105,24 @@ class DeploymentMethod extends Model
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param string $files
+     * @return array
+     *
+     */
+    protected function linkSharedFiles($files){
+        $command = '';
+        $files = preg_replace('/\s*,\s*/',',',trim($files));
+        $filesArray = explode(',', preg_replace('/\\? /','\ ',$files));
+        for($i=0;$i<count($filesArray);$i++){
+            $fileName = ltrim($filesArray[$i],'/');
+            if(strlen($command)){
+               $command .= ' && ';
+            }
+            $command .= "ln -s {$this->location}/shared/{$fileName} {$this->git->getCurrentReleaseLocation()}/{$fileName}";
+        }
+        return $this->connection->execute($command);
     }
 }

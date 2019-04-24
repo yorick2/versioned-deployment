@@ -143,7 +143,7 @@ EOF;
         $commitRef = $deployment->commit;
 
         # its a bit safer to cd into the location folder and create the release folder from there
-        $cmd = "cd {$this->location} && mkdir -p {$this->getCurrentReleaseLocation()} && mkdir shared && echo folders created";
+        $cmd = "mkdir -p {$this->getCurrentReleaseLocation()} && cd {$this->location} && mkdir shared && echo folders created";
         $this->responses[] = array_merge(['name'=>'make release folder'], $this->connection->execute($cmd));
 
         $cmd = <<<'EOF'
@@ -154,12 +154,15 @@ EOF;
             local releaseFolder="${4}";
             git clone --no-checkout --reference $refFolder $repositoryUrl $releaseFolder &&
             cd $releaseFolder &&
-            git checkout $commitRef &&
-            echo git clone created;
+            git checkout $commitRef;
+            if [ "$(git rev-parse HEAD)" = "$commitRef" ] ; then
+               echo git clone created;
+            else
+               echo git clone failed
+            fi
         }
 EOF;
-        $releaseLocation = "{$this->location}/{$this->getCurrentReleaseLocation()}";
-        $cmd .= "\n deployGit $repository $this->refFolder $commitRef $releaseLocation";
+        $cmd .= "\n deployGit $repository $this->refFolder $commitRef {$this->getCurrentReleaseLocation()}";
         $this->responses[] = array_merge(
             ['name'=>'clone into release folder using the mirror repository'],
             $this->connection->execute($cmd)

@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     protected function addDeploymentData(){
         $projects = factory('App\Project',5)->create();
         $projects->each(function ($project){
-            $servers = factory('App\Server', 5)->create(['project_id'=>$project->id]);
+            $servers = factory('App\Server', 3)->create(['project_id'=>$project->id]);
             $servers->each(function ($server){
                 factory('App\Deployment', 5)->create(['server_id'=>$server->id]);
             });

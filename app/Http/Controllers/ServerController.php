@@ -55,9 +55,9 @@ class ServerController extends Controller
             'deploy_location' => request('deploy_location'),
             'deploy_user' => request('deploy_user'),
             'deploy_branch' => request('deploy_branch'),
-            'shared' => '',
-            'pre_deploy_commands' => '',
-            'post_deploy_commands' => '',
+            'shared_files' => request('shared_files'),
+            'pre_deploy_commands' => request('pre_deploy_commands'),
+            'post_deploy_commands' => request('post_deploy_commands'),
             'notes' => request('notes')
         ]);
         return redirect(route('ServersIndex',compact('project')));
@@ -104,7 +104,7 @@ class ServerController extends Controller
             'deploy_location',
             'deploy_user',
             'deploy_branch',
-            'shared',
+            'shared_files',
             'pre_deploy_commands',
             'post_deploy_commands',
             'notes'

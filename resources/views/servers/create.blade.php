@@ -55,19 +55,20 @@
                                         </select>
                                     </div>
                                 </div>
-{{--                                <div class="shared">--}}
-{{--                                    <label for="shared" class="col-md-2 col-form-label text-md-right">shared</label>--}}
-{{--                                    <textarea name="shared" class="form-control" placeholder="cache,/media,config.php"></textarea>--}}
-{{--                                </div>--}}
-{{--                                <div class="pre_commands">--}}
-{{--                                    <label for="pre_deploy_commands" class="col-md-2 col-form-label text-md-right">commands run before deployment</label>--}}
-{{--                                    <textarea name="pre_deploy_commands" class="form-control" placeholder="touch placeholder.txt"></textarea>--}}
-{{--                                </div>--}}
-{{--                                <div class="post_commands">--}}
-{{--                                    <label for="post_deploy_commands" class="col-md-2 col-form-label text-md-right">Commands run after deployment</label>--}}
-{{--                                    <textarea name="post_deploy_commands" class="form-control" placeholder="rm -r cache/*; rm ./placeholder.txt;"></textarea>--}}
-{{--                                </div>--}}
-                                <div class="notes">
+                                <div class="shared_files form-group">
+                                    <label for="shared_files" class="col-form-label">shared files (e.g. "test/text.txt, /test/test2.txt, pub/test.txt")</label>
+                                    <textarea name="shared_files" class="form-control" placeholder="cache,/media,config.php"></textarea>
+                                </div>
+                                <div class="pre_commands form-group">
+                                    <label for="pre_deploy_commands" class="col-form-label">commands run before deployment (run from the user folder)</label>
+                                    <textarea name="pre_deploy_commands" class="form-control" placeholder="mysqldump --defaults-extra-file=mysql.cnf my_database > backup.sql"></textarea>
+                                </div>
+                                <div class="post_commands form-group">
+                                    <label for="post_deploy_commands" class="col-form-label">commands run after deployment (run from the release folder)</label>
+                                    <textarea name="post_deploy_commands" class="form-control" placeholder="rm -r cache/*; rm ./placeholder.txt;"></textarea>
+                                </div>
+                                <div class="notes form-group">
+                                    <label for="notes" class="col-form-label">notes</label>
                                     <textarea name="notes" class="form-control" placeholder="notes"></textarea>
                                 </div>
                             </div>

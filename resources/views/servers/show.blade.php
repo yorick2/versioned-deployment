@@ -63,7 +63,20 @@
                                         <input readonly name="deploy_branch" class="form-control" type="text" value="{{$server->deploy_branch}}"/>
                                     </div>
                                 </div>
-                                <div class="notes">
+                                <div class="shared_files form-group">
+                                    <label for="shared_files" class="col-form-label">shared files (e.g. "test/text.txt, test/test2.txt, pub/test.txt")</label>
+                                    <textarea readonly name="shared_files" class="form-control" placeholder="cache,/media,config.php">{{$server->shared_files}}</textarea>
+                                </div>
+                                <div class="pre_commands form-group">
+                                    <label for="pre_deploy_commands" class="col-form-label">commands run before deployment (run from the user folder)</label>
+                                    <textarea readonly name="pre_deploy_commands" class="form-control" placeholder="mysqldump --defaults-extra-file=mysql.cnf my_database > backup.sql">{{$server->pre_deploy_commands}}</textarea>
+                                </div>
+                                <div class="post_commands form-group">
+                                    <label for="post_deploy_commands" class="col-form-label">commands run after deployment (run from the release folder)</label>
+                                    <textarea readonly name="post_deploy_commands" class="form-control" placeholder="rm -r cache/*; rm ./placeholder.txt;">{{$server->post_deploy_commands}}</textarea>
+                                </div>
+                                <div class="notes form-group">
+                                    <label for="notes" class="col-form-label">notes</label>
                                     <textarea readonly name="notes" class="form-control" placeholder="notes">{{$server->notes}}</textarea>
                                 </div>
                             </div>
