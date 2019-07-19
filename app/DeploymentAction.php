@@ -47,12 +47,14 @@ class DeploymentAction extends Model
             $this->connection,
             $server
         );
-
         $this->responses[] = array_merge(
             ['name'=>'pre-deploy custom commands'],
-            $this->connection->execute($server->pre_deploy_commands)
+            $this->connection->execute("cd {$this->server->deploy_location}; {$server->pre_deploy_commands}")
         );
-        $this->responses = array_merge($this->responses, $this->git->deploy($deployment));
+        $gitDeploymentResponses = $this->git->deploy($deployment);
+        for($i=0;$i<count($gitDeploymentResponses);$i++){
+            $this->responses[] = $gitDeploymentResponses[$i];
+        }
         $this->responses[] = array_merge(
             ['name'=>'links files from shared folder'],
             $this->linkSharedFiles($server->shared_files)
@@ -66,13 +68,9 @@ class DeploymentAction extends Model
             ['name'=>'remove oldest release'],
             $this->removeOldReleases()
         );
-        $cmd = "cd $this->location \
-        && rm previous \
-        && mv current previous \
-        && ln -s {$this->git->getCurrentReleaseLocation()} current";
         $this->responses[] = array_merge(
             ['name'=>'update current and previous links'],
-            $this->connection->execute($cmd)
+            $this->updateCurrentAndPreviousLinks()
         );
         $this->connection->disconnect();
 
@@ -131,5 +129,18 @@ class DeploymentAction extends Model
         }
         removeOldReleases;';
         return $this->connection->execute($cmd);
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function updateCurrentAndPreviousLinks(){
+        return $this->connection->execute(
+            "cd $this->location \
+            && rm previous \
+            && mv current previous \
+            && ln -s {$this->git->getCurrentReleaseLocation()} current"
+        );
     }
 }

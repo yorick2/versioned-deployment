@@ -69,7 +69,7 @@ class DeploymentTest extends TestCase
         $git->deploy($deployment_one);
         $response = $this->connection->execute("cd {$git->getCurrentReleaseLocation()} && git rev-parse HEAD");
         $this->assertStringStartsWith('553c2077f0edc3d5dc5d17262f6aa498e69d6f8e', $response['message']);
-        $git = new Git(
+        $git_two = new Git(
             $this->connection,
             $this->server
         );
@@ -77,12 +77,19 @@ class DeploymentTest extends TestCase
             'server_id' => $this->server->id,
             'commit' => '7fd1a60b01f91b314f59955a4e4d4e80d8edf11d',
         ]);
-        $git->deploy($deployment_two);
-        $response = $this->connection->execute("cd {$git->getCurrentReleaseLocation()} && git rev-parse HEAD");
+        $git_two->deploy($deployment_two);
+        $response = $this->connection->execute("cd {$git_two->getCurrentReleaseLocation()} && git rev-parse HEAD");
         $this->assertStringStartsWith('7fd1a60b01f91b314f59955a4e4d4e80d8edf11d', $response['message']);
     }
 
-//    public function testPreDeploymentCustomCommandsWorks(){}
+    public function testPreDeploymentCustomCommandsWorks(){
+        $this->assertEquals(1, $this->connection->execute("cd {$this->server->deploy_location}; ".$this->server->pre_deploy_commands)['success']);
+        $this->assertStringStartsWith(
+            '/var/www/placeholder.txt',
+            $this->connection->execute("ls  {$this->server->deploy_location}/placeholder.txt")['message']
+        );
+    }
+
 //    public function testPostDeploymentCustomCommandsWorks(){}
 //    public function testSharedFilesSynced(){}
 //    public function testCurrentSymlinksWork(){}
