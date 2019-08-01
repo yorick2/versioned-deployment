@@ -1,3 +1,5 @@
+[![Software License][ico-license]](LICENSE.md)
+
 # Version deployment proof of concept
 A proof of concept for a deployment system, based on a versioned system.
 
@@ -21,10 +23,15 @@ html-old and create a symlink to the same location to current with the name of t
 remove your html symlink. Then after the next deployment the new release will be used. 
 - If it didnt work remove the html symlink and rename the web folder back to html
 
-## to do:-
-- write error handling
-- write more tests 
-- optimise/tidy code, inc templates
-- git diff between last and new deployment
-- add commands and shared folder use
-- test deployment and dont switch current link
+## Credits
+
+- [Paul Millband][link-author]
+- [All Contributors][link-contributors]
+
+## License
+
+The MIT License (MIT). Please see my [License File](LICENSE.md) for more information.
+
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[link-author]: https://github.com/yorick2
+[link-contributors]: ../../contributors
