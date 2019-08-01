@@ -6,7 +6,7 @@
 ![icon-last-commit-date]
 
 
-![icon-commit-version](releases)
+[![icon-commit-version]](../releases)
 ![icon-latest-tag]
 
 # Version deployment proof of concept
