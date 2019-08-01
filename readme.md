@@ -46,7 +46,7 @@ The MIT License (MIT). Please see my [License File](LICENSE.md) for more informa
 [icon-main-language]: https://img.shields.io/github/languages/top/yorick2/versioned-deployment
 [icon-commit-version]: https://img.shields.io/github/release/yorick2/versioned-deployment
 [icon-latest-tag]: https://img.shields.io/github/tag-pre/yorick2/versioned-deployment
-[icon-php-version]: https://img.shields.io/badge/PHP-7.2-blue
+[icon-php-version]: https://img.shields.io/badge/PHP-7.2.9-blue
 [icon-commit-activity]: https://img.shields.io/github/commit-activity/m/yorick2/versioned-deployment
 [icon-last-commit-date]: https://img.shields.io/github/last-commit/yorick2/versioned-deployment
 [link-author]: https://github.com/yorick2
