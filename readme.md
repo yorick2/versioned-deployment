@@ -1,5 +1,6 @@
 [![Software License][icon-license]](LICENSE.md)
 [![icon-repo-size]](#)
+[![icon-code-size]](#)
 [![icon-main-language]](#)
 [![icon-php-version]](docker/dev/Dockerfile)
 [![icon-commit-activity]](../../commits)
@@ -43,6 +44,7 @@ The MIT License (MIT). Please see my [License File](LICENSE.md) for more informa
 
 [icon-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [icon-repo-size]: https://img.shields.io/github/repo-size/yorick2/versioned-deployment
+[icon-code-size]: https://img.shields.io/github/languages/code-size/yorick2/versioned-deployment
 [icon-main-language]: https://img.shields.io/github/languages/top/yorick2/versioned-deployment
 [icon-commit-version]: https://img.shields.io/github/release/yorick2/versioned-deployment
 [icon-latest-tag]: https://img.shields.io/github/tag-pre/yorick2/versioned-deployment
