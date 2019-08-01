@@ -6,6 +6,7 @@ services:
                 container_name: "php7.2"
                 ports:
                 - "8000:80"
+                - "9000:9000"
                 volumes:
                 - ../..:/var/www/html
                 - .:/code
