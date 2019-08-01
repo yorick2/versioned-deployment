@@ -1,4 +1,13 @@
-[![Software License][ico-license]](LICENSE.md)
+[![Software License][icon-license]](LICENSE.md)
+![icon-repo-size]
+![icon-main-language]
+![icon-php-version]
+![icon-commit-activity]
+![icon-last-commit-date]
+
+
+![icon-commit-version]
+![icon-latest-tag]
 
 # Version deployment proof of concept
 A proof of concept for a deployment system, based on a versioned system.
@@ -32,6 +41,13 @@ remove your html symlink. Then after the next deployment the new release will be
 
 The MIT License (MIT). Please see my [License File](LICENSE.md) for more information.
 
-[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[icon-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[icon-repo-size]: https://img.shields.io/github/repo-size/yorick2/versioned-deployment
+[icon-main-language]: https://img.shields.io/github/languages/top/yorick2/versioned-deployment
+[icon-commit-version]: https://img.shields.io/github/release/yorick2/versioned-deployment
+[icon-latest-tag]: https://img.shields.io/github/tag-pre/yorick2/versioned-deployment
+[icon-php-version]: https://img.shields.io/badge/PHP-7.1.3-blue
+[icon-commit-activity]: https://img.shields.io/github/commit-activity/m/yorick2/versioned-deployment
+[icon-last-commit-date]: https://img.shields.io/github/last-commit/yorick2/versioned-deployment
 [link-author]: https://github.com/yorick2
 [link-contributors]: ../../contributors
