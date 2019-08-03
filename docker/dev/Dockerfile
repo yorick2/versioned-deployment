@@ -27,15 +27,12 @@ RUN docker-php-ext-install \
     tokenizer \
     zip \
     mysqli \
-#    php-ssh2 \
- #   pdo \
     pdo_mysql
 
 RUN docker-php-ext-enable ssh2
 
 # Enable rewrite module
 RUN a2enmod rewrite
-
 
 # Install PECL extensions
 RUN pecl install xdebug
@@ -68,19 +65,13 @@ ONBUILD RUN composer install
 #    --ignore-platform-reqs \
 #    -vvv
 
-ONBUILD RUN php artisan clear-compiled
-ONBUILD RUN php artisan optimize
-ONBUILD RUN php artisan config:cache
-ONBUILD RUN php artisan migrate
-
 # Configure directory permissions for the web server
-ONBUILD RUN chgrp -R www-data storage /var/www/html/bootstrap/cache
-ONBUILD RUN chmod -R ug+rwx storage /var/www/html/bootstrap/cache
-
-ONBUILD RUN chgrp -R www-data storage /var/www/html/storage
-ONBUILD RUN chmod -R ug+rwx storage /var/www/html/storage
+ONBUILD RUN chgrp -R www-data /var/www/html/storage /var/www/html/bootstrap/cache
+ONBUILD RUN chmod -R ug+rwx /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configure data volume
 ONBUILD VOLUME /var/www/html/storage/framework/sessions
 ONBUILD VOLUME /var/www/html/storage/logs
 
+# prepare laravel for use
+CMD /var/www/html/docker/dev/setup_and_seed_test_database.sh; sleep infinity
