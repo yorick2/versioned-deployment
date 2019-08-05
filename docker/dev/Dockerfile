@@ -55,7 +55,7 @@ ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
 
 
-ONBUILD RUN composer install
+#ONBUILD RUN composer install
 #ONBUILD RUN composer install \
 #    --prefer-dist \
 #    --optimize-autoloader \
@@ -74,4 +74,4 @@ ONBUILD VOLUME /var/www/html/storage/framework/sessions
 ONBUILD VOLUME /var/www/html/storage/logs
 
 # prepare laravel for use
-CMD /var/www/html/docker/dev/setup_and_seed_test_database.sh; sleep infinity
+CMD /var/www/html/docker/dev/setup_test_laravel.sh; sleep infinity
