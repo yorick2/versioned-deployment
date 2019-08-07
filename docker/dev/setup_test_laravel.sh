@@ -1,4 +1,5 @@
 #!/bin/bash
+apache2ctl restart
 composer install --no-interaction --working-dir=/var/www/html
 if [[ $(php artisan migrate:status) = *"No migrations found"* ]]; then
     php /var/www/html/artisan clear-compiled
