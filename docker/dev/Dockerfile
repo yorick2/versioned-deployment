@@ -6,6 +6,8 @@ MAINTAINER Name<email>
 
 # install required programs
 RUN apt-get update && apt-get install -y \
+    sudo \
+    wait-for-it \
     curl \
     vim \
     git\
@@ -46,14 +48,13 @@ RUN mkdir -p /home/www-data/.ssh
 RUN ssh-keygen -t rsa -f /home/www-data/.ssh/id_rsa -P ''
 RUN chown www-data:www-data -R /home/www-data
 
-# Install Composer.
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Manually set up the apache environment variables
 ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
 ENV APACHE_PID_FILE /var/run/apache2.pid
-
 
 #ONBUILD RUN composer install
 #ONBUILD RUN composer install \
@@ -65,13 +66,11 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 #    --ignore-platform-reqs \
 #    -vvv
 
-# Configure directory permissions for the web server
-ONBUILD RUN chgrp -R www-data /var/www/html/storage /var/www/html/bootstrap/cache
-ONBUILD RUN chmod -R ug+rwx /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Configure data volume
-ONBUILD VOLUME /var/www/html/storage/framework/sessions
-ONBUILD VOLUME /var/www/html/storage/logs
+# add a user that will be the same as my user so dosnt cause permission issues
+RUN useradd -u 1000 -s /bin/bash docker
+RUN echo docker:password | chpasswd
+RUN usermod -a -G sudo docker
+RUN usermod -a -G www-data docker
 
 # prepare laravel for use
-CMD /var/www/html/docker/dev/setup_test_laravel.sh; sleep infinity
+CMD wait-for-it version_deployment_db:3306 -- /code/setup_test_laravel.sh; sleep infinity

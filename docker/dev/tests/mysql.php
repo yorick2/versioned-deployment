@@ -1,5 +1,5 @@
  <?php
-$servername = "db";
+$servername = "version_deployment_db";
 $username = "devuser";
 $password = "devpass";
 

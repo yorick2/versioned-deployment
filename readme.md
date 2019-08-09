@@ -11,7 +11,7 @@
 [![icon-latest-tag]](../../releases)
 
 # Version deployment proof of concept
-A proof of concept for a deployment system, based on a versioned system.
+An early proof of concept for deployment based on a versioned system.
 
 Symlinks are heavily used, so this needs to be enabled on your web server software (apache/nginx).
 
@@ -33,12 +33,23 @@ html-old and create a symlink to the same location to current with the name of t
 remove your html symlink. Then after the next deployment the new release will be used. 
 - If it didnt work remove the html symlink and rename the web folder back to html
 
-## Credits
+# Setup
+Currently I only have a test/development version of docker working currently and isn't meant to be secure for production use as yet. There is more detail in the readme inside the docker folder.
+
+## Setup for testing/development
+Go to docker/dev and run 'sudo docker-compose up'. This will create a set of three docker containers and the project will be accessible at http://localhost:8080 in your web browser. A set of simple server tests can be found at http://localhost:8080/docker-tests/ and used to ensure the docker instances are working correctly. The test user is test@test.com and the password is password1.
+ 
+## Requirements
+Docker
+Docker-compose
+
+
+# Credits
 
 - [Paul Millband][link-author]
 - [All Contributors][link-contributors]
 
-## License
+ License
 
 The MIT License (MIT). Please see my [License File](LICENSE.md) for more information.
 
