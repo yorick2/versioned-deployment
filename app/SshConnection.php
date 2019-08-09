@@ -58,6 +58,11 @@ class SshConnection extends Model
     public function getPublicKeyLocation(){
         return $this->ssh_auth_pub;
     }
+
+    /**
+     * @param string $cmd
+     * @return array
+     */
     public function execute($cmd)
     {
         if (!($stream = ssh2_exec($this->sshConnection, $cmd))) {

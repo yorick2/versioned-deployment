@@ -31,7 +31,7 @@ class ProjectTest extends TestCase
             'deploy_host' => 'example.com',
             'deploy_location' => '/var/www',
             'deploy_user' => 'root',
-            'deploy_password' => 'password',
+            'deploy_branch' => 'master'
         ]);
         $this->project->addServer([
             'name' => 'bar',
@@ -40,7 +40,7 @@ class ProjectTest extends TestCase
             'deploy_port' => '22',
             'deploy_location' => '/var/www',
             'deploy_user' => 'root',
-            'deploy_password' => 'password',
+            'deploy_branch' => 'master',
             'notes' => 'some notes'
         ]);
         $this->assertCount(2, $this->project->servers);

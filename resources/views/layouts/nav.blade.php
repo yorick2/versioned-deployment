@@ -15,15 +15,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                    </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/home') }}">Home</a>
+                        <a class="nav-link" href="{{ url('/home') }}">{{ __('Home') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/projects') }}">Projects</a>
+                        <a class="nav-link" href="{{ url('/users') }}">{{ __('Users') }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/projects') }}">{{ __('Projects') }}</a>
                     </li>
                 @endguest
             </ul>

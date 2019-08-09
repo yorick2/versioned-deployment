@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Deployment;
-use App\DeploymentMethod;
+use App\DeploymentAction;
 use App\Project;
 use App\Server;
 use App\Git;

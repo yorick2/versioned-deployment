@@ -3,15 +3,24 @@ version: '3'
 services:
         web:
                 build: .
-                container_name: "php7.2"
+                container_name: "version_deployment"
                 ports:
                 - "8000:80"
+#                - "9000:9000" not needed if running phpstorm
+                restart: always
+                depends_on:
+                - "version_deployment_db"
                 volumes:
                 - ../..:/var/www/html
+                - ./.env:/var/www/html/.env
                 - .:/code
                 - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
-        db:
+        version_deployment_db:
                 image: mysql:5.7
+                container_name: "version_deployment_db"
+                restart: always
+                volumes:
+                        - ./db_data:/var/lib/mysql
                 environment:
                         MYSQL_ROOT_PASSWORD: root
                         MYSQL_DATABASE: deploy
@@ -26,6 +35,7 @@ services:
                                 SSH_MASTER_USER: test
                                 SSH_MASTER_PASS: password1
                 container_name: "example.com"
+                restart: always
                 ports:
                 - "8001:80"
                 - "2222:22"

@@ -109,7 +109,6 @@ class manageServersTest extends TestCase
             'deploy_port' => '123',
             'deploy_location' => '/edited',
             'deploy_user' => 'edited_user',
-            'deploy_password' => 'edited-password',
             'notes' => 'I was edited'
         ]);
         $server = $server->fresh(); # refresh from database
@@ -118,7 +117,6 @@ class manageServersTest extends TestCase
         $this->assertEquals('123',$server->deploy_port);
         $this->assertEquals('/edited',$server->deploy_location);
         $this->assertEquals('edited_user',$server->deploy_user);
-        $this->assertEquals('edited-password',$server->deploy_password);
         $this->assertEquals('I was edited',$server->notes);
     }
 

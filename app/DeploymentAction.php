@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeploymentMethod extends Model
+class DeploymentAction extends Model
 {
     /**
      * @var array
@@ -47,12 +47,14 @@ class DeploymentMethod extends Model
             $this->connection,
             $server
         );
-
         $this->responses[] = array_merge(
             ['name'=>'pre-deploy custom commands'],
-            $this->connection->execute($server->pre_deploy_commands)
+            $this->connection->execute("cd {$this->server->deploy_location}; {$server->pre_deploy_commands}")
         );
-        $this->responses = array_merge($this->responses, $this->git->deploy($deployment));
+        $gitDeploymentResponses = $this->git->deploy($deployment);
+        for($i=0;$i<count($gitDeploymentResponses);$i++){
+            $this->responses[] = $gitDeploymentResponses[$i];
+        }
         $this->responses[] = array_merge(
             ['name'=>'links files from shared folder'],
             $this->linkSharedFiles($server->shared_files)
@@ -62,32 +64,13 @@ class DeploymentMethod extends Model
             $this->connection->execute("cd  {$this->git->getCurrentReleaseLocation()} && "
                 . $server->post_deploy_commands)
         );
-        $cmd = 'function removeOldReleases() {
-            local i f;
-            i=1;
-            cd '.$this->location.';
-            for folder in $(ls -r releases); do
-                if [[ ! -d releases/${folder} ]]; then
-                    continue;
-                fi
-                if [[ ${i} -gt 5 ]]; then 
-                    rm -rf releases/${folder};
-                fi;
-                ((i++));
-            done;
-        }
-        removeOldReleases;';
         $this->responses[] = array_merge(
             ['name'=>'remove oldest release'],
-            $this->connection->execute($cmd)
+            $this->removeOldReleases()
         );
-        $cmd = "cd $this->location \
-        && rm previous \
-        && mv current previous \
-        && ln -s {$this->git->getCurrentReleaseLocation()} current";
         $this->responses[] = array_merge(
             ['name'=>'update current and previous links'],
-            $this->connection->execute($cmd)
+            $this->updateCurrentAndPreviousLinks()
         );
         $this->connection->disconnect();
 
@@ -124,5 +107,40 @@ class DeploymentMethod extends Model
             $command .= "ln -s {$this->location}/shared/{$fileName} {$this->git->getCurrentReleaseLocation()}/{$fileName}";
         }
         return $this->connection->execute($command);
+    }
+
+    /**
+     * @return array
+     */
+    protected function removeOldReleases(){
+        $cmd = 'function removeOldReleases() {
+            local i f;
+            i=1;
+            cd '.$this->location.';
+            for folder in $(ls -r releases); do
+                if [[ ! -d releases/${folder} ]]; then
+                    continue;
+                fi
+                if [[ ${i} -gt 5 ]]; then 
+                    rm -rf releases/${folder};
+                fi;
+                ((i++));
+            done;
+        }
+        removeOldReleases;';
+        return $this->connection->execute($cmd);
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function updateCurrentAndPreviousLinks(){
+        return $this->connection->execute(
+            "cd $this->location \
+            && rm previous \
+            && mv current previous \
+            && ln -s {$this->git->getCurrentReleaseLocation()} current"
+        );
     }
 }
