@@ -69,8 +69,9 @@
             @if (Route::has('login'))
                 <div class="top-right links">
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                        <a href="{{ url('/projects') }}">Projects</a>
+                        <a href="{{ url('/home') }}">{{ __('Home') }}</a>
+                        <a href="{{ url('/users') }}">{{ __('Users') }}</a>
+                        <a href="{{ url('/projects') }}">{{ __('Projects') }}</a>
                         <a class="dropdown-item" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">
@@ -78,22 +79,22 @@
                         </a>
                     @else
                         <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
                     @endauth
                 </div>
             @endif
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel
+                    Version Deployment
                 </div>
 
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
+                @if (Route::has('login'))
+                    @auth
+                        <div class="links">
+                            <a href="https://github.com/yorick2/versioned-deployment/blob/testing/LICENSE.md">Licence</a>
+                            <a href="https://github.com/yorick2/versioned-deployment">GitHub</a>
+                        </div>
+                    @endauth
+                @endif
             </div>
         </div>
     </body>
