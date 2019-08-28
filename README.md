@@ -37,7 +37,11 @@ remove your html symlink. Then after the next deployment the new release will be
 Currently I only have a test/development version of docker working currently and isn't meant to be secure for production use as yet. There is more detail in the readme inside the docker folder.
 
 ## Setup for testing/development
-Go to docker/dev and run 'sudo docker-compose up'. This will create a set of three docker containers and the project will be accessible at http://localhost:8080 in your web browser. A set of simple server tests can be found at http://localhost:8080/docker-tests/ and used to ensure the docker instances are working correctly. The test user is test@test.com and the password is password1.
+Go to docker/dev and run 'sudo docker-compose up'. This will create a set of three docker containers and the project will be accessible at http://localhost:8080 in your web browser. A set of simple server tests can be found at http://localhost:8080/docker-tests/ and used to ensure the docker instances are working correctly.
+
+The test user is:
+ user: test@test.com
+ password: password1
  
 ## Requirements
 Docker
