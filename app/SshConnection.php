@@ -30,7 +30,7 @@ class SshConnection extends Model
         return $this->connectWithKey();
     }
 
-    public function connectWithKey()
+    protected function connectWithKey()
     {
         if (!($this->sshConnection = @ssh2_connect($this->getAttribute('deploy_host'), $this->getAttribute('deploy_port')))) {
             return ['name'=>'test ssh connection', 'success'=>0, 'message'=>'Cannot connect to server'];
@@ -40,12 +40,12 @@ class SshConnection extends Model
 //            throw new Exception('Unable to verify server identity!');
 //        }
         if (!@ssh2_auth_pubkey_file($this->sshConnection, $this->getAttribute('deploy_user'), $this->ssh_auth_pub, $this->ssh_auth_priv, $this->ssh_auth_pass)) {
-            return ['name'=>'test ssh connection', 'success'=>0, 'message'=>'Authentication rejected by server'];
+            return ['name'=>'test ssh connection', 'success'=>0, 'message'=>'Authentication with ssh key rejected by server'];
         }
         return ['name'=>'test ssh connection', 'success'=>1, 'message'=>'Connection success'];
     }
 
-    public function connectWithPassword()
+    protected function connectWithPassword()
     {
         if (!($this->sshConnection=@ssh2_connect($this->getAttribute('deploy_host'), $this->getAttribute('deploy_port')))) {
             return ['name'=>'connect with password', 'success'=>0, 'message'=>'Cannot connect to server'];

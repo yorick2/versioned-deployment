@@ -5,16 +5,15 @@ services:
                 build: .
                 container_name: "version_deployment"
                 ports:
-                - "8000:80"
-#                - "9000:9000" not needed if running phpstorm
+                        - "8000:80"
                 restart: always
                 depends_on:
-                - "version_deployment_db"
+                        - "version_deployment_db"
                 volumes:
-                - ../..:/var/www/html
-                - ./.env:/var/www/html/.env
-                - .:/code
-                - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
+                        - ../..:/var/www/html
+                        - ./.env:/var/www/html/.env
+                        - .:/code
+                        - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
         version_deployment_db:
                 image: mysql:5.7
                 container_name: "version_deployment_db"
@@ -37,7 +36,8 @@ services:
                 container_name: "example.com"
                 restart: always
                 ports:
-                - "8001:80"
-                - "2222:22"
+                        - "8001:80"
+                        - "2222:22"
                 volumes:
-                - .:/code
+                        - .:/code
+                        - ./deploy-target/.ssh:/home/test/.ssh
