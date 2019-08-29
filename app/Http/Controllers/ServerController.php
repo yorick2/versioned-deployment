@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\GitLocal;
+use App\GitInteractions\GitLocal;
 use App\Project;
 use App\Server;
 use Illuminate\Http\Request;

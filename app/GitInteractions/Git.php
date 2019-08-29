@@ -1,8 +1,12 @@
 <?php
 
 
-namespace App;
+namespace App\GitInteractions;
 
+
+use App\Deployment;
+use App\Server;
+use App\SshConnection;
 
 class Git
 {
@@ -19,12 +23,7 @@ class Git
     /**
      * @var string
      */
-    protected $serverDate;
-
-    /**
-     * @var string
-     */
-    protected $location;
+    protected $deployLocation;
 
     /**
      * @var string
@@ -42,6 +41,11 @@ class Git
     protected $server;
 
     /**
+     * @var GitMirror
+     */
+    protected $gitMirror;
+
+    /**
      * Git constructor.
      * @param SshConnection $sshConnection
      * @param Server $server
@@ -49,9 +53,10 @@ class Git
     public function __construct(SshConnection $sshConnection, Server $server){
         $this->connection = $sshConnection;
         $this->server = $server;
-        $this->location = $this->server->deploy_location;
-        $this->repository = $this->server->project()->first()->repository;
-        $this->refFolder = $this->location.'/gitcache/'.preg_replace("/[^a-zA-Z0-9]/", "-", $this->repository);
+        $this->deployLocation = $this->server->deploy_location;
+        $this->repository = $this->server->project->repository;
+        $this->refFolder = $this->deployLocation.'/gitcache/'.preg_replace("/[^a-zA-Z0-9]/", "-", $this->repository);
+        $this->gitMirror = new GitMirror($sshConnection, $server);
     }
 
     /**
@@ -59,23 +64,16 @@ class Git
      * @return array
      */
     public function deploy(Deployment $deployment){
-        $this->updateCache();
+        $this->gitMirror->update();
         $this->cloneAndCheckout($deployment);
         return $this->responses;
-    }
-
-    /**
-     * @return string relative location of the current release
-     */
-    public function getCurrentReleaseLocation(){
-        return "{$this->location}/releases/{$this->getServerDate()}";
     }
 
     /**
      * @return array
      */
     public function getGitLog(){
-        $this->updateCache();
+        $this->gitMirror->update();
         $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' {$this->server->deploy_branch}";
         $res = $this->connection->execute($cmd);
         $log = explode("\n", $res['message']);
@@ -89,61 +87,15 @@ class Git
         return $gitLogArray;
     }
 
-    /**
-     * @return array
-     */
-    protected function updateCache(){
-        $this->location = $this->server->deploy_location;
-        $repository = $this->server->project()->first()->repository;
-        $cmd = "cd {$this->location} && mkdir -p $this->refFolder && echo folders created";
-        $this->responses[] = array_merge(
-            $this->connection->execute($cmd),
-            ['name'=>'make mirror (cache) folder']
-        );
-        $cmd = <<<'EOF'
-        function cloneGit() {
-            local repositoryUrl="${1}";
-            local refFolder="${2}";
-            if [[ ! -d "${refFolder}/branches" ]]; then
-                echo cloning git mirror
-                git clone --mirror $repositoryUrl $refFolder 
-            else
-                echo updating git mirror
-                cd ${refFolder} &&
-                git fetch --all 
-            fi 
-            echo mirror creation complete
-        }
-EOF;
-        $cmd .= "\n cloneGit $repository $this->refFolder";
-        $this->responses[] = array_merge(
-            $this->connection->execute($cmd),
-            ['name'=>'clone into mirror (cache) folder']
-        );
-        return $this->responses;
-    }
-
-    protected function getServerDate(){
-        if($this->serverDate){
-            return $this->serverDate;
-        }
-        $this->responses[] = $res = array_merge(
-            ['name'=>'get server date'],
-            $this->connection->execute("date +%F_%H-%M-%S")
-        );
-        $this->serverDate = str_replace_last("\n",'',$res['message']);
-        return $this->serverDate;
-    }
 
     /**
      * @param Deployment $deployment
      */
     protected function cloneAndCheckout(Deployment $deployment){
-        $repository = $this->server->project()->first()->repository;
         $commitRef = $deployment->commit;
 
         # its a bit safer to cd into the location folder and create the release folder from there
-        $cmd = "mkdir -p {$this->getCurrentReleaseLocation()} && cd {$this->location} && mkdir shared && echo folders created";
+        $cmd = "mkdir -p {$deployment->getCurrentReleaseLocation()} && cd {$this->deployLocation} && mkdir shared && echo folders created";
         $this->responses[] = array_merge(['name'=>'make release folder'], $this->connection->execute($cmd));
 
         $cmd = <<<'EOF'
@@ -162,7 +114,7 @@ EOF;
             fi
         }
 EOF;
-        $cmd .= "\n deployGit $repository $this->refFolder $commitRef {$this->getCurrentReleaseLocation()}";
+        $cmd .= "\n deployGit $this->repository $this->refFolder $commitRef {$deployment->getCurrentReleaseLocation()}";
         $this->responses[] = array_merge(
             ['name'=>'clone into release folder using the mirror repository'],
             $this->connection->execute($cmd)

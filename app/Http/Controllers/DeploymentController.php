@@ -6,7 +6,7 @@ use App\Deployment;
 use App\DeploymentAction;
 use App\Project;
 use App\Server;
-use App\Git;
+use App\GitInteractions\Git;
 use App\SshConnection;
 use Illuminate\Http\Request;
 
