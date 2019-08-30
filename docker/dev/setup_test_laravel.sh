@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# add private key to authorised keys on example.com container
+cat /home/www-data/.ssh/id_rsa.pub >> /code/deploy-target/.ssh/authorized_keys
+
+# setup laravel
 apache2ctl restart
 chgrp -R www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R ug+w /var/www/html/storage /var/www/html/bootstrap/cache

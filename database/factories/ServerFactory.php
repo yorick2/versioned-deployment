@@ -18,9 +18,9 @@ $factory->define(App\Server::class, function (Faker $faker) {
        'deploy_location' => '/var/www',
        'deploy_user' => 'test',
        'deploy_branch' => 'master',
-       'shared_files' => 'test/text.txt, test/test2.txt, pub/test.txt',
+       'shared_files' => 'test/testFolder, test/testFolder2, pub/testFolder, test/test.txt, test/test2.txt, pub/test.txt',
        'pre_deploy_commands' => 'touch placeholder.txt',
-       'post_deploy_commands' => 'rm -r cache/*; rm placeholder.txt;',
+       'post_deploy_commands' => 'rm placeholder.txt',
        'notes' => $faker->paragraph
    ];
 });
