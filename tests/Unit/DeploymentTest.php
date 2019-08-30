@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
 use App\DeploymentActions\PostDeploymentCommands;
+use App\DeploymentActions\RemoveOldReleases;
+use App\DeploymentActions\UpdateCurrentAndPreviousLinks;
 use App\GitInteractions\Git;
 use App\GitInteractions\GitMirror;
 use App\SshConnection;
@@ -143,7 +145,12 @@ class DeploymentTest extends TestCase
         );
     }
 
-    public function testSharedFilesLinked(){
+    public function testSharedFoldersLinked(){
+        $sharedFiles = [
+            "test/testFolder",
+            "test/testFolder2",
+            "pub/testFolder"
+        ];
         $git = new Git(
             $this->connection,
             $this->server
@@ -155,82 +162,155 @@ class DeploymentTest extends TestCase
         $releaseLocation = $deployment->getCurrentReleaseLocation();
         $git->deploy($deployment);
         $rootLocation = $this->server->deploy_location;
-        $this->connection->execute(
-            <<<EOF
-            cd $rootLocation &&
-            mkdir -p pub &&
-            rm -rf test &&
-            rm pub/test.txt 
-            mkdir -p shared/test/testFolder &&
-            mkdir -p shared/pub &&
-            touch shared/test/test.txt &&
-            touch shared/test/test2.txt &&
-            touch shared/pub/test.txt
-EOF
-        );
-        // test files/folders dont exist already
-        $this->assertEmpty(
-            $this->connection->execute("ls -d {$releaseLocation}/test/testFolder")['message'],
-            "{$releaseLocation}/test/testfolder exists already"
-        );
-        $this->assertEmpty(
-            $this->connection->execute("ls -d  {$releaseLocation}/test/test.txt")['message'],
-            "{$releaseLocation}/test/test.txt exists already"
-        );
-        $this->assertEmpty(
-            $this->connection->execute("ls -d  {$releaseLocation}/test/test2.txt")['message'],
-            "{$releaseLocation}/test/test2.txt exists already"
-        );
-        $this->assertEmpty(
-            $this->connection->execute("ls -d  {$releaseLocation}/pub/test.txt")['message'],
-            "{$releaseLocation}/pub/test.txt exists already"
-        );
+        $cmd = "cd $rootLocation";
+        // ensure the files are not already linked
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && rm -rf {$releaseLocation}/".preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        }
+        // create shared files
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && mkdir -p shared/{$sharedFiles[$i]}";
+        }
+        $this->connection->execute($cmd);
+        for($i=0;$i<sizeof($sharedFiles);$i++){
+            $this->assertEmpty(
+                $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} exists already. So the test is invalid"
+            );
+        }
         $linkSharedFiles = new LinkSharedFiles($this->connection, $deployment);
         $linkSharedFiles->execute();
-        // test files/folders exist
-        $this->assertStringStartsWith(
-            "{$releaseLocation}/test/testFolder",
-            $this->connection->execute("ls -d {$releaseLocation}/test/testFolder")['message'],
-            "{$releaseLocation}/test/testFolder dose not exist"
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $this->assertStringStartsWith(
+                "{$releaseLocation}/{$sharedFiles[$i]}",
+                $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} dose not exist"
+            );
+        }
+        for($i=0;$i<sizeof($sharedFiles);$i++){
+            $this->assertStringStartsWith(
+                'true',
+                $this->connection->execute(
+                    <<<EOF
+                    if [ -d "{$releaseLocation}/{$sharedFiles[$i]}" ]; then echo true; fi
+EOF
+                )['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} is not a directory"
+            );
+        }
+    }
+
+    public function testSharedFilesLinked(){
+        $sharedFiles = [
+            "/test/test.txt",
+            "/test/test2.txt",
+            "/pub/test.txt"
+        ];
+        $git = new Git(
+            $this->connection,
+            $this->server
         );
-        $this->assertStringStartsWith(
-            "{$releaseLocation}/test/test.txt",
-            $this->connection->execute("ls -d  {$releaseLocation}/test/test.txt")['message'],
-            "{$releaseLocation}/test/test.txt dose not exist"
+        $deployment = factory('App\Deployment')->create([
+            'server_id' => $this->server->id,
+            'commit' => '553c2077f0edc3d5dc5d17262f6aa498e69d6f8e',
+        ]);
+        $releaseLocation = $deployment->getCurrentReleaseLocation();
+        $git->deploy($deployment);
+        $rootLocation = $this->server->deploy_location;
+        $cmd = "cd $rootLocation";
+        // ensure the files are not already linked
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && rm -f {$releaseLocation}/".preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        }
+        // create shared files
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= ' && mkdir -p shared/'.preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        }
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && touch shared/{$sharedFiles[$i]}";
+        }
+        $this->connection->execute($cmd);
+        for($i=0;$i<sizeof($sharedFiles);$i++){
+            $this->assertEmpty(
+                $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} exists already. So the test is invalid"
+            );
+        }
+        $linkSharedFiles = new LinkSharedFiles($this->connection, $deployment);
+        $linkSharedFiles->execute();
+        for($i=0;$i<sizeof($sharedFiles);$i++) {
+            $this->assertStringStartsWith(
+                "{$releaseLocation}/{$sharedFiles[$i]}",
+                $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} dose not exist"
+            );
+        }
+        for($i=0;$i<sizeof($sharedFiles);$i++){
+            $this->assertStringStartsWith(
+                'true',
+                $this->connection->execute(
+                    <<<EOF
+                    if [ -f "{$releaseLocation}/$sharedFiles[$i]" ]; then echo true; fi
+EOF
+                )['message'],
+                "{$releaseLocation}/{$sharedFiles[$i]} is not a file"
+            );
+        }
+    }
+
+    public function testCurrentAndPreviousSymlinksWork(){
+        $git = new Git(
+            $this->connection,
+            $this->server
         );
-        $this->assertStringStartsWith(
-            "{$releaseLocation}/test/test2.txt",
-            $this->connection->execute("ls -d  {$releaseLocation}/test/test2.txt")['message'],
-            "{$releaseLocation}/test/test2.txt dose not exist"
+        $deployment = factory('App\Deployment')->create([
+            'server_id' => $this->server->id,
+            'commit' => '553c2077f0edc3d5dc5d17262f6aa498e69d6f8e',
+        ]);
+        $releaseLocation = $deployment->getCurrentReleaseLocation();
+        $rootLocation = $this->server->deploy_location;
+        $this->assertStringStartsNotWith(
+            $releaseLocation,
+            $this->connection->execute("cd -P {$rootLocation}/current && pwd")['message'],
+            "current symlink already goes to our release already"
         );
+        $git->deploy($deployment);
+        $linkSharedFiles = new UpdateCurrentAndPreviousLinks($this->connection, $deployment);
+        $linkSharedFiles->execute();
         $this->assertStringStartsWith(
-            "{$releaseLocation}/pub/test.txt",
-            $this->connection->execute("ls -d  {$releaseLocation}/pub/test.txt")['message'],
-            "{$releaseLocation}/pub/test.txt dose not exist"
-        );
-        $this->assertStringStartsWith(
-            'true',
-            $this->connection->execute('if [ -d "'.$releaseLocation.'/test/testFolder" ]; then echo true; fi')['message'],
-            "{$releaseLocation}/test/testFolder is not a directory"
-        );
-        $this->assertStringStartsWith(
-            'true',
-            $this->connection->execute('if [ -f "'.$releaseLocation.'/test/test.txt" ]; then echo true; fi')['message'],
-            "{$releaseLocation}/test/test.txt is not a file"
-        );
-        $this->assertStringStartsWith(
-            'true',
-            $this->connection->execute('if [ -f "'.$releaseLocation.'/test/test2.txt" ]; then echo true; fi')['message'],
-            "{$releaseLocation}/test/test2.txt is not a file"
-        );
-        $this->assertStringStartsWith(
-            'true',
-            $this->connection->execute('if [ -f "'.$releaseLocation.'/pub/test.txt" ]; then echo true; fi')['message'],
-            "{$releaseLocation}/pub/test.txt is not a file"
+            $releaseLocation,
+            $this->connection->execute("cd -P {$rootLocation}/current && pwd")['message'],
+            "current symlink doesn't go to our release"
         );
     }
 
-//    public function testCurrentSymlinksWork(){}
-//    public function testPreviousSymlinksWork(){}
-//    public function testOldReleasesAreRemoved(){}
+
+    public function testOldReleasesAreRemoved(){
+        $deployment = null;
+        $rootLocation = $this->server->deploy_location;
+        $git = new Git(
+            $this->connection,
+            $this->server
+        );
+        for($i=0; $i<7; $i++){
+            $deployment = factory('App\Deployment')->create([
+                'server_id' => $this->server->id,
+                'commit' => '553c2077f0edc3d5dc5d17262f6aa498e69d6f8e',
+            ]);
+            $git->deploy($deployment);
+            $releaseLocation = $deployment->getCurrentReleaseLocation();
+            $this->assertStringStartsWith(
+                $releaseLocation,
+                $this->connection->execute("ls -d $releaseLocation")['message'],
+                "$releaseLocation not created. The test isn't valid failed"
+            );
+        }
+        $removeOldReleases = new RemoveOldReleases($this->connection, $deployment);
+        $removeOldReleases->execute();
+        $this->assertStringStartsWith(
+            5,
+            $this->connection->execute("ls -1 {$rootLocation}/releases | egrep  -c '' ")['message'],
+            "old directories are not being deleted"
+        );
+    }
 }

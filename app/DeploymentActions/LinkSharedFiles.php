@@ -40,8 +40,8 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentAct
             $command .= (strlen($command)) ? ' && ' : '' ;
             $command .= "mkdir -p {$this->deployment->getCurrentReleaseLocation()}/{$fileName}";
         }
+        $command .= '&& echo "folders created successfully"';
         $response = $this->connection->execute($command);
-        $response['message'] = (strlen($response['message'])) ? '' : 'folders created successfully' ;
         return $response;
     }
 
@@ -57,8 +57,8 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentAct
             $command .= (strlen($command)) ? ' && ' : '' ;
             $command .= "ln -s {$location}/shared/{$fileName} {$this->deployment->getCurrentReleaseLocation()}/{$fileName}";
         }
+        $command .= '&& echo "files linked successfully"';
         $response = $this->connection->execute($command);
-        $response['message'] = (strlen($response['message'])) ? '' : 'files linked successfully' ;
         return $response;
     }
 

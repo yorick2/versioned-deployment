@@ -46,7 +46,7 @@
                                                 <h1 class="h5">{{$output->name}}</h1>
                                             @endif
                                             <div class="form-group row">
-                                                @if ($deployment->success  === 1)
+                                                @if ($output->success  === 1)
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">success &#9989; :</label>
                                                 @else
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">failed &#10060; :</label>

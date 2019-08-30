@@ -69,7 +69,7 @@ class GitMirror
             $this->connection->execute($cmd),
             ['name'=>'make mirror (cache) folder']
         );
-        $cmd = <<<'EOF'
+        $cmd = <<<'BASH'
         function cloneGit() {
             local repositoryUrl="${1}";
             local refFolder="${2}";
@@ -83,11 +83,11 @@ class GitMirror
             fi 
             echo mirror creation complete
         }        
-EOF;
+BASH;
         $cmd .= "\n cloneGit $repository $this->refFolder";
         $this->responses[] = array_merge(
             $this->connection->execute($cmd),
-            ['name'=>'clone into mirror (cache) folder']
+            ['name'=>'update git mirror (cache) folder']
         );
         return $this->responses;
     }
@@ -97,7 +97,7 @@ EOF;
      */
     public function clear(){
         $success = 0;
-        $cmd = <<<'EOF'
+        $cmd = <<<'BASH'
         function clearGitMirrorFolder() {
             local refFolder="${1}";
             cd $refFolder
@@ -105,7 +105,7 @@ EOF;
                 rm -rf ./*
             fi
         }
-EOF;
+BASH;
         $cmd .= "\n clearGitMirrorFolder $this->refFolder";
         $response_one = $this->connection->execute($cmd);
         if($response_one == true){

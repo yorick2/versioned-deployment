@@ -5,14 +5,14 @@ $port = 22;
 $user = 'test';
 $password = 'password1';
 
-$str = <<<EOF
+$str = <<<HTML
 attempting to connect using:<br/>
 host: $host<br/>
 port: $port<br/>
 user: $user<br/>
 password: $password<br/>
 <br/><br/>
-EOF;
+HTML;
 echo $str;
 
 

@@ -40,6 +40,7 @@ class RemoveOldReleases extends DeploymentActionsAbstract implements DeploymentA
                 fi;
                 ((i++));
             done;
+            echo 
         }
         removeOldReleases;';
         return $this->connection->execute($cmd);

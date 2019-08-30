@@ -6,7 +6,7 @@ $user = 'test';
 $ssh_auth_public = '/home/www-data/.ssh/id_rsa.pub';
 $ssh_auth_private = '/home/www-data/.ssh/id_rsa';
 
-$str = <<<EOF
+$str = <<<HTML
 attempting to connect using:<br/>
 host: $host<br/>
 port: $port<br/>
@@ -14,7 +14,7 @@ user: $user<br/>
 private key: $ssh_auth_private<br/>
 public key: $ssh_auth_public<br/>
 <br/><br/>
-EOF;
+HTML;
 echo $str;
 
 

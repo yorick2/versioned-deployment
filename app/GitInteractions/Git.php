@@ -65,6 +65,7 @@ class Git
      */
     public function deploy(Deployment $deployment){
         $this->gitMirror->update();
+        $this->makeReleaseAndSharedDirectories($deployment);
         $this->cloneAndCheckout($deployment);
         return $this->responses;
     }
@@ -91,14 +92,25 @@ class Git
     /**
      * @param Deployment $deployment
      */
+    protected function makeReleaseAndSharedDirectories(Deployment $deployment){
+        # its a bit safer to cd into the location folder and create the release folder from there
+        $cmd = <<<BASH
+        mkdir -p {$deployment->getCurrentReleaseLocation()} && 
+        cd {$this->deployLocation} &&
+        mkdir -p shared &&
+        echo folders created
+BASH;
+        $res = $this->connection->execute($cmd);
+        $res['success'] = (strpos($res['message'],'folders created') === false) ? 0 : 1;
+        $this->responses[] = array_merge(['name'=>'make release folder'], $res);
+    }
+
+    /**
+     * @param Deployment $deployment
+     */
     protected function cloneAndCheckout(Deployment $deployment){
         $commitRef = $deployment->commit;
-
-        # its a bit safer to cd into the location folder and create the release folder from there
-        $cmd = "mkdir -p {$deployment->getCurrentReleaseLocation()} && cd {$this->deployLocation} && mkdir shared && echo folders created";
-        $this->responses[] = array_merge(['name'=>'make release folder'], $this->connection->execute($cmd));
-
-        $cmd = <<<'EOF'
+        $cmd = <<<'BASH'
         function deployGit() {
             local repositoryUrl="${1}";
             local refFolder="${2}";
@@ -113,11 +125,13 @@ class Git
                echo git clone failed
             fi
         }
-EOF;
+BASH;
         $cmd .= "\n deployGit $this->repository $this->refFolder $commitRef {$deployment->getCurrentReleaseLocation()}";
+        $res = $this->connection->execute($cmd);
+        $res['success'] = (strpos($res['message'],'git clone created') === false) ? 0 : 1;
         $this->responses[] = array_merge(
             ['name'=>'clone into release folder using the mirror repository'],
-            $this->connection->execute($cmd)
+            $res
         );
     }
 }
