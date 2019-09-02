@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\DeploymentActions\DeploymentActionInterface;
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
 use App\DeploymentActions\PostDeploymentCommands;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeploymentAction extends Model
 {
+//    use \Illuminate\Database\Eloquent\Concerns\HasAttributes;
+
     /**
      * @var array
      */
@@ -20,7 +23,7 @@ class DeploymentAction extends Model
     /**
      * @var array
      */
-    protected $responses = [];
+    protected $responses;
 
     /**
      * @var SshConnection
@@ -32,10 +35,11 @@ class DeploymentAction extends Model
      */
     protected $git;
 
-    /**
-     * @var string
-     */
-    protected $location;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
 
     /**
      * @param Deployment $deployment
@@ -43,49 +47,49 @@ class DeploymentAction extends Model
      */
     public function execute(Deployment $deployment)
     {
+        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         if($this->getSshConnection($deployment->server) === false) {
-            return ['output' => $this->responses, 'success' => false];
+            return $this->responses;
         }
-        $server = $deployment->server;
-        $this->location = $server->deploy_location;
-        $PreDeploymentCommands = new PreDeploymentCommands($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'pre-deploy custom commands'],
-            $PreDeploymentCommands->execute()
+        $this->runCommand(
+            new PreDeploymentCommands($this->connection,$deployment),
+            'pre-deploy custom commands'
         );
-        $this->git = new Git(
-            $this->connection,
-            $server
+        $this->runGit($deployment);
+        $this->runCommand(
+            new LinkSharedFiles($this->connection,$deployment),
+            'links files from shared folder'
         );
-        $gitDeploymentResponses = $this->git->deploy($deployment);
-        for($i=0;$i<count($gitDeploymentResponses);$i++){
-            $this->responses[] = $gitDeploymentResponses[$i];
-        }
-        $linkSharedFiles = new LinkSharedFiles($this->connection,$deployment);
-        $linkSharedFilesResponses = $linkSharedFiles->execute();
-        for($i=0;$i<count($linkSharedFilesResponses);$i++) {
-            $this->responses[] = array_merge(
-                ['name' => 'links files from shared folder'],
-                $linkSharedFilesResponses[$i]
-            );
-        }
-        $PostDeploymentCommands = new PostDeploymentCommands($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'post-deploy custom commands'],
-            $PostDeploymentCommands->execute()
+        $this->runCommand(
+            new PostDeploymentCommands($this->connection,$deployment),
+            'post-deploy custom commands'
         );
-        $removeOldReleases = new RemoveOldReleases($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'remove oldest release'],
-            $removeOldReleases->execute()
+        $this->runCommand(
+            new RemoveOldReleases($this->connection,$deployment),
+            'remove oldest release'
         );
-        $updateCurrentAndPreviousLinks = new UpdateCurrentAndPreviousLinks($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'update current and previous links'],
-            $updateCurrentAndPreviousLinks->execute()
+        $this->runCommand(
+            new UpdateCurrentAndPreviousLinks($this->connection,$deployment),
+            'update current and previous links'
         );
+        $this->responses->success = true;
+        $this->responses->collection->each(function($item){
+            if(!$item->success){
+                $this->responses->success = 0;
+            }
+        });
         $this->connection->disconnect();
-        return ['output' => $this->responses, 'success' => true];
+        return $this->responses;
+    }
+
+    /**
+     * @param DeploymentActionInterface $class
+     * @param string $name
+     */
+    protected function runCommand($class, $name){
+        $response = $class->execute();
+//        $response->setAttribute('name',$name);
+//        $this->responses->push($response);
     }
 
     /**
@@ -94,10 +98,19 @@ class DeploymentAction extends Model
      */
     protected function getSshConnection($server){
         $this->connection = new SshConnection($server->toArray());
-        $this->responses[] = $this->connection->connect();
-        if ($this->responses[0]['success'] == 0 ) {
+        $response = $this->connection->connect();
+        $this->responses->push($response);
+        if ($response->success == 0 ) {
             return false;
         }
         return true;
+    }
+
+    protected function runGit($deployment){
+        $this->git = new Git(
+            $this->connection,
+            $deployment->server
+        );
+        $this->git->deploy($deployment);
     }
 }

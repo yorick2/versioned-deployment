@@ -9,6 +9,7 @@
 namespace App\GitInteractions;
 
 
+use App\DeploymentMessageCollectionSingleton;
 use App\Server;
 use App\SshConnection;
 
@@ -59,16 +60,18 @@ class GitMirror
 
     /**
      * make the git reference folder to use as a mirror. So the whole repo isn't downloaded each time. Reducing download time
-     * @return array
      */
     public function update(){
+//        $this->responses = collect(new DeploymentMessage());
+        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         $this->deployLocation = $this->server->deploy_location;
         $repository = $this->server->project->repository;
         $cmd = "cd {$this->deployLocation} && mkdir -p {$this->refFolder} && echo folders created";
-        $this->responses[] = array_merge(
-            $this->connection->execute($cmd),
-            ['name'=>'make mirror (cache) folder']
-        );
+
+        $response = $this->connection->execute($cmd)
+            ->setAttribute('name', 'make mirror (cache) folder');
+        $this->responses->push($response);
+
         $cmd = <<<'BASH'
         function cloneGit() {
             local repositoryUrl="${1}";
@@ -85,17 +88,17 @@ class GitMirror
         }        
 BASH;
         $cmd .= "\n cloneGit $repository $this->refFolder";
-        $this->responses[] = array_merge(
-            $this->connection->execute($cmd),
-            ['name'=>'update git mirror (cache) folder']
-        );
-        return $this->responses;
+        $response = $this->connection->execute($cmd)
+            ->setAttribute('name', 'update git mirror (cache) folder');
+        $this->responses->push($response);
     }
 
     /**
      * @return array
      */
     public function clear(){
+//        $this->responses = collect(new DeploymentMessage());
+        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         $success = 0;
         $cmd = <<<'BASH'
         function clearGitMirrorFolder() {
@@ -107,15 +110,14 @@ BASH;
         }
 BASH;
         $cmd .= "\n clearGitMirrorFolder $this->refFolder";
-        $response_one = $this->connection->execute($cmd);
-        if($response_one == true){
+        $response = $this->connection->execute($cmd);
+        if($response->success == true){
             $response_two = $this->connection->execute('ls '.$this->refFolder);
-            $success = (strlen($response_two['message'])) ? 0 : 1 ;
+            $success = (strlen($response_two->message)) ? 0 : 1 ;
         }
-        $this->responses[] = [
-            $success,
-            ['name'=>'clone into mirror (cache) folder']
-        ];
+        $response->success = $success;
+        $response->name = 'clone into mirror (cache) folder';
+        $this->responses->push($response);
         return $this->responses;
     }
 }

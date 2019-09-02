@@ -12,5 +12,6 @@ namespace App\DeploymentActions;
 interface DeploymentActionInterface
 {
     public function __construct(\App\SshConnection $connection,\App\Deployment $deployment);
+
     public function execute();
 }

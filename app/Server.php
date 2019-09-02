@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\Null_;
 
 class Server extends Model
 {
@@ -101,8 +100,8 @@ class Server extends Model
             $deploymentAction = new DeploymentAction();
             $response = $deploymentAction->execute($deployment);
             $deployment->update([
-                'success' => $response['success'],
-                'output' => json_encode($response['output'])
+                'success' => $response->success,
+                'output' => $response->collection->toJson()
             ]);
         } catch (Exception $e) {
             $deployment->update([
