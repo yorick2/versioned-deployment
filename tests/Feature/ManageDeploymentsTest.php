@@ -36,7 +36,7 @@ class manageDeploymentsTest extends TestCase
     public function testAnUnAuthenticatedUserCanNotRunADeployment()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post(route('CreateDeployment',['project'=> $this->project,'server'=> $this->server]), []);
+        $this->post(route('SubmitCreateDeployment',['project'=> $this->project,'server'=> $this->server]), []);
     }
 
 }

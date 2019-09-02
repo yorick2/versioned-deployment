@@ -52,6 +52,7 @@ class DeploymentController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param Project $project
      * @param Server $server
      * @return \Illuminate\Http\RedirectResponse
      */
