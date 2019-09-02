@@ -22,7 +22,8 @@ class ServerController extends Controller
      */
     public function index(Project $project)
     {
-        return view('servers.index',compact('project'));
+        $serversCollection = $project->servers()->paginate(10);
+        return view('servers.index',compact('serversCollection','project'));
     }
 
     /**

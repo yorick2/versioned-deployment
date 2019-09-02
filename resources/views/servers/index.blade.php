@@ -15,17 +15,16 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            @foreach($project->servers as $server)
+                            @foreach($serversCollection as $server)
                                 <li class="list-group-item">
                                     <a href="{{$server->path()}}">{{$server->name}}</a>
                                 </li>
                             @endforeach
                         </ul>
+                        {!! $serversCollection->render() !!}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 @endsection
-
-

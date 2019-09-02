@@ -21,6 +21,7 @@
                                 </li>
                             @endforeach
                         </ul>
+                        {!! $projectsCollection->render() !!}
                     </div>
                 </div>
             </div>

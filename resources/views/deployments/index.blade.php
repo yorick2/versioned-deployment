@@ -15,7 +15,7 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group list-group-flush">
-                            @foreach($server->deployments as $deployment)
+                            @foreach($deploymentsCollection as $deployment)
                                 <li class="list-group-item">
                                     <a href="{{$deployment->path()}}">
                                         <div class="created">{{$deployment->created_at}} ( {{$deployment->created_at->diffForHumans()}} )</div>
@@ -29,6 +29,7 @@
                                 </li>
                             @endforeach
                         </ul>
+                        {!! $deploymentsCollection->render() !!}
                     </div>
                 </div>
             </div>
