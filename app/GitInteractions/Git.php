@@ -64,7 +64,6 @@ class Git
      * @param Deployment $deployment
      */
     public function deploy(Deployment $deployment){
-//        $this->responses = collect(new DeploymentMessage());
         $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         $this->gitMirror->update();
         $this->makeReleaseAndSharedDirectories($deployment);

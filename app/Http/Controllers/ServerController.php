@@ -33,8 +33,7 @@ class ServerController extends Controller
      */
     public function create(Project $project)
     {
-        $gitLocalModel = new GitLocal();
-        $gitBranches  = $gitLocalModel->getGitBranches($project->repository);
+        $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
         return view('servers.create',compact('project','gitBranches'));
     }
 
@@ -83,8 +82,7 @@ class ServerController extends Controller
      */
     public function edit(Project $project, Server $server)
     {
-        $gitLocalModel = new GitLocal();
-        $gitBranches  = $gitLocalModel->getGitBranches($project->repository);
+        $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
         return view('servers.edit', compact('project', 'server','gitBranches'));
     }
 

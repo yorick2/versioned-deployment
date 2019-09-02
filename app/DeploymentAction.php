@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\DeploymentActions\DeploymentActionInterface;
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
 use App\DeploymentActions\PostDeploymentCommands;
@@ -13,7 +12,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeploymentAction extends Model
 {
-//    use \Illuminate\Database\Eloquent\Concerns\HasAttributes;
 
     /**
      * @var array
@@ -40,7 +38,6 @@ class DeploymentAction extends Model
         parent::__construct($attributes);
     }
 
-
     /**
      * @param Deployment $deployment
      * @return array
@@ -51,27 +48,12 @@ class DeploymentAction extends Model
         if($this->getSshConnection($deployment->server) === false) {
             return $this->responses;
         }
-        $this->runCommand(
-            new PreDeploymentCommands($this->connection,$deployment),
-            'pre-deploy custom commands'
-        );
-        $this->runGit($deployment);
-        $this->runCommand(
-            new LinkSharedFiles($this->connection,$deployment),
-            'links files from shared folder'
-        );
-        $this->runCommand(
-            new PostDeploymentCommands($this->connection,$deployment),
-            'post-deploy custom commands'
-        );
-        $this->runCommand(
-            new RemoveOldReleases($this->connection,$deployment),
-            'remove oldest release'
-        );
-        $this->runCommand(
-            new UpdateCurrentAndPreviousLinks($this->connection,$deployment),
-            'update current and previous links'
-        );
+        (new PreDeploymentCommands($this->connection,$deployment))->execute();
+        (new Git($this->connection, $deployment->server))->deploy($deployment);
+        (new LinkSharedFiles($this->connection,$deployment))->execute();
+        (new PostDeploymentCommands($this->connection,$deployment))->execute();
+        (new RemoveOldReleases($this->connection,$deployment))->execute();
+        (new UpdateCurrentAndPreviousLinks($this->connection,$deployment))->execute();
         $this->responses->success = true;
         $this->responses->collection->each(function($item){
             if(!$item->success){
@@ -82,15 +64,6 @@ class DeploymentAction extends Model
         return $this->responses;
     }
 
-    /**
-     * @param DeploymentActionInterface $class
-     * @param string $name
-     */
-    protected function runCommand($class, $name){
-        $response = $class->execute();
-//        $response->setAttribute('name',$name);
-//        $this->responses->push($response);
-    }
 
     /**
      * @param Server $server
@@ -106,11 +79,4 @@ class DeploymentAction extends Model
         return true;
     }
 
-    protected function runGit($deployment){
-        $this->git = new Git(
-            $this->connection,
-            $deployment->server
-        );
-        $this->git->deploy($deployment);
-    }
 }

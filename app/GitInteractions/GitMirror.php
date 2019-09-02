@@ -62,7 +62,6 @@ class GitMirror
      * make the git reference folder to use as a mirror. So the whole repo isn't downloaded each time. Reducing download time
      */
     public function update(){
-//        $this->responses = collect(new DeploymentMessage());
         $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         $this->deployLocation = $this->server->deploy_location;
         $repository = $this->server->project->repository;
