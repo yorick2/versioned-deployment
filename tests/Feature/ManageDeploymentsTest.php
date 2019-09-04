@@ -24,18 +24,19 @@ class manageDeploymentsTest extends TestCase
         $this->user = factory('App\User')->create();
     }
 
-//    public function testAnAuthenticatedUserCanCreateAServerForAProject()
-//    {
-//        $this->be($this->user);
-//        $unsavedServer = factory('App\Server')->make();
-//        $this->post(route('SubmitCreateServer',['project'=> $unsavedServer->project]), $unsavedServer->toArray());
-//        $this->get(route('ServersIndex',['project'=> $unsavedServer->project]) )->assertSee($unsavedServer->name);
-//    }
-//
-//    public function testAnUnAuthenticatedUserCanNotCreateAServerForAProject()
-//    {
-//        $this->expectException('Illuminate\Auth\AuthenticationException');
-//        $this->post(route('SubmitCreateServer',['project'=> $this->project]), []);
-//    }
+    public function testAnAuthenticatedUserCanRunADeployment()
+    {
+        $this->be($this->user);
+        $unsavedDeployment = factory('App\Deployment')->make(['server_id'=>$this->server->id]);
+        $this->post(route('SubmitCreateDeployment',['project'=> $this->project,'server'=> $this->server]), $unsavedDeployment->toArray());
+        $this->get(route('DeploymentsIndex',['project'=> $this->project,'server'=> $this->server]) )
+            ->assertSee($unsavedDeployment->name);
+    }
+
+    public function testAnUnAuthenticatedUserCanNotRunADeployment()
+    {
+        $this->expectException('Illuminate\Auth\AuthenticationException');
+        $this->post(route('SubmitCreateDeployment',['project'=> $this->project,'server'=> $this->server]), []);
+    }
 
 }
