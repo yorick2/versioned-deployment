@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests;
+namespace Tests\phpunit\Unit;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    use \Tests\phpunit\CreatesApplication;
 }

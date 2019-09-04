@@ -1,0 +1,27 @@
+actor: Tester
+coverage:
+    enabled: true
+    include:
+        - app/Http/*
+        - app/Post.php
+        - app/User.php
+    exclude:
+        - app/Http/routes.php
+        - app/Http/Kernel.php
+paths:
+    tests: tests/codeception
+    log: tests/codeception/_output
+    data: tests/codeception/_data
+    helpers: tests/codeception/_support
+    bootstrap: _bootstrap.php
+settings:
+    colors: true
+    memory_limit: 1024M
+modules:
+    enabled:
+    - Laravel5:
+          part: ORM
+          environment_file: .env.testing
+          cleanup: true
+          run_database_migrations: true
+          run_database_seeder: false

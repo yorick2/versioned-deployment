@@ -4,16 +4,16 @@ namespace Tests\Feature;
 
 use App\Project;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Tests\TestCase;
+use Tests\phpunit\TestCase;
 
-class manageProjectsTest extends TestCase
+class ManageProjectsTest extends TestCase
 {
     use DatabaseMigrations;
 
     protected $project;
     protected $user;
 
-    public function setup()
+    public function setup() : void
     {
         parent::setUp();
         $this->project = factory('App\Project')->create();

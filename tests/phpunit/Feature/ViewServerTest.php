@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Tests\phpunit\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ViewServerTest extends TestCase
@@ -13,7 +13,7 @@ class ViewServerTest extends TestCase
     protected $server;
     protected $user;
 
-    public function setup()
+    public function setup() : void
     {
         parent::setUp();
         $this->project = factory('App\Project')->create();

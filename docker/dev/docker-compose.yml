@@ -12,6 +12,7 @@ services:
                 volumes:
                         - ../..:/var/www/html
                         - ./.env:/var/www/html/.env
+                        - ./.env.testing:/var/www/html/.env.testing
                         - .:/code
                         - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
         version_deployment_db:
@@ -19,7 +20,7 @@ services:
                 container_name: "version_deployment_db"
                 restart: always
                 volumes:
-                        - ./db_data:/var/lib/mysql
+                        - ./db_data/main_db:/var/lib/mysql
                 environment:
                         MYSQL_ROOT_PASSWORD: root
                         MYSQL_DATABASE: deploy
@@ -27,6 +28,19 @@ services:
                         MYSQL_PASSWORD: devpass
                 ports:
                         - "9906:3306"
+        version_deployment_unit_test_db:
+                image: mysql:5.7
+                container_name: "version_deployment_unit_test_db"
+                restart: always
+                volumes:
+                        - ./db_data/unit_test_db:/var/lib/mysql
+                environment:
+                        MYSQL_ROOT_PASSWORD: root
+                        MYSQL_DATABASE: deploy_unit_test
+                        MYSQL_USER: devuser
+                        MYSQL_PASSWORD: devpass
+                ports:
+                        - "9907:3306"
         example.com:
                 build:
                         context: ./deploy-target

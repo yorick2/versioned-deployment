@@ -6,7 +6,7 @@
  * Time: 17:30
  */
 
-namespace Tests\ReflectionClasses;
+namespace Tests\phpunit\ReflectionClasses;
 
 
 use App\GitInteractions\GitMirror;

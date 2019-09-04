@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\phpunit\Unit;
 
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
@@ -10,8 +10,8 @@ use App\DeploymentActions\UpdateCurrentAndPreviousLinks;
 use App\GitInteractions\Git;
 use App\GitInteractions\GitMirror;
 use App\SshConnection;
-use Tests\ReflectionClasses\ReflectedGitMirrorClass;
-use Tests\TestCase;
+use Tests\phpunit\ReflectionClasses\ReflectedGitMirrorClass;
+use Tests\phpunit\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,17 +25,13 @@ class DeploymentTest extends TestCase
     protected $deployment;
     protected $connection;
 
-    public function setup()
+    public function setup() : void
     {
         parent::setUp();
         $this->project = factory('App\Project')->create();
         $this->server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         $this->deployment = factory('App\Deployment')->create(['server_id'=>$this->server->id]);
-        $this->connection = new SshConnection([
-            'deploy_host' => 'example.com',
-            'deploy_user' => 'test',
-            'deploy_port' => 22
-        ]);
+        $this->connection = new SshConnection($this->server->toArray());
         $this->connection->connect();
     }
 
