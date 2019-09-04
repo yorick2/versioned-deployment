@@ -2,13 +2,14 @@
 
 namespace App\DeploymentActions;
 
+use App\DeploymentMessageCollectionSingleton;
+
 class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements DeploymentActionInterface
 {
-    /**
-     * @return array
-     */
+
     public function execute()
     {
+        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
         $cmd = <<<BASH
         function UpdateCurrentAndPreviousLinks(){
             cd {$this->deployment->server->deploy_location} &&
@@ -23,7 +24,8 @@ class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements
         UpdateCurrentAndPreviousLinks
 BASH;
         $response = $this->connection->execute($cmd);
-        $response['success'] = (strpos($response['message'],'current link updated successfully') === false) ? 0 : 1;
-        return $response;
+        $response->name = 'Update Current and Previous Links';
+        $response->success = (strpos($response->message,'current link updated successfully') === false) ? 0 : 1;
+        $responseCollection->push($response);
     }
 }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DeploymentAction extends Model
 {
+
     /**
      * @var array
      */
@@ -20,7 +21,7 @@ class DeploymentAction extends Model
     /**
      * @var array
      */
-    protected $responses = [];
+    protected $responses;
 
     /**
      * @var SshConnection
@@ -32,10 +33,10 @@ class DeploymentAction extends Model
      */
     protected $git;
 
-    /**
-     * @var string
-     */
-    protected $location;
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     /**
      * @param Deployment $deployment
@@ -43,50 +44,26 @@ class DeploymentAction extends Model
      */
     public function execute(Deployment $deployment)
     {
+        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         if($this->getSshConnection($deployment->server) === false) {
-            return ['output' => $this->responses, 'success' => false];
+            return $this->responses;
         }
-        $server = $deployment->server;
-        $this->location = $server->deploy_location;
-        $PreDeploymentCommands = new PreDeploymentCommands($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'pre-deploy custom commands'],
-            $PreDeploymentCommands->execute()
-        );
-        $this->git = new Git(
-            $this->connection,
-            $server
-        );
-        $gitDeploymentResponses = $this->git->deploy($deployment);
-        for($i=0;$i<count($gitDeploymentResponses);$i++){
-            $this->responses[] = $gitDeploymentResponses[$i];
-        }
-        $linkSharedFiles = new LinkSharedFiles($this->connection,$deployment);
-        $linkSharedFilesResponses = $linkSharedFiles->execute();
-        for($i=0;$i<count($linkSharedFilesResponses);$i++) {
-            $this->responses[] = array_merge(
-                ['name' => 'links files from shared folder'],
-                $linkSharedFilesResponses[$i]
-            );
-        }
-        $PostDeploymentCommands = new PostDeploymentCommands($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'post-deploy custom commands'],
-            $PostDeploymentCommands->execute()
-        );
-        $removeOldReleases = new RemoveOldReleases($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'remove oldest release'],
-            $removeOldReleases->execute()
-        );
-        $updateCurrentAndPreviousLinks = new UpdateCurrentAndPreviousLinks($this->connection,$deployment);
-        $this->responses[] = array_merge(
-            ['name'=>'update current and previous links'],
-            $updateCurrentAndPreviousLinks->execute()
-        );
+        (new PreDeploymentCommands($this->connection,$deployment))->execute();
+        (new Git($this->connection, $deployment->server))->deploy($deployment);
+        (new LinkSharedFiles($this->connection,$deployment))->execute();
+        (new PostDeploymentCommands($this->connection,$deployment))->execute();
+        (new RemoveOldReleases($this->connection,$deployment))->execute();
+        (new UpdateCurrentAndPreviousLinks($this->connection,$deployment))->execute();
+        $this->responses->success = true;
+        $this->responses->collection->each(function($item){
+            if(!$item->success){
+                $this->responses->success = 0;
+            }
+        });
         $this->connection->disconnect();
-        return ['output' => $this->responses, 'success' => true];
+        return $this->responses;
     }
+
 
     /**
      * @param Server $server
@@ -94,10 +71,12 @@ class DeploymentAction extends Model
      */
     protected function getSshConnection($server){
         $this->connection = new SshConnection($server->toArray());
-        $this->responses[] = $this->connection->connect();
-        if ($this->responses[0]['success'] == 0 ) {
+        $response = $this->connection->connect();
+        $this->responses->push($response);
+        if ($response->success == 0 ) {
             return false;
         }
         return true;
     }
+
 }

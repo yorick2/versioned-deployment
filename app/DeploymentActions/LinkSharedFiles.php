@@ -2,32 +2,32 @@
 
 namespace App\DeploymentActions;
 
+use App\DeploymentMessage;
+use App\DeploymentMessageCollectionSingleton;
+
 class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentActionInterface
 {
     protected $server;
 
-    /**
-     * @return array
-     */
     public function execute()
     {
+        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
         $this->server = $this->deployment->server;
         $files = $this->server->shared_files;
 
         // remove white space
         $files = preg_replace('/\s*,\s*/',',',trim($files));
         // replace \ with /
-        $filesArray = explode(',', preg_replace('/\\+ /','/ ',$files));
+        $files = preg_replace('/\\+ /','/ ',$files);
         // replace multiple / with single /
         $filesArray = explode(',', preg_replace('/\/+ /','/ ',$files));
-        $response[] = $this->createFolders($filesArray);
-        $response[] = $this->linkFiles($filesArray);
-        return $response;
+        $responseCollection->push($this->createFolders($filesArray));
+        $responseCollection->push($this->linkFiles($filesArray));
     }
 
     /**
      * @param array $files
-     * @return array
+     * @return DeploymentMessage
      */
     protected function createFolders(array $files){
         $command = '';
@@ -41,13 +41,12 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentAct
             $command .= "mkdir -p {$this->deployment->getCurrentReleaseLocation()}/{$fileName}";
         }
         $command .= '&& echo "folders created successfully"';
-        $response = $this->connection->execute($command);
-        return $response;
+        return $this->connection->execute($command);
     }
 
     /**
      * @param array $files
-     * @return array
+     * @return DeploymentMessage
      */
     protected function linkFiles(array $files){
         $location = $this->server->deploy_location;
@@ -58,8 +57,7 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentAct
             $command .= "ln -s {$location}/shared/{$fileName} {$this->deployment->getCurrentReleaseLocation()}/{$fileName}";
         }
         $command .= '&& echo "files linked successfully"';
-        $response = $this->connection->execute($command);
-        return $response;
+        return $this->connection->execute($command);
     }
 
 }

@@ -5,6 +5,7 @@ namespace App\GitInteractions;
 
 
 use App\Deployment;
+use App\DeploymentMessageCollectionSingleton;
 use App\Server;
 use App\SshConnection;
 
@@ -61,13 +62,12 @@ class Git
 
     /**
      * @param Deployment $deployment
-     * @return array
      */
     public function deploy(Deployment $deployment){
+        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
         $this->gitMirror->update();
         $this->makeReleaseAndSharedDirectories($deployment);
         $this->cloneAndCheckout($deployment);
-        return $this->responses;
     }
 
     /**
@@ -100,9 +100,10 @@ class Git
         mkdir -p shared &&
         echo folders created
 BASH;
-        $res = $this->connection->execute($cmd);
-        $res['success'] = (strpos($res['message'],'folders created') === false) ? 0 : 1;
-        $this->responses[] = array_merge(['name'=>'make release folder'], $res);
+        $response = $this->connection->execute($cmd);
+        $response->name = 'make release folder';
+        $response->success = (strpos($response->message,'folders created') === false) ? 0 : 1;
+        $this->responses->push($response);
     }
 
     /**
@@ -127,11 +128,10 @@ BASH;
         }
 BASH;
         $cmd .= "\n deployGit $this->repository $this->refFolder $commitRef {$deployment->getCurrentReleaseLocation()}";
-        $res = $this->connection->execute($cmd);
-        $res['success'] = (strpos($res['message'],'git clone created') === false) ? 0 : 1;
-        $this->responses[] = array_merge(
-            ['name'=>'clone into release folder using the mirror repository'],
-            $res
-        );
+        $response = $this->connection->execute($cmd);
+        $response->name = 'clone into release folder using the mirror repository';
+        $response->success = (strpos($response->message,'git clone created') === false) ? 0 : 1;
+        $this->responses->push($response);
+
     }
 }

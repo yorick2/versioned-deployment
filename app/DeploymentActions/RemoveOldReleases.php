@@ -2,6 +2,8 @@
 
 namespace App\DeploymentActions;
 
+use App\DeploymentMessageCollectionSingleton;
+
 class RemoveOldReleases extends DeploymentActionsAbstract implements DeploymentActionInterface
 {
     private $qtyOfReleases = 5;
@@ -22,11 +24,9 @@ class RemoveOldReleases extends DeploymentActionsAbstract implements DeploymentA
         $this->qtyOfReleases = $qtyOfReleases;
     }
 
-    /**
-     * @return array
-     */
     public function execute()
     {
+        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
         $cmd = 'function removeOldReleases() {
             local i f;
             i=1;
@@ -43,6 +43,6 @@ class RemoveOldReleases extends DeploymentActionsAbstract implements DeploymentA
             echo 
         }
         removeOldReleases;';
-        return $this->connection->execute($cmd);
+        $responseCollection->push($this->connection->execute($cmd)->setAttribute('name','Remove Old Releases'));
     }
 }

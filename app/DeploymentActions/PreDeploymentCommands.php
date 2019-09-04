@@ -2,14 +2,15 @@
 
 namespace App\DeploymentActions;
 
+use App\DeploymentMessageCollectionSingleton;
+
 class PreDeploymentCommands extends DeploymentActionsAbstract implements DeploymentActionInterface
 {
-    /**
-     * @return array
-     */
     public function execute()
     {
+        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
         $cmd = "cd {$this->deployment->getCurrentReleaseLocation()} && {$this->deployment->server->pre_deploy_commands}";
-        return $this->connection->execute($cmd);
+        $response = $this->connection->execute($cmd);
+        $responseCollection->push($response->setAttribute('name','pre-deploy custom commands'));
     }
 }
