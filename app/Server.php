@@ -31,7 +31,8 @@ class Server extends Model
      */
     public function deployments()
     {
-        return $this->hasMany(Deployment::class);
+        return $this->hasMany(Deployment::class)
+            ->orderBy('created_at', 'desc');
     }
 
     /**
