@@ -47,6 +47,7 @@ RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/php.ini
 RUN mkdir -p /home/www-data/.ssh
 RUN ssh-keygen -t rsa -f /home/www-data/.ssh/id_rsa -P ''
 RUN chown www-data:www-data -R /home/www-data
+RUN chmod g+r -R /home/www-data
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
