@@ -25,9 +25,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $publicKey = file_get_contents(
-            (new SshConnection())->getPublicKeyLocation()
-        );
+        $publicKey = (new SshConnection())->getPublicKey();
         return view('home', compact('publicKey'));
     }
 }

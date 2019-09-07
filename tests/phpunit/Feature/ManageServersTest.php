@@ -32,7 +32,7 @@ class ManageServersTest extends TestCase
     {
         $this->be($this->user);
         $project1 = factory('App\Project')->create();
-        $server = factory('App\Server')->create([
+        $server = factory('App\Server')->make([
             'name' => 'foo bar',
             'slug' => 'foo-bar',
             'project_id' => $project1->id

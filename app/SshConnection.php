@@ -56,7 +56,21 @@ class SshConnection extends Model
         }
     }
 
-    public function getPublicKeyLocation(){
+    /**
+     * @return string
+     */
+    public function getPublicKey(){
+        $string = file_get_contents($this->getPublicKeyLocation());
+        if($string){
+            return $string;
+        }
+        return '';
+    }
+
+    /**
+     * @return string
+     */
+    private function getPublicKeyLocation(){
         return $this->ssh_auth_pub;
     }
 

@@ -19,9 +19,13 @@ settings:
     memory_limit: 1024M
 modules:
     enabled:
-    - Laravel5:
-          part: ORM
-          environment_file: .env.testing
-          cleanup: true
-          run_database_migrations: true
-          run_database_seeder: false
+    - Laravel5: # module found at vendor/codeception/codeception/src/Codeception/Module/Laravel5.php
+        part: ORM
+          #environment_file: .env.testing # I am only doing acceptance tests that need a server to run so this isn't used
+        run_database_migrations: true
+#        run_database_seeder: true
+#          database_seeder_class: DatabaseSeeder
+        cleanup: false
+        disable_exception_handling: true
+    - Asserts
+

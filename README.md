@@ -48,7 +48,7 @@ RunPhpunitTest.php and RunCodeceptionTest.php files in the docker-tests folder r
 
 ## Codeception tests
 All code tests can be run on the version_deployment docker container using the command: "vendor/bin/codecept run -n"
-This Will run the phpunit and codeception tests
+This Will run the phpunit and codeception tests. The acceptance tests are run on the main database, so should not be run on production.
 
 ## phpunit
 The tests are run inside the docker container, using phpunit inside the vendor/bin folder. Phpunit is uses an sqlite database in memory for its tests. However, ensure the database has been migrated creating all the tables and has been seeded with data. If there is still an issue use "php artisan config:clear; php artisan cache:clear; composer dump-autoload"
