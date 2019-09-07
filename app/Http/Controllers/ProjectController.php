@@ -18,7 +18,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projectsCollection = Project::latest()->paginate(10);
+        $projectsCollection = Project::latest()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('projects.index',compact('projectsCollection'));
     }
 

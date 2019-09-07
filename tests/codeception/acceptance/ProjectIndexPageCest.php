@@ -28,4 +28,5 @@ class ProjectIndexPageCest extends standardPageTests
             $I->seeLink($project->name,$project->slug);
         }
     }
+
 }

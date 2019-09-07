@@ -9,11 +9,13 @@ class DeploymentIndexPageCest extends standardPageTests
 
     protected $page;
     protected $server;
+    protected $project;
 
     public function _before(AcceptanceTester $I)
     {
         $this->server = Server::select()->first();
-        $this->page = route('DeploymentsIndex', [$this->server->project,$this->server], false);
+        $this->project = $this->server->project;
+        $this->page = route('DeploymentsIndex', [$this->project,$this->server], false);
     }
 
     public function see_deployments_list(AcceptanceTester $I)
@@ -30,5 +32,17 @@ class DeploymentIndexPageCest extends standardPageTests
         foreach($deploymentCollection as $deployment){
             $I->seeLink($deployment->created_at,$deployment->id);
         }
+    }
+
+    public function see_Server_link(AcceptanceTester $I)
+    {
+        $I->wantTo('see a link for my server');
+        $I->loginAsTheTestUser();
+        $I->amOnPage($this->page);
+        $I->seeCurrentUrlEquals($this->page);
+        $I->seeLink(
+            $this->server->name,
+            route('ShowServer', [$this->project, $this->server], false)
+        );
     }
 }

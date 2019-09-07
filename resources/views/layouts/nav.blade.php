@@ -17,13 +17,13 @@
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/home') }}">{{ __('Home') }}</a>
+                        <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/users') }}">{{ __('Users') }}</a>
+                        <a class="nav-link" href="{{ route('users') }}">{{ __('Users') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/projects') }}">{{ __('Projects') }}</a>
+                        <a class="nav-link" href="{{ route('Projects') }}">{{ __('Projects') }}</a>
                     </li>
                 @endguest
             </ul>
@@ -49,21 +49,4 @@
         </div>
     </div>
 </nav >
-@auth
-    <div class="container">
-        <ol class="breadcrumb bg-transparent pl-0 pr-0 mb-0">
-            <?php $segments = ''; ?>
-            <?php $i=0; ?>
-            <?php $requestSegments = Request::segments(); ?>
-            <?php if(count($requestSegments) > 1) : ?>
-                <?php foreach($requestSegments as $segment): ?>
-                    <?php $segments .= '/'.$segment; ?>
-                    <li>
-                        <a class="text-dark" href="{{ url($segments) }}"><?php if($i!=0): ?>&nbsp;&gt;&nbsp;<?php endif; ?>{{$segment}}</a>
-                    </li>
-                    <?php $i++; ?>
-                <?php endforeach ?>
-            <?php endif; ?>
-        </ol>
-    </div>
-@endauth
+@include('layouts.breadcrumb')

@@ -24,7 +24,9 @@ class DeploymentController extends Controller
      */
     public function index(Project $project, Server $server)
     {
-        $deploymentsCollection =$server->deployments()->paginate(10);
+        $deploymentsCollection =$server->deployments()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('deployments.index',compact('deploymentsCollection','project','server'));
     }
 

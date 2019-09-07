@@ -22,7 +22,9 @@ class ServerController extends Controller
      */
     public function index(Project $project)
     {
-        $serversCollection = $project->servers()->paginate(10);
+        $serversCollection = $project->servers()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('servers.index',compact('serversCollection','project'));
     }
 

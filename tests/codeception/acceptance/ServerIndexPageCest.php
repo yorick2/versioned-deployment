@@ -31,4 +31,16 @@ class ServerIndexPageCest extends standardPageTests
             $I->seeLink($server->name,$server->slug);
         }
     }
+
+    public function see_project_link(AcceptanceTester $I)
+    {
+        $I->wantTo('see a link for my project');
+        $I->loginAsTheTestUser();
+        $I->amOnPage($this->page);
+        $I->seeCurrentUrlEquals($this->page);
+        $I->seeLink(
+            $this->project->name,
+            route('ShowProject', [$this->project], false)
+        );
+    }
 }

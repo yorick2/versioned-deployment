@@ -26,7 +26,7 @@ $argv[] = '--fail-fast';
 $argv[] = '--no-interaction';
 $argv[] = '--no-ansi';
 $argv[] = 'acceptance';
-$argv[] = 'HomepageCest.php:^i_can_go_to_login$';
+$argv[] = 'DeploymentDeployPageCest.php';
 
 
 

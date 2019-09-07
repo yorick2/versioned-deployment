@@ -26,4 +26,16 @@ class ProjectShowPageCest extends standardPageTests
             $I->grabValueFrom('#created_at')
         );
     }
+
+    public function see_a_link_to_the_projects_list(AcceptanceTester $I)
+    {
+        $I->wantTo('see a link for the projects list');
+        $I->loginAsTheTestUser();
+        $I->amOnPage($this->page);
+        $I->seeCurrentUrlEquals($this->page);
+        $I->seeLink(
+            'projects',
+            route('Projects', [], false)
+        );
+    }
 }
