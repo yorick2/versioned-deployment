@@ -47,7 +47,7 @@ class ProjectController extends Controller
             'repository' => request('repository'),
             'notes' => request('notes')
         ]);
-        return redirect(route('Projects'));
+        return redirect(route('ProjectsIndex'));
     }
 
     /**
@@ -96,7 +96,7 @@ class ProjectController extends Controller
             'repository',
             'notes'
         ]));
-        return redirect(route('Projects'));
+        return redirect(route('ProjectsIndex'));
     }
 
     /**
@@ -122,6 +122,6 @@ class ProjectController extends Controller
         if(request()->wantsJson()) {
             return response([],204);
         }
-        return redirect(route('Projects'));
+        return redirect(route('ProjectsIndex'));
     }
 }

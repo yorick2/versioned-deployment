@@ -22,7 +22,7 @@ class ProjectDeletePageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $I->seeLink(
             'projects',
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
     }
 
@@ -46,7 +46,7 @@ class ProjectDeletePageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $I->checkOption('[name=confirm]');
         $I->click('button[type=submit]');
-        $I->seeCurrentUrlEquals(route('Projects', [], false));
+        $I->seeCurrentUrlEquals(route('ProjectsIndex', [], false));
         $I->dontSeeRecord('projects', ['id' => $this->project->id], 'we dont want to delete the item without confirmation');
     }
 }

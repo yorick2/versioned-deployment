@@ -23,7 +23,7 @@
                         <a class="nav-link" href="{{ route('users') }}">{{ __('Users') }}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('Projects') }}">{{ __('Projects') }}</a>
+                        <a class="nav-link" href="{{ route('ProjectsIndex') }}">{{ __('Projects') }}</a>
                     </li>
                 @endguest
             </ul>

@@ -40,7 +40,7 @@ class ManageProjectsTest extends TestCase
         $this->be($this->user);
         $unsavedProject = factory('App\Project')->make();
         $this->post(route('SubmitCreateProject'), $unsavedProject->toArray());
-        $this->get(route('Projects'))->assertSee($unsavedProject->name);
+        $this->get(route('ProjectsIndex'))->assertSee($unsavedProject->name);
     }
 
     public function testAnUnAuthenticatedUserCanNotCreateAProject()

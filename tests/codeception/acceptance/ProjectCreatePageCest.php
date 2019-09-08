@@ -23,7 +23,7 @@ class ProjectCreatePageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $I->seeLink(
             'projects',
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
     }
 
@@ -53,7 +53,7 @@ class ProjectCreatePageCest extends standardPageTests
         }
         $I->click('button[type=submit]');
         $I->seeCurrentUrlEquals(
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
         $loadedProject = Project::select()
             ->orderBy('created_at', 'desc')

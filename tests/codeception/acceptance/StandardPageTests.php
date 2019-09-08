@@ -19,7 +19,7 @@ abstract class standardPageTests
             'Version Deployment' => '',
             'Home' => route('home',[],false),
             'Users' => route('users',[],false),
-            'Projects' => route('Projects',[],false),
+            'Projects' => route('ProjectsIndex',[],false),
             'Logout' => route('logout',[],false),
         ];
         $keys = array_keys($links);

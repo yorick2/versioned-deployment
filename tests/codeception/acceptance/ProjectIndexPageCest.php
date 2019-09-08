@@ -10,7 +10,7 @@ class ProjectIndexPageCest extends standardPageTests
 
     public function _before(AcceptanceTester $I)
     {
-        $this->page = route('Projects', [], false);
+        $this->page = route('ProjectsIndex', [], false);
     }
 
     public function see_projects_list(AcceptanceTester $I)

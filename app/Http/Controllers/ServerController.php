@@ -141,11 +141,12 @@ class ServerController extends Controller
             ]);
             throw $error;
         }
+        $returnRoute = route('ServersIndex',compact('project')); // this is loaded here as deletion can mess with the route
         $server->deployments()->delete();
         $server->delete();
         if(request()->wantsJson()) {
             return response([],204);
         }
-        return redirect(route('ServersIndex',compact('project')));
+        return redirect($returnRoute);
     }
 }

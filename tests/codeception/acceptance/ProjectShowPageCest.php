@@ -35,7 +35,7 @@ class ProjectShowPageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $I->seeLink(
             'projects',
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
     }
 }

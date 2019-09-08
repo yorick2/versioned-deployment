@@ -18,7 +18,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/projects', 'ProjectController@index')->name('Projects');
+Route::get('/projects', 'ProjectController@index')->name('ProjectsIndex');
 Route::get('/projects/create', 'ProjectController@create')->name('CreateProject');
 Route::get('/projects/{project}', 'ProjectController@show')->name('ShowProject');
 Route::get('/projects/{project}/edit', 'ProjectController@edit')->name('EditProject');

@@ -28,7 +28,7 @@ class ProjectEditPageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $I->seeLink(
             'projects',
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
     }
 
@@ -48,7 +48,7 @@ class ProjectEditPageCest extends standardPageTests
         }
         $I->click('button[type=submit]');
         $I->seeCurrentUrlEquals(
-            route('Projects', [], false)
+            route('ProjectsIndex', [], false)
         );
         $newData['id'] = $this->project->id;
         $I->seeRecord('projects',$newData);
