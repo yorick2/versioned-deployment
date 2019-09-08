@@ -36,10 +36,6 @@ port: 3306
 test the connection
 php /code/test_mysql_connection.php
 
-# tests
-## phpunit
-The tests are run inside the docker container, using phpunit inside the vendor/bin folder. Phpunit is uses an sqlite database in memory for its tests. However, ensure the database has beeen migrated creating all the tables and has been seeded with data. If there is still an issue use "php artisan config:clear"
-
 ## connection tests
 Included are some test files to test that php, apache and mysql connections work. The list of tests are accessable from. The port can be found in the docker-compose.yml for the example. 
 http://localhost:<<port>>/docker-tests/

@@ -22,7 +22,9 @@ class ServerController extends Controller
      */
     public function index(Project $project)
     {
-        $serversCollection = $project->servers()->paginate(10);
+        $serversCollection = $project->servers()
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('servers.index',compact('serversCollection','project'));
     }
 
@@ -77,7 +79,7 @@ class ServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Project$project
+     * @param Project $project
      * @param Server $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -85,6 +87,18 @@ class ServerController extends Controller
     {
         $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
         return view('servers.edit', compact('project', 'server','gitBranches'));
+    }
+
+    /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param Project $project
+     * @param Server $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function delete(Project $project, Server $server)
+    {
+        return view('servers.delete', compact('project', 'server'));
     }
 
     /**
@@ -121,11 +135,18 @@ class ServerController extends Controller
      */
     public function destroy(Project $project, Server $server)
     {
+        if(!request('confirm')){
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'confirm' => ['Please confirm you want to delete'],
+            ]);
+            throw $error;
+        }
+        $returnRoute = route('ServersIndex',compact('project')); // this is loaded here as deletion can mess with the route
         $server->deployments()->delete();
         $server->delete();
         if(request()->wantsJson()) {
             return response([],204);
         }
-        return redirect(route('ServersIndex',compact('project')));
+        return redirect($returnRoute);
     }
 }

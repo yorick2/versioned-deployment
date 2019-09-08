@@ -68,10 +68,11 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 #    -vvv
 
 # add a user that will be the same as my user so dosnt cause permission issues
-RUN useradd -u 1000 -s /bin/bash docker
+RUN useradd -u 1000 -s -m /bin/bash docker
 RUN echo docker:password | chpasswd
 RUN usermod -a -G sudo docker
 RUN usermod -a -G www-data docker
+RUN usermod -a -G docker www-data
 
 # prepare laravel for use
 CMD wait-for-it version_deployment_db:3306 -- /code/setup_test_laravel.sh; sleep infinity

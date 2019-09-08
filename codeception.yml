@@ -1,0 +1,31 @@
+actor: Tester
+coverage:
+    enabled: true
+    include:
+        - app/Http/*
+        - app/Post.php
+        - app/User.php
+    exclude:
+        - app/Http/routes.php
+        - app/Http/Kernel.php
+paths:
+    tests: tests/codeception
+    log: tests/codeception/_output
+    data: tests/codeception/_data
+    helpers: tests/codeception/_support
+    bootstrap: _bootstrap.php
+settings:
+    colors: true
+    memory_limit: 1024M
+modules:
+    enabled:
+    - Laravel5: # module found at vendor/codeception/codeception/src/Codeception/Module/Laravel5.php
+        part: ORM
+          #environment_file: .env.testing # I am only doing acceptance tests that need a server to run so this isn't used
+        run_database_migrations: true
+#        run_database_seeder: true
+#          database_seeder_class: DatabaseSeeder
+        cleanup: false
+        disable_exception_handling: true
+    - Asserts
+
