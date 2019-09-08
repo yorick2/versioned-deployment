@@ -20,6 +20,12 @@ class ProjectEditPageCest extends standardPageTests
         $this->page = route( 'EditProject', [$this->project],false);
     }
 
+    public function _after(AcceptanceTester $I)
+    {
+        $this->project->owner->delete();
+        $this->project->delete();
+    }
+
     public function see_a_link_to_the_projects_list(AcceptanceTester $I)
     {
         $I->wantTo('see a link for the projects list');

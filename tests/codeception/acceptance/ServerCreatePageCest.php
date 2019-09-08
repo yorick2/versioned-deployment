@@ -1,6 +1,5 @@
 <?php
 
-use App\Project;
 use App\Server;
 use tests\codeception\acceptance\standardPageTests;
 
@@ -13,9 +12,16 @@ class ServerCreatePageCest extends standardPageTests
 
     public function _before(AcceptanceTester $I)
     {
-        $this->project = Project::select()->first();
+        $this->project = $this->server = factory('App\Project')->create();
         $this->server = factory('App\Server')->make(['project_id' => $this->project->id, 'deploy_branch' => 'test']);
         $this->page = route('CreateServer', [$this->project], false);
+    }
+
+    public function _after(AcceptanceTester $I)
+    {
+        $this->server->owner->delete();
+        $this->project->owner->delete();
+        $this->project->delete();
     }
 
     public function see_a_link_to_the_servers_list(AcceptanceTester $I)

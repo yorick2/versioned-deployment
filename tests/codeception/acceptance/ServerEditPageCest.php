@@ -30,6 +30,12 @@ class ServerEditPageCest extends standardPageTests
         $this->page = route( 'EditServer', [$this->project, $this->server],false);
     }
 
+    public function _after(AcceptanceTester $I)
+    {
+        $this->server->owner->delete();
+        $this->project->delete();
+    }
+
     public function see_a_link_to_the_servers_list(AcceptanceTester $I)
     {
         $I->wantTo('see a link for the servers list');

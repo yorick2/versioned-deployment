@@ -1,7 +1,5 @@
 <?php
 
-use App\Project;
-use App\Server;
 use tests\codeception\acceptance\standardPageTests;
 
 class ServerIndexPageCest extends standardPageTests
@@ -9,11 +7,22 @@ class ServerIndexPageCest extends standardPageTests
 
     protected $page;
     protected $project;
+    protected $serverCollection;
 
     public function _before(AcceptanceTester $I)
     {
-        $this->project = Project::select()->first();
+        $this->project = factory('App\Project')->create();
+        $this->serverCollection = factory('App\Server', 5)
+            ->create(['project_id' => $this->project->id]);
         $this->page = route('ServersIndex', [$this->project], false);
+    }
+
+    public function _after(AcceptanceTester $I)
+    {
+        foreach($this->serverCollection as $server) {
+            $server->owner->delete();
+        }
+        $this->project->delete();
     }
 
     public function see_servers_list(AcceptanceTester $I)
@@ -22,12 +31,7 @@ class ServerIndexPageCest extends standardPageTests
         $I->loginAsTheTestUser();
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
-        $serverCollection = Server::where('project_id',$this->project->id)
-            ->orderBy('id','desc')
-            ->take(5)
-            ->get();
-        $I->assertTrue($serverCollection->count()>0);
-        foreach($serverCollection as $server){
+        foreach($this->serverCollection as $server){
             $I->seeLink($server->name,$server->slug);
         }
     }

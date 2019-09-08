@@ -12,9 +12,15 @@ class ServerShowPageCest extends standardPageTests
 
     public function _before(AcceptanceTester $I)
     {
-        $this->server = Server::select()->first();
+        $this->server = factory('App\Server')->create();
         $this->project = $this->server->project;
         $this->page = route( 'ShowServer', [$this->project, $this->server],false);
+    }
+
+    public function _after(AcceptanceTester $I)
+    {
+        $this->server->owner->delete();
+        $this->project->delete();
     }
 
     public function see_server_details(AcceptanceTester $I)

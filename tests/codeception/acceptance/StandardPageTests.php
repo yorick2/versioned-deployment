@@ -2,6 +2,13 @@
 
 namespace tests\codeception\acceptance;
 
+/**
+ * Class standardPageTests
+ * @package tests\codeception\acceptance
+ *
+ * I use some custom actions defined in my module tests/codeception/_support/Helper/Acceptance.php
+ *
+ */
 abstract class standardPageTests
 {
     /**

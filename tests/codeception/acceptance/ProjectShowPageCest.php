@@ -11,8 +11,14 @@ class ProjectShowPageCest extends standardPageTests
 
     public function _before(AcceptanceTester $I)
     {
-        $this->project = Project::select()->first();
+        $this->project = factory('App\Project')->create();
         $this->page = route( 'ShowProject', [$this->project],false);
+    }
+
+    public function _after(AcceptanceTester $I)
+    {
+        $this->project->owner->delete();
+        $this->project->delete();
     }
 
     public function see_project_details(AcceptanceTester $I)

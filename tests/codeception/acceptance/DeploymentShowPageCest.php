@@ -1,6 +1,5 @@
 <?php
 
-use App\Deployment;
 use tests\codeception\acceptance\standardPageTests;
 
 class DeploymentShowPageCest extends standardPageTests
@@ -9,20 +8,30 @@ class DeploymentShowPageCest extends standardPageTests
     protected $page;
     protected $deployment;
     protected $server;
+    protected $project;
 
     public function _before(AcceptanceTester $I)
     {
-        $this->deployment = Deployment::select()->first();
+        $this->deployment = $this->server = factory('App\Deployment')->create();
         $this->server = $this->deployment->server;
+        $this->project = $this->server->project;
         $this->page = route(
             'ShowDeployment',
             [
-                $this->server->project,
+                $this->project,
                 $this->server,
                 $this->deployment
             ],
             false
         );
+    }
+
+    public function _after(AcceptanceTester $I)
+    {
+        $this->deployment->owner->delete();
+        $this->server->owner->delete();
+        $this->project->owner->delete();
+        $this->project->delete();
     }
 
     public function see_deployment_details(AcceptanceTester $I)
