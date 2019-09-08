@@ -73,6 +73,17 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param Project $project
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function delete(Project $project)
+    {
+        return view('projects.delete', compact('project'));
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param Project $project
@@ -97,6 +108,12 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
+        if(!request('confirm')){
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'confirm' => ['Please confirm you want to delete'],
+            ]);
+            throw $error;
+        }
         $project->servers()->each(function ($project) {
             $project->deployments()->delete();
         });

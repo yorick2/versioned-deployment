@@ -12,11 +12,7 @@
                                 <a  class="btn btn-default pl-0" href="{{$server->path()}}/deployments">Deployments</a>
                             </div>
                             <div class="float-right">
-                                <form action="{{$server->path()}}" method="post">
-                                    {{csrf_field()}}
-                                    {{method_field('DELETE')}}
-                                    <button type="submit" class="btn btn-link">Delete</button>
-                                </form>
+                                <a class="btn btn-default pl-0" href="{{route('DeleteServer',['project' => $project, 'server' => $server]) }}">Delete</a>
                             </div>
                             <div class="float-right">
                                 <a href="{{ route('EditServer',['project'=> $project,'server'=>$server]) }}" class="btn btn-default">Edit</a>

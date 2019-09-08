@@ -79,7 +79,7 @@ class ServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Project$project
+     * @param Project $project
      * @param Server $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -87,6 +87,18 @@ class ServerController extends Controller
     {
         $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
         return view('servers.edit', compact('project', 'server','gitBranches'));
+    }
+
+    /**
+     * Show the form for deleting the specified resource.
+     *
+     * @param Project $project
+     * @param Server $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function delete(Project $project, Server $server)
+    {
+        return view('servers.delete', compact('project', 'server'));
     }
 
     /**
@@ -123,6 +135,12 @@ class ServerController extends Controller
      */
     public function destroy(Project $project, Server $server)
     {
+        if(!request('confirm')){
+            $error = \Illuminate\Validation\ValidationException::withMessages([
+                'confirm' => ['Please confirm you want to delete'],
+            ]);
+            throw $error;
+        }
         $server->deployments()->delete();
         $server->delete();
         if(request()->wantsJson()) {
