@@ -26,7 +26,7 @@ $argv[] = '--fail-fast';
 $argv[] = '--no-interaction';
 $argv[] = '--no-ansi';
 $argv[] = 'acceptance';
-$argv[] = 'DeploymentCreatePageCest.php';
+$argv[] = 'UserIndexPageCest.php';
 
 
 
