@@ -19,6 +19,15 @@ class UserShowPageCest extends standardPageTests
         $this->user->delete();
     }
 
+    public function see_a_link_to_the_users_list(AcceptanceTester $I)
+    {
+        $I->wantTo('see a link for the servers list');
+        $I->loginAsTheTestUser();
+        $I->amOnPage($this->page);
+        $I->seeCurrentUrlEquals($this->page);
+        $I->seeLink('Users', route('users', [], false));
+    }
+
     public function see_user_details(AcceptanceTester $I)
     {
         $I->wantTo('see the users');
