@@ -78,7 +78,7 @@ class ManageProjectsTest extends TestCase
         $servers = factory('App\Server', 3)->create(['project_id' => $project->id]);
         $serverId = $servers->first()->id;
         factory('App\Deployment', 3)->create(['server_id' => $serverId]);
-        $response = $this->json('DELETE', $project->path());
+        $response = $this->json('DELETE', $project->path(),['confirm'=>'true']);
         $response->assertStatus(204);
         $this->assertDatabaseMissing('projects',['id' => $project->id]);
         $this->assertDatabaseMissing('servers',['project_id' => $project->id]);
@@ -89,7 +89,7 @@ class ManageProjectsTest extends TestCase
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $project = factory('App\Project')->create();
-        $response = $this->json('DELETE', $project->path());
+        $response = $this->json('DELETE', $project->path(), ['confirm'=>'true']);
         $response->assertRedirect('/login');
     }
 }

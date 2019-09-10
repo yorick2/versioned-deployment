@@ -9,19 +9,19 @@
                     <div class="card-body">
                         <form>
                             <div class="form-group row">
-                                <label for="name" class="col-sm-2 col-form-label">deployed by:</label>
+                                <label for="name" class="col-sm-2 col-form-label text-md-right">deployed by:</label>
                                 <div class="col-sm-10">
                                     <input type="text" readonly class="form-control" id="name" value="{{$deployment->owner->name}}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="commit" class="col-sm-2 col-form-label">commit hash:</label>
+                                <label for="commit" class="col-sm-2 col-form-label text-md-right">commit hash:</label>
                                 <div class="col-sm-10">
-                                    <input type="text" readonly class="form-control" id="commit" value="{{$deployment->commit}}">
+                                    <input type="text" readonly class="form-control"  id="commit" value="{{$deployment->commit}}">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="status" class="col-sm-2 col-form-label">status:</label>
+                                <label for="status" class="col-sm-2 col-form-label text-md-right">status:</label>
                                 <div class="col-sm-10">
                                     @if ($deployment->success  === 1)
                                         <input type="text" readonly class="form-control status success" id="status" value="success">
@@ -31,9 +31,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="notes" class="col-sm-2 col-form-label">notes:</label>
+                                <label for="notes"  class="col-sm-2 col-form-label text-md-right">notes:</label>
                                 <div class="col-sm-10">
-                                    <textarea type="text" readonly class="form-control status success" id="notes">{{$deployment->notes}}</textarea>
+                                    <textarea type="text" class="form-control"  readonly class="form-control status success" id="notes">{{$deployment->notes}}</textarea>
                                 </div>
                             </div>
                             <div>

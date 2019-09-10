@@ -309,4 +309,28 @@ EOF
             "old directories are not being deleted"
         );
     }
+
+    public function testGitDiff()
+    {
+        $newCommit = 'b1b3f9723831141a31a1a7252a213e216ea76e56';
+        $deployment = factory('App\Deployment')->create([
+            'server_id'=>$this->server->id,
+            'commit' => '7fd1a60b01f91b314f59955a4e4d4e80d8edf11d'
+        ]);
+        $git = new Git(
+            $this->connection,
+            $this->server
+        );
+        $git->deploy($deployment);
+        $linkSharedFiles = new UpdateCurrentAndPreviousLinks($this->connection, $deployment);
+        $linkSharedFiles->execute();
+        $releaseLocation = $deployment->getCurrentReleaseLocation();
+        $this->assertStringStartsWith(
+            $releaseLocation,
+            $this->connection->execute("cd -P {$this->server->deploy_location}/current && pwd")['message'],
+            "current symlink doesn't go to our release"
+        );
+        $diff = $git->getGitDiff($newCommit);
+        $this->assertStringStartsWith('README', $diff);
+    }
 }

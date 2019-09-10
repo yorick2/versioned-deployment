@@ -44,5 +44,7 @@ Route::get('/projects/{project}/servers/{server}/deployments/create', 'Deploymen
     ->name('CreateDeployment');
 Route::get('/projects/{project}/servers/{server}/deployments/{deployment}', 'DeploymentController@show')
     ->name('ShowDeployment');
+Route::post('/projects/{project}/servers/{server}/deployments/diff', 'DeploymentController@gitDiff')
+    ->name('GitDiffDeployment');
 Route::post('/projects/{project}/servers/{server}/create-deployment', 'DeploymentController@store')
     ->name('SubmitCreateDeployment');

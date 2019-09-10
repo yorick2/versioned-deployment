@@ -49,7 +49,8 @@ class DeploymentCreatePageCest extends standardPageTests
         $time = (new DateTime('NOW'))->format("Y-m-d H:i:s u");
         $notes = 'test deployment started: '.$time;
         $I->fillField('[name=notes]', $notes);
-        $I->click('button[type=submit]');
+        $I->click('deploy');
+        $I->see('success');
         $I->seeRecord('deployments', [ 'server_id' => $this->server->id, 'notes' => $notes ]);
         $this->deployment = Deployment::where(
                 [ 'server_id' => $this->server->id, 'notes' => $notes ]

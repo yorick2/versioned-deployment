@@ -73,7 +73,7 @@
                                     <textarea name="notes" class="form-control" placeholder="notes">{{$server->notes}}</textarea>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-default">save</button>
+                            <button type="submit" class="btn btn-default float-right">save</button>
                         </form>
                     </div>
                 </div>

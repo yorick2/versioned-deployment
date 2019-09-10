@@ -20,7 +20,9 @@ class DeploymentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @param Server $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(Project $project, Server $server)
     {
@@ -81,37 +83,62 @@ class DeploymentController extends Controller
         return view('deployments.show', compact('project','server', 'deployment'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Deployment  $deployment
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Deployment $deployment)
-    {
-        //
-    }
+//    /**
+//     * Show the form for editing the specified resource.
+//     *
+//     * @param  \App\Deployment  $deployment
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function edit(Deployment $deployment)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Update the specified resource in storage.
+//     *
+//     * @param  \Illuminate\Http\Request  $request
+//     * @param  \App\Deployment  $deployment
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function update(Request $request, Deployment $deployment)
+//    {
+//        //
+//    }
+//
+//    /**
+//     * Remove the specified resource from storage.
+//     *
+//     * @param  \App\Deployment  $deployment
+//     * @return \Illuminate\Http\Response
+//     */
+//    public function destroy(Deployment $deployment)
+//    {
+//        //
+//    }
 
     /**
-     * Update the specified resource in storage.
+     * Show git diff
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Deployment  $deployment
-     * @return \Illuminate\Http\Response
+     * @param Project $project
+     * @param Server $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function update(Request $request, Deployment $deployment)
+    public function gitDiff(Project $project,Server $server)
     {
-        //
+        $gitDiff = [];
+        $commitRef = request('commit');
+        $connection = new SshConnection($server->toArray());
+        $response = $connection->connect();
+        if ($response['success'] != 0 ) {
+            $git = new Git(
+                $connection,
+                $server
+            );
+            $gitDiff = $git->getGitDiff($commitRef);
+        }
+        return view('deployments.gitDiff',compact('server','project', 'commitRef', 'gitDiff'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Deployment  $deployment
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Deployment $deployment)
-    {
-        //
-    }
+
 }

@@ -132,6 +132,25 @@ BASH;
         $response->name = 'clone into release folder using the mirror repository';
         $response->success = (strpos($response->message,'git clone created') === false) ? 0 : 1;
         $this->responses->push($response);
+    }
 
+    /**
+     * @param $commitRef string
+     * @return string
+     */
+    public function getGitDiff(string $commitRef)
+    {
+        $cmd = <<<'BASH'
+        function gitDiff() {
+            local deployLocation="${1}";
+            local commitRef="${2}";
+            cd ${deployLocation}/current
+            $(git pull origin master)
+            git diff --name-only $commitRef
+        }
+BASH;
+        $cmd .= "\n gitDiff {$this->server->deploy_location} {$commitRef}";
+        $response = $this->connection->execute($cmd);
+        return $response->message;
     }
 }
