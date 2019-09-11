@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Support\Collection;
 
-class DeploymentMessageCollectionSingleton extends Singleton {
+class DeploymentMessageCollectionSingleton extends SingletonAbstract {
 
     /**
      * @var array
@@ -20,6 +20,14 @@ class DeploymentMessageCollectionSingleton extends Singleton {
      * @var Collection
      */
     protected $collection;
+
+    /**
+     * Make constructor private/protected, so nobody can call "new Class".
+     */
+    protected function __construct()
+    {
+        $this->collection = collect(new DeploymentMessage());
+    }
 
     /**
      * @param bool $success

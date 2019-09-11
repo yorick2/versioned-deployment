@@ -45,11 +45,12 @@ class DeploymentAction extends Model
     public function execute(Deployment $deployment)
     {
         $this->responses = DeploymentMessageCollectionSingleton::getInstance();
-        if($this->getSshConnection($deployment->server) === false) {
+        $server = $deployment->server;
+        if($this->getSshConnection($server) === false) {
             return $this->responses;
         }
         (new PreDeploymentCommands($this->connection,$deployment))->execute();
-        (new Git($this->connection, $deployment->server))->deploy($deployment);
+        (new Git($this->connection, $server))->deploy($deployment);
         (new LinkSharedFiles($this->connection,$deployment))->execute();
         (new PostDeploymentCommands($this->connection,$deployment))->execute();
         (new RemoveOldReleases($this->connection,$deployment))->execute();

@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Concerns\GuardsAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 
-abstract class Singleton {
+abstract class SingletonAbstract {
 
     use GuardsAttributes,
         HidesAttributes;
@@ -29,7 +29,6 @@ abstract class Singleton {
      */
     private function __construct()
     {
-        $this->collection = collect(new DeploymentMessage());
     }
 
     /**
