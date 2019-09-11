@@ -1,9 +1,9 @@
 <?php
 
-namespace Interfaces\App\GitInteractions;
+namespace App\GitInteractions;
 
-use Interfaces\App\ServerInterface;
-use Interfaces\App\SshConnectionInterface;
+use App\ServerInterface;
+use App\SshConnectionInterface;
 
 interface GitMirrorInterface
 {
@@ -18,10 +18,10 @@ interface GitMirrorInterface
     /**
      * make the git reference folder to use as a mirror. So the whole repo isn't downloaded each time. Reducing download time
      */
-    public function update();
+    public function update(): void;
 
     /**
      * @return array
      */
-    public function clear();
+    public function clear(): array;
 }

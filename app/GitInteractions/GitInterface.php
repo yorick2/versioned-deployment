@@ -1,11 +1,10 @@
 <?php
 
 
-namespace Interfaces\App\GitInteractions;
+namespace App\GitInteractions;
 
 
 use App\DeploymentInterface;
-use App\DeploymentMessageCollectionSingletonInterface;
 use App\ServerInterface;
 use App\SshConnectionInterface;
 
@@ -21,16 +20,16 @@ interface GitInterface
     /**
      * @param DeploymentInterface $deployment
      */
-    public function deploy(DeploymentInterface $deployment);
+    public function deploy(DeploymentInterface $deployment): void;
 
     /**
      * @return array
      */
-    public function getGitLog();
+    public function getGitLog(): array;
 
     /**
      * @param $commitRef string
      * @return string
      */
-    public function getGitDiff(string $commitRef);
+    public function getGitDiff(string $commitRef): string;
 }

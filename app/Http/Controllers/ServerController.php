@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\GitInteractions\GitLocal;
+use App;
 use App\Project;
 use App\Server;
-use Illuminate\Http\Request;
 
 class ServerController extends Controller
 {
@@ -36,7 +35,8 @@ class ServerController extends Controller
      */
     public function create(Project $project)
     {
-        $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
+        $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
+            ->getGitBranches($project->repository);
         return view('servers.create',compact('project','gitBranches'));
     }
 
@@ -85,7 +85,8 @@ class ServerController extends Controller
      */
     public function edit(Project $project, Server $server)
     {
-        $gitBranches  = (new GitLocal())->getGitBranches($project->repository);
+        $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
+            ->getGitBranches($project->repository);
         return view('servers.edit', compact('project', 'server','gitBranches'));
     }
 

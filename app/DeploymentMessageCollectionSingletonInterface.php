@@ -1,6 +1,6 @@
 <?php
 
-namespace Interfaces\App;
+namespace App;
 
 use Illuminate\Support\Collection;
 

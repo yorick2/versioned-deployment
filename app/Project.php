@@ -2,34 +2,37 @@
 
 namespace App;
 
+use App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Project extends Model
+class Project extends Model implements ProjectInterface
 {
     protected $guarded = [];
 
     /**
      * @return string
      */
-    public function path()
+    public function path(): string
     {
         return '/projects/'.$this->slug;
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function servers()
+    public function servers(): HasMany
     {
-        return $this->hasMany(Server::class);
+        return $this->hasMany(App::make('App\ServerInterface'));
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function owner()
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
     }
 
     /**
@@ -43,7 +46,7 @@ class Project extends Model
         return redirect($server->path());
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -51,7 +54,7 @@ class Project extends Model
     /**
      * @param string $value
      */
-    public function setNameAttribute($value)
+    public function setNameAttribute(string $value): void
     {
         $this->attributes['name'] = $value;
         if($this->getOriginal('name') == $this->getAttribute('name')) {
@@ -65,9 +68,10 @@ class Project extends Model
 
     /**
      * @param string $name
-     * @return string|string[]|null
+     * @return string
      */
-    public function incrementSlug($name){
+    public function incrementSlug(string $name): string
+    {
         $maxSlug = static::whereName($name)->latest('id')->value('slug');
         if (is_numeric(substr($maxSlug,-1))){
             return preg_replace_callback('/(\d+)$/',function ($matches) {

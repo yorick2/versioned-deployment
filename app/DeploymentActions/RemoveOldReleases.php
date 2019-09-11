@@ -2,17 +2,17 @@
 
 namespace App\DeploymentActions;
 
-use App\DeploymentMessageCollectionSingleton;
-use Interfaces\App\DeploymentActions\RemoveOldReleasesInterface;
+use App;
+use phpDocumentor\Reflection\Types\Integer;
 
 class RemoveOldReleases extends DeploymentActionsAbstract implements RemoveOldReleasesInterface
 {
     private $qtyOfReleases = 5;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getQtyOfReleases()
+    public function getQtyOfReleases(): Integer
     {
         return $this->qtyOfReleases;
     }
@@ -20,14 +20,14 @@ class RemoveOldReleases extends DeploymentActionsAbstract implements RemoveOldRe
     /**
      * @param mixed $qtyOfReleases
      */
-    public function setQtyOfReleases($qtyOfReleases): void
+    public function setQtyOfReleases(Integer $qtyOfReleases): void
     {
         $this->qtyOfReleases = $qtyOfReleases;
     }
 
-    public function execute()
+    public function execute(): void
     {
-        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
+        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $cmd = 'function removeOldReleases() {
             local i f;
             i=1;

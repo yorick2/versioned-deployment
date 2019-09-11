@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Concerns\GuardsAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
+use phpDocumentor\Reflection\Types\This;
 
 abstract class SingletonAbstract {
 
@@ -13,7 +14,7 @@ abstract class SingletonAbstract {
     /**
      * Call this method to get singleton
      */
-    public static function getInstance()
+    public static function getInstance(): SingletonAbstract
     {
         static $instance = false;
         if( $instance === false )
@@ -96,7 +97,7 @@ abstract class SingletonAbstract {
      * @param mixed $value
      * @return $this
      */
-    public function setAttribute(string $key, $value)
+    public function setAttribute(string $key, $value): this
     {
         if(!$this->isFillable($key)){
             throw new \InvalidArgumentException(sprintf(

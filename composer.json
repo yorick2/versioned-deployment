@@ -30,7 +30,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Interfaces\\": "interfaces/"
+            "Interfaces\\": "interfaces/app"
         }
     },
     "autoload-dev": {

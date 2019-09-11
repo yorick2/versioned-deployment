@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SshConnection;
-use Couchbase\SearchSortScore;
-use Illuminate\Http\Request;
+use App;
 
 class HomeController extends Controller
 {
@@ -25,7 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $publicKey = (new SshConnection())->getPublicKey();
+        $publicKey = App::make('App\SshConnectionInterface')->getPublicKey();
         return view('home', compact('publicKey'));
     }
 }

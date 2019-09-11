@@ -2,9 +2,12 @@
 
 namespace App;
 
+use App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Server extends Model
+class Server extends Model implements ServerInterface
 {
 
     protected $guarded = [];
@@ -12,36 +15,36 @@ class Server extends Model
     /**
      * @return string
      */
-    public function path()
+    public function path(): string
     {
         return $this->project()->first()->path().'/servers/'.$this->slug;
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function project()
+    public function project(): BelongsTo
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(App::make('App\ProjectInterface'));
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function deployments()
+    public function deployments(): HasMany
     {
-        return $this->hasMany(Deployment::class);
+        return $this->hasMany(App::make('App\DeploymentInterface'));
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function owner()
+    public function owner(): BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
     }
 
-    public function getRouteKeyName()
+    public function getRouteKeyName(): string
     {
         return 'slug';
     }
@@ -49,7 +52,7 @@ class Server extends Model
     /**
      * @param string $value
      */
-    public function setNameAttribute($value)
+    public function setNameAttribute($value): void
     {
         $this->attributes['name'] = $value;
         if($this->getOriginal('name') == $this->getAttribute('name')) {
@@ -68,9 +71,10 @@ class Server extends Model
 
     /**
      * @param string $name
-     * @return string|string[]|null
+     * @return string
      */
-    public function incrementSlug($name){
+    public function incrementSlug($name): string
+    {
         $maxSlug = static::where([
             ['name', '=', $name],
             ['project_id', '=', $this->project_id],
@@ -85,7 +89,7 @@ class Server extends Model
     }
 
 
-    public function executeDeployment(array $deploymentData)
+    public function executeDeployment(array $deploymentData): Deployment
     {
         $deployments = $this->deployments();
         $deployment = $deployments->create([
@@ -97,7 +101,7 @@ class Server extends Model
         ]);
         try {
             $deployment->fresh();
-            $response = (new DeploymentAction())->execute($deployment);
+            $response = (App::make('App\DeploymentAction'))->execute($deployment);
             $deployment->update([
                 'success' => $response->success,
                 'output' => $response->collection->toJson()

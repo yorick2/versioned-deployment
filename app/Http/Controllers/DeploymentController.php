@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\Deployment;
-use App\DeploymentAction;
 use App\Project;
 use App\Server;
-use App\GitInteractions\Git;
-use App\SshConnection;
-use Illuminate\Http\Request;
 
 class DeploymentController extends Controller
 {
@@ -43,12 +40,15 @@ class DeploymentController extends Controller
     public function create(Project $project, Server $server)
     {
         $gitLog = [];
-        $connection = new SshConnection($server->toArray());
+        $connection = App::make(
+            'App\SshConnectionInterface',
+            ['attributes'=>$server->toArray()]
+        );
         $response = $connection->connect();
         if ($response['success'] != 0 ) {
-            $git = new Git(
-                $connection,
-                $server
+            $git = App::make(
+                'App\GitInteractions\Git',
+                ['sshConnection'=>$connection, 'server'=>$server]
             );
             $gitLog = $git->getGitLog();
         }
@@ -128,12 +128,15 @@ class DeploymentController extends Controller
     {
         $gitDiff = [];
         $commitRef = request('commit');
-        $connection = new SshConnection($server->toArray());
+        $connection = App::make(
+            'App\SshConnectionInterface',
+            ['attributes'=>$server->toArray()]
+        );
         $response = $connection->connect();
         if ($response['success'] != 0 ) {
-            $git = new Git(
-                $connection,
-                $server
+            $git = App::make(
+                'App\GitInteractions\GitInterface',
+                ['sshConnection'=>$connection, 'server'=>$server]
             );
             $gitDiff = $git->getGitDiff($commitRef);
         }

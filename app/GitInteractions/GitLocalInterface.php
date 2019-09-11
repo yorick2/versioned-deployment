@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Interfaces\App\GitInteractions;
+namespace App\GitInteractions;
 
 
 interface GitLocalInterface
@@ -10,5 +10,5 @@ interface GitLocalInterface
      * @param string $remoteUrl
      * @return mixed
      */
-    public function getGitBranches(string $remoteUrl);
+    public function getGitBranches(string $remoteUrl): array;
 }

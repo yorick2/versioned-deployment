@@ -2,16 +2,16 @@
 
 namespace App\DeploymentActions;
 
-use App\DeploymentMessage;
-use App\DeploymentMessageCollectionSingleton;
+use App;
+use App\DeploymentMessageInterface;
 
 class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFilesInterface
 {
     protected $server;
 
-    public function execute()
+    public function execute(): void
     {
-        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
+        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $this->server = $this->deployment->server;
         $files = $this->server->shared_files;
 
@@ -27,9 +27,10 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFil
 
     /**
      * @param array $files
-     * @return DeploymentMessage
+     * @return DeploymentMessageInterface
      */
-    protected function createFolders(array $files){
+    protected function createFolders(array $files): DeploymentMessageInterface
+    {
         $command = '';
         for($i=0;$i<count($files);$i++){
             $fileName = ltrim($files[$i],'/');
@@ -46,9 +47,10 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFil
 
     /**
      * @param array $files
-     * @return DeploymentMessage
+     * @return DeploymentMessageInterface
      */
-    protected function linkFiles(array $files){
+    protected function linkFiles(array $files): DeploymentMessageInterface
+    {
         $location = $this->server->deploy_location;
         $command = '';
         for($i=0;$i<count($files);$i++){

@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App;
 use Illuminate\Support\Collection;
 
-class DeploymentMessageCollectionSingleton extends SingletonAbstract {
+class DeploymentMessageCollectionSingleton extends SingletonAbstract implements DeploymentMessageCollectionSingletonInterface {
 
     /**
      * @var array
@@ -26,7 +27,7 @@ class DeploymentMessageCollectionSingleton extends SingletonAbstract {
      */
     protected function __construct()
     {
-        $this->collection = collect(new DeploymentMessage());
+        $this->collection = collect();
     }
 
     /**
@@ -39,14 +40,14 @@ class DeploymentMessageCollectionSingleton extends SingletonAbstract {
 
     public function clearCollection(): void
     {
-        $this->collection = collect(new DeploymentMessage());
+        $this->collection = collect();
     }
 
     /**
-     * @param DeploymentMessage $item
+     * @param DeploymentMessageInterface $item
      * @return Collection
      */
-    function push(DeploymentMessage $item): Collection
+    function push(DeploymentMessageInterface $item): Collection
     {
         return $this->collection->push($item);
     }

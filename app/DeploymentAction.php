@@ -3,15 +3,9 @@
 namespace App;
 
 use App;
-use App\DeploymentActions\LinkSharedFiles;
-use App\DeploymentActions\PreDeploymentCommands;
-use App\DeploymentActions\PostDeploymentCommands;
-use App\DeploymentActions\RemoveOldReleases;
-use App\DeploymentActions\UpdateCurrentAndPreviousLinks;
-use App\GitInteractions\Git;
 use Illuminate\Database\Eloquent\Model;
 
-class DeploymentAction extends Model
+class DeploymentAction extends Model implements DeploymentActionInterface
 {
 
     /**
@@ -45,24 +39,36 @@ class DeploymentAction extends Model
      */
     public function execute(Deployment $deployment)
     {
-        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $server = $deployment->server;
         if($this->getSshConnection($server) === false) {
             return $this->responses;
         }
-        (App::make('Interfaces\App\DeploymentActions\PreDeploymentCommandsInterface'))->execute();
-        (new PreDeploymentCommands($this->connection,$deployment))->execute();
-        (new Git($this->connection, $server))->deploy($deployment);
-        (new LinkSharedFiles($this->connection,$deployment))->execute();
-        (new PostDeploymentCommands($this->connection,$deployment))->execute();
-        (new RemoveOldReleases($this->connection,$deployment))->execute();
-        (new UpdateCurrentAndPreviousLinks($this->connection,$deployment))->execute();
-        $this->responses->success = true;
-        $this->responses->collection->each(function($item){
-            if(!$item->success){
-                $this->responses->success = 0;
-            }
-        });
+        (App::make(
+            'App\DeploymentActions\PreDeploymentCommandsInterface',
+            ['connection'=>$this->connection,'deployment'=>$deployment]
+        ))->execute();
+        (App::make(
+            'App\GitInteractions\GitInterface',
+            ['sshConnection'=>$this->connection,'server'=>$server]
+        ))->deploy($deployment);
+        (App::make(
+            'App\DeploymentActions\LinkSharedFilesInterface',
+            ['connection'=>$this->connection,'deployment'=>$deployment]
+        ))->execute();
+        (App::make(
+            'App\DeploymentActions\PostDeploymentCommandsInterface',
+            ['connection'=>$this->connection,'deployment'=>$deployment]
+        ))->execute();
+        (App::make(
+            'App\DeploymentActions\RemoveOldReleasesInterface',
+            ['connection'=>$this->connection,'deployment'=>$deployment]
+        ))->execute();
+        (App::make(
+            'App\DeploymentActions\UpdateCurrentAndPreviousLinksInterface',
+            ['connection'=>$this->connection,'deployment'=>$deployment]
+        ))->execute();
+        $this->responses->success = 1;
         $this->connection->disconnect();
         return $this->responses;
     }
@@ -73,13 +79,16 @@ class DeploymentAction extends Model
      * @return bool
      */
     protected function getSshConnection($server){
-        $this->connection = new SshConnection($server->toArray());
+        $this->connection = App::make(
+            'App\SshConnectionInterface',
+            ['attributes'=>$server->toArray()]
+        );
         $response = $this->connection->connect();
         $this->responses->push($response);
         if ($response->success == 0 ) {
-            return false;
+            return 0;
         }
-        return true;
+        return 1;
     }
 
 }

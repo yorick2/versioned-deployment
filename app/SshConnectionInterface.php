@@ -1,6 +1,6 @@
 <?php
 
-namespace Interfaces\App;
+namespace App;
 
 interface SshConnectionInterface
 {
@@ -9,17 +9,17 @@ interface SshConnectionInterface
     /**
      * @return string
      */
-    public function getPublicKey();
+    public function getPublicKey(): string;
 
     /**
      * @param string $cmd
      * @return DeploymentMessageInterface
      */
-    public function execute($cmd);
+    public function execute($cmd): DeploymentMessageInterface;
 
     /**
      * @return void
      */
-    public function disconnect();
+    public function disconnect(): void;
 
 }
