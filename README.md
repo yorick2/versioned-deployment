@@ -33,6 +33,25 @@ html-old and create a symlink to the same location to current with the name of t
 remove your html symlink. Then after the next deployment the new release will be used. 
 - If it didnt work remove the html symlink and rename the web folder back to html
 
+# Deployed folder structure
+gitcache : this folder is clone of your git repository. It is used as a mirror when cloning the new release. This means we dont download a new git repository each time
+current : this is a symlink to the current release folder used
+previous : this is a symlink to the previous release folder used
+release : during each release a new folder is created here e.g. 2019-09-10_14-23-32
+shared : put files/folders that are shared between deployed versions and not in the git repository e.g. media folder, environment setting file
+
+## example structure
+- current -> /var/www/releases/2019-09-11_09-05-50
+- gitcache
+- previous -> /var/www/releases/2019-09-10_14-29-51
+- release 
+    - 2019-09-10_14-23-32
+    - 2019-09-10_14-27-32
+    - 2019-09-10_14-29-51
+    - 2019-09-10_14-53-48
+    - 2019-09-11_09-05-50
+- shared
+
 # Setup
 Currently I only have a test/development version of docker working currently and isn't meant to be secure for production use as yet. There is more detail in the readme inside the docker folder.
 
