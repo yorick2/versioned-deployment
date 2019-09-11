@@ -5,7 +5,7 @@ namespace App\DeploymentActions;
 use App\DeploymentMessage;
 use App\DeploymentMessageCollectionSingleton;
 
-class LinkSharedFiles extends DeploymentActionsAbstract implements DeploymentActionInterface
+class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFilesInterface
 {
     protected $server;
 

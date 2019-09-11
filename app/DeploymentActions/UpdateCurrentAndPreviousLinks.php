@@ -2,9 +2,11 @@
 
 namespace App\DeploymentActions;
 
+use App\DeploymentAction;
 use App\DeploymentMessageCollectionSingleton;
+use Interfaces\App\DeploymentActions\UpdateCurrentAndPreviousLinksInterface;
 
-class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements DeploymentActionInterface
+class UpdateCurrentAndPreviousLinks extends DeploymentAction implements UpdateCurrentAndPreviousLinksInterface
 {
 
     public function execute()

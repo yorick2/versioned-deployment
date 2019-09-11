@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App;
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
 use App\DeploymentActions\PostDeploymentCommands;
@@ -49,6 +50,7 @@ class DeploymentAction extends Model
         if($this->getSshConnection($server) === false) {
             return $this->responses;
         }
+        (App::make('Interfaces\App\DeploymentActions\PreDeploymentCommandsInterface'))->execute();
         (new PreDeploymentCommands($this->connection,$deployment))->execute();
         (new Git($this->connection, $server))->deploy($deployment);
         (new LinkSharedFiles($this->connection,$deployment))->execute();

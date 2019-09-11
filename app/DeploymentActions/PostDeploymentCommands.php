@@ -3,8 +3,9 @@
 namespace App\DeploymentActions;
 
 use App\DeploymentMessageCollectionSingleton;
+use Interfaces\App\DeploymentActions\PostDeploymentCommandsInterface;
 
-class PostDeploymentCommands extends DeploymentActionsAbstract implements DeploymentActionInterface
+class PostDeploymentCommands extends DeploymentActionsAbstract implements PostDeploymentCommandsInterface
 {
 
     public function execute()

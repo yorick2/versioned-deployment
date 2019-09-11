@@ -3,8 +3,9 @@
 namespace App\DeploymentActions;
 
 use App\DeploymentMessageCollectionSingleton;
+use Interfaces\App\DeploymentActions\PreDeploymentCommandsInterface;
 
-class PreDeploymentCommands extends DeploymentActionsAbstract implements DeploymentActionInterface
+class PreDeploymentCommands extends DeploymentActionsAbstract implements PreDeploymentCommandsInterface
 {
     public function execute()
     {

@@ -1,4 +1,37 @@
 <?php
+//App::bind('Interfaces\App\DeploymentActions\DeploymentActionsAbstractInterface',
+//    'App\DeploymentActions\DeploymentActionsAbstract');
+//App::bind('Interfaces\App\DeploymentActions\LinkSharedFilesInterface',
+//    'App\DeploymentActions\LinkSharedFiles');
+//App::bind('Interfaces\App\DeploymentActions\PostDeploymentCommandsInterface',
+//    'App\DeploymentActions\PostDeploymentCommands');
+App::bind('Interfaces\App\DeploymentActions\PreDeploymentCommandsInterface',
+    'App\DeploymentActions\PreDeploymentCommands');
+App::bind('Interfaces\App\DeploymentActions\RemoveOldReleasesInterface',
+    'App\DeploymentActions\RemoveOldReleases');
+App::bind('Interfaces\App\DeploymentActions\UpdateCurrentAndPreviousLinksInterface',
+    'App\DeploymentActions\UpdateCurrentAndPreviousLinks');
+App::bind('Interfaces\App\GitInteractions\GitLocalInterface',
+    'App\GitInteractions\GitLocal');
+App::bind('Interfaces\App\GitInteractions\GitMirrorInterface',
+    'App\GitInteractions\GitMirror');
+App::bind('Interfaces\App\GitInteractions\GitInterface',
+    'App\GitInteractions\Git');
+App::bind('Interfaces\App\DeploymentMessageCollectionSingletonInterface',
+    'App\DeploymentMessageCollectionSingleton');
+App::bind('Interfaces\App\DeploymentMessageInterface',
+    'App\DeploymentMessage');
+App::bind('Interfaces\App\DeploymentInterface',
+    'App\Deployment');
+App::bind('Interfaces\App\ProjectInterface',
+    'App\Project');
+App::bind('Interfaces\App\ServerInterface',
+    'App\Server');
+App::bind('Interfaces\App\SshConnectionInterface',
+    'App\SshConnection');
+App::bind('Interfaces\App\UserInterface',
+    'App\User');
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -56,6 +56,7 @@ RUN rm /usr/local/bin/user.sh
 ## allow access to web folder
 RUN chmod -R g+rwx /var/www
 RUN chown :${SSH_MASTER_USER} /var/www
+RUN mv /var/www/html /var/www/html-old
 RUN chmod -R g+rwx /var/www/html-old
 RUN chown :${SSH_MASTER_USER} /var/www/html-old
 RUN echo '<?php echo phpinfo(); ' > /var/www/html-old/index.php

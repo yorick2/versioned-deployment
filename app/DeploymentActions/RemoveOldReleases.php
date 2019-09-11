@@ -3,8 +3,9 @@
 namespace App\DeploymentActions;
 
 use App\DeploymentMessageCollectionSingleton;
+use Interfaces\App\DeploymentActions\RemoveOldReleasesInterface;
 
-class RemoveOldReleases extends DeploymentActionsAbstract implements DeploymentActionInterface
+class RemoveOldReleases extends DeploymentActionsAbstract implements RemoveOldReleasesInterface
 {
     private $qtyOfReleases = 5;
 
