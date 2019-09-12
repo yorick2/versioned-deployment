@@ -12,7 +12,6 @@ services:
                 volumes:
                         - ../..:/var/www/html
                         - ./.env:/var/www/html/.env
-                        - ./.env.testing:/var/www/html/.env.testing
                         - .:/code
                         - ./apache-config.conf:/etc/apache2/sites-enabled/000-default.conf
         version_deployment_db:

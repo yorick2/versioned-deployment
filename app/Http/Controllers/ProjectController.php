@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Project;
+use App;
+use App\ProjectInterface;
 
 class ProjectController extends Controller
 {
@@ -18,7 +19,7 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projectsCollection = Project::latest()
+        $projectsCollection = (App::make('App\ProjectInterface'))::latest()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         return view('projects.index',compact('projectsCollection'));
@@ -40,7 +41,7 @@ class ProjectController extends Controller
      */
     public function store()
     {
-        Project::create([
+        (App::make('App\ProjectInterface'))::create([
             'user_id' => auth()->id(),
             'slug' => request('name'),
             'name' => request('name'),
@@ -52,11 +53,11 @@ class ProjectController extends Controller
 
     /**
      * Display the specified resource.
-     * @param Project $project
+     * @param ProjectInterface $project
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show(ProjectInterface $project)
     {
         return view('projects.show', compact('project'));
     }
@@ -64,10 +65,10 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Project $project)
+    public function edit(ProjectInterface $project)
     {
         return view('projects.edit', compact('project'));
     }
@@ -75,10 +76,10 @@ class ProjectController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function delete(Project $project)
+    public function delete(ProjectInterface $project)
     {
         return view('projects.delete', compact('project'));
     }
@@ -86,10 +87,10 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Project $project
-     * @return Project
+     * @param ProjectInterface $project
+     * @return ProjectInterface
      */
-    public function update(Project $project)
+    public function update(ProjectInterface $project)
     {
         $project->update(request([
             'name',
@@ -102,11 +103,11 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
-    public function destroy(Project $project)
+    public function destroy(ProjectInterface $project)
     {
         if(!request('confirm')){
             $error = \Illuminate\Validation\ValidationException::withMessages([

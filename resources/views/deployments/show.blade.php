@@ -23,7 +23,7 @@
                             <div class="form-group row">
                                 <label for="status" class="col-sm-2 col-form-label text-md-right">status:</label>
                                 <div class="col-sm-10">
-                                    @if ($deployment->success  === 1)
+                                    @if ($deployment->success === 1)
                                         <input type="text" readonly class="form-control status success" id="status" value="success">
                                     @else
                                         <input type="text" readonly class="form-control status failed" id="status" value="failed">
@@ -46,7 +46,7 @@
                                                 <h1 class="h5">{{$output->name}}</h1>
                                             @endif
                                             <div class="form-group row">
-                                                @if ($output->success  === 1)
+                                                @if ($output->success  === true)
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">success &#9989; :</label>
                                                 @else
                                                     <label for="message-{{$key}}" class="col-sm-2 col-form-label mini-status success">failed &#10060; :</label>

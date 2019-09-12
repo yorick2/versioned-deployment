@@ -3,11 +3,10 @@
 
 namespace App\GitInteractions;
 
-
-use App\Deployment;
-use App\DeploymentMessageCollectionSingleton;
-use App\Server;
-use App\SshConnection;
+Use App;
+use App\DeploymentInterface;
+use App\ServerInterface;
+use App\SshConnectionInterface;
 
 class Git
 {
@@ -48,23 +47,27 @@ class Git
 
     /**
      * Git constructor.
-     * @param SshConnection $sshConnection
-     * @param Server $server
+     * @param SshConnectionInterface $sshConnection
+     * @param ServerInterface $server
      */
-    public function __construct(SshConnection $sshConnection, Server $server){
+    public function __construct(SshConnectionInterface $sshConnection, ServerInterface $server){
         $this->connection = $sshConnection;
         $this->server = $server;
         $this->deployLocation = $this->server->deploy_location;
         $this->repository = $this->server->project->repository;
         $this->refFolder = $this->deployLocation.'/gitcache/'.preg_replace("/[^a-zA-Z0-9]/", "-", $this->repository);
-        $this->gitMirror = new GitMirror($sshConnection, $server);
+        $this->gitMirror = App::make(
+            'App\GitInteractions\GitMirrorInterface',
+            ['sshConnection'=>$sshConnection, 'server'=>$server]
+        );
     }
 
     /**
-     * @param Deployment $deployment
+     * @param DeploymentInterface $deployment
      */
-    public function deploy(Deployment $deployment){
-        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
+    public function deploy(DeploymentInterface $deployment): void
+    {
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $this->gitMirror->update();
         $this->makeReleaseAndSharedDirectories($deployment);
         $this->cloneAndCheckout($deployment);
@@ -73,7 +76,8 @@ class Git
     /**
      * @return array
      */
-    public function getGitLog(){
+    public function getGitLog(): array
+    {
         $this->gitMirror->update();
         $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' {$this->server->deploy_branch}";
         $res = $this->connection->execute($cmd);
@@ -90,9 +94,10 @@ class Git
 
 
     /**
-     * @param Deployment $deployment
+     * @param DeploymentInterface $deployment
      */
-    protected function makeReleaseAndSharedDirectories(Deployment $deployment){
+    protected function makeReleaseAndSharedDirectories(DeploymentInterface $deployment): void
+    {
         # its a bit safer to cd into the location folder and create the release folder from there
         $cmd = <<<BASH
         mkdir -p {$deployment->getCurrentReleaseLocation()} && 
@@ -107,9 +112,10 @@ BASH;
     }
 
     /**
-     * @param Deployment $deployment
+     * @param DeploymentInterface $deployment
      */
-    protected function cloneAndCheckout(Deployment $deployment){
+    protected function cloneAndCheckout(DeploymentInterface $deployment): void
+    {
         $commitRef = $deployment->commit;
         $cmd = <<<'BASH'
         function deployGit() {
@@ -138,7 +144,7 @@ BASH;
      * @param $commitRef string
      * @return string
      */
-    public function getGitDiff(string $commitRef)
+    public function getGitDiff(string $commitRef): string
     {
         $cmd = <<<'BASH'
         function gitDiff() {

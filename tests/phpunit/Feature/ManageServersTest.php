@@ -32,7 +32,7 @@ class ManageServersTest extends TestCase
     {
         $this->be($this->user);
         $project1 = factory('App\Project')->create();
-        $server = factory('App\Server')->make([
+        $server = factory('App\Server')->create([
             'name' => 'foo bar',
             'slug' => 'foo-bar',
             'project_id' => $project1->id
@@ -131,7 +131,7 @@ class ManageServersTest extends TestCase
         $this->be($this->user);
         $server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         factory('App\Deployment', 3)->create(['server_id' => $server->id]);
-        $response = $this->json('DELETE',route('DestroyServer',['server'=>$server, 'project'=> $this->project]));
+        $response = $this->json('DELETE',route('DestroyServer',['confirm'=>true, 'server'=>$server, 'project'=> $this->project]));
         $response->assertStatus(204);
         $this->assertDatabaseMissing('servers',['id' => $server->id]);
         $this->assertDatabaseMissing('deployments',['server_id' => $server->id]);

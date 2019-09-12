@@ -43,6 +43,51 @@ $app->singleton(
 
 /*
 |--------------------------------------------------------------------------
+| Bind Custom Interfaces
+|--------------------------------------------------------------------------
+|
+| Next, we need to bind some important interfaces into the container so
+| we will be able to resolve them when needed.
+|
+*/
+$app->singleton('App\DeploymentMessageCollectionSingletonInterface', function()
+{
+    return \App\DeploymentMessageCollectionSingleton::getInstance();
+});
+$app->bind('App\DeploymentActions\DeploymentActionsAbstractInterface',
+    'App\DeploymentActions\DeploymentActionsAbstract');
+$app->bind('App\DeploymentActions\PostDeploymentCommandsInterface',
+    'App\DeploymentActions\PostDeploymentCommands');
+$app->bind('App\DeploymentActions\PreDeploymentCommandsInterface',
+    'App\DeploymentActions\PreDeploymentCommands');
+$app->bind('App\DeploymentActions\RemoveOldReleasesInterface',
+    'App\DeploymentActions\RemoveOldReleases');
+$app->bind('App\DeploymentActions\LinkSharedFilesInterface','App\DeploymentActions\LinkSharedFiles');
+$app->bind('App\DeploymentActions\UpdateCurrentAndPreviousLinksInterface',
+    'App\DeploymentActions\UpdateCurrentAndPreviousLinks');
+$app->bind('App\GitInteractions\GitLocalInterface',
+    'App\GitInteractions\GitLocal');
+$app->bind('App\GitInteractions\GitMirrorInterface',
+    'App\GitInteractions\GitMirror');
+$app->bind('App\GitInteractions\GitInterface',
+    'App\GitInteractions\Git');
+$app->bind('App\DeploymentMessageInterface',
+    'App\DeploymentMessage');
+$app->bind('App\DeploymentInterface',
+    'App\Deployment');
+$app->bind('App\ProjectInterface',
+    'App\Project');
+$app->bind('App\ServerInterface',
+    'App\Server');
+$app->bind('App\SshConnectionInterface',
+    'App\SshConnection');
+$app->bind('App\UserInterface',
+    'App\User');
+
+
+
+/*
+|--------------------------------------------------------------------------
 | Return The Application
 |--------------------------------------------------------------------------
 |

@@ -10,7 +10,7 @@ class GitLocal
      * @param $remoteUrl
      * @return array
      */
-    public function getGitBranches($remoteUrl)
+    public function getGitBranches($remoteUrl): array
     {
         if(strlen($remoteUrl)===false){
             return [];

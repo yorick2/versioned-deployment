@@ -2,6 +2,7 @@
 
 namespace Tests\phpunit\Unit;
 
+use App;
 use App\DeploymentActions\LinkSharedFiles;
 use App\DeploymentActions\PreDeploymentCommands;
 use App\DeploymentActions\PostDeploymentCommands;
@@ -9,7 +10,6 @@ use App\DeploymentActions\RemoveOldReleases;
 use App\DeploymentActions\UpdateCurrentAndPreviousLinks;
 use App\GitInteractions\Git;
 use App\GitInteractions\GitMirror;
-use App\SshConnection;
 use Tests\phpunit\ReflectionClasses\ReflectedGitMirrorClass;
 use Tests\phpunit\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -31,7 +31,10 @@ class DeploymentTest extends TestCase
         $this->project = factory('App\Project')->create();
         $this->server = factory('App\Server')->create(['project_id'=>$this->project->id]);
         $this->deployment = factory('App\Deployment')->create(['server_id'=>$this->server->id]);
-        $this->connection = new SshConnection($this->server->toArray());
+        $this->connection = App::make(
+            'App\SshConnectionInterface',
+            ['attributes'=>$this->server->toArray()]
+        );
         $this->connection->connect();
     }
 

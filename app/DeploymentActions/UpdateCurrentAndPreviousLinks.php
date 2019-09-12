@@ -2,14 +2,14 @@
 
 namespace App\DeploymentActions;
 
-use App\DeploymentMessageCollectionSingleton;
+use App;
 
-class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements DeploymentActionInterface
+class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements UpdateCurrentAndPreviousLinksInterface
 {
 
-    public function execute()
+    public function execute():void
     {
-        $responseCollection = DeploymentMessageCollectionSingleton::getInstance();
+        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $cmd = <<<BASH
         function UpdateCurrentAndPreviousLinks(){
             cd {$this->deployment->server->deploy_location} &&

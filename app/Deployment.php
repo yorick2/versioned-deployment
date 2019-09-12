@@ -2,9 +2,10 @@
 
 namespace App;
 
+use App;
 use Illuminate\Database\Eloquent\Model;
 
-class Deployment extends Model
+class Deployment extends Model implements DeploymentInterface
 {
     /**
      * @var array
@@ -34,7 +35,7 @@ class Deployment extends Model
      */
     public function server()
     {
-        return $this->belongsTo(Server::class);
+        return $this->belongsTo(App::make('App\ServerInterface'));
     }
 
     /**
@@ -42,7 +43,7 @@ class Deployment extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
     }
 
     /**

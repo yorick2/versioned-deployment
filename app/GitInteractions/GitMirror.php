@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: yorick
- * Date: 29/08/19
- * Time: 15:51
- */
 
 namespace App\GitInteractions;
 
-
-use App\DeploymentMessageCollectionSingleton;
-use App\Server;
-use App\SshConnection;
+use App;
+use App\DeploymentMessageCollectionSingletonInterface;
+use App\ServerInterface;
+use App\SshConnectionInterface;
 
 class GitMirror
 {
@@ -46,11 +40,12 @@ class GitMirror
     protected $server;
 
     /**
-     * Git constructor.
-     * @param SshConnection $sshConnection
-     * @param Server $server
+     * GitMirror constructor.
+     * @param SshConnectionInterface $sshConnection
+     * @param ServerInterface $server
      */
-    public function __construct(SshConnection $sshConnection, Server $server){
+    public function __construct(SshConnectionInterface $sshConnection, ServerInterface $server)
+    {
         $this->connection = $sshConnection;
         $this->server = $server;
         $this->deployLocation = $this->server->deploy_location;
@@ -61,8 +56,9 @@ class GitMirror
     /**
      * make the git reference folder to use as a mirror. So the whole repo isn't downloaded each time. Reducing download time
      */
-    public function update(){
-        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
+    public function update(): void
+    {
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $this->deployLocation = $this->server->deploy_location;
         $repository = $this->server->project->repository;
         $cmd = "cd {$this->deployLocation} && mkdir -p {$this->refFolder} && echo folders created";
@@ -93,11 +89,11 @@ BASH;
     }
 
     /**
-     * @return array
+     * @return DeploymentMessageCollectionSingletonInterface
      */
-    public function clear(){
-//        $this->responses = collect(new DeploymentMessage());
-        $this->responses = DeploymentMessageCollectionSingleton::getInstance();
+    public function clear(): DeploymentMessageCollectionSingletonInterface
+    {
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $success = 0;
         $cmd = <<<'BASH'
         function clearGitMirrorFolder() {
@@ -112,7 +108,7 @@ BASH;
         $response = $this->connection->execute($cmd);
         if($response->success == true){
             $response_two = $this->connection->execute('ls '.$this->refFolder);
-            $success = (strlen($response_two->message)) ? 0 : 1 ;
+            $success = (strlen($response_two->message))? 0 : 1 ;
         }
         $response->success = $success;
         $response->name = 'clone into mirror (cache) folder';
