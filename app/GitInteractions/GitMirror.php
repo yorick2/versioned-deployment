@@ -3,6 +3,7 @@
 namespace App\GitInteractions;
 
 use App;
+use App\DeploymentMessageCollectionSingletonInterface;
 use App\ServerInterface;
 use App\SshConnectionInterface;
 
@@ -88,9 +89,9 @@ BASH;
     }
 
     /**
-     * @return array
+     * @return DeploymentMessageCollectionSingletonInterface
      */
-    public function clear(): array
+    public function clear(): DeploymentMessageCollectionSingletonInterface
     {
         $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
         $success = 0;
