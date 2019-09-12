@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\Deployment;
-use App\Project;
-use App\Server;
+use App\DeploymentInterface;
+use App\ProjectInterface;
+use App\ServerInterface;
 
 class DeploymentController extends Controller
 {
@@ -17,13 +17,13 @@ class DeploymentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Project $project, Server $server)
+    public function index(ProjectInterface $project, ServerInterface $server)
     {
-        $deploymentsCollection =$server->deployments()
+        $deploymentsCollection = $server->deployments()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         return view('deployments.index',compact('deploymentsCollection','project','server'));
@@ -33,11 +33,11 @@ class DeploymentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(Project $project, Server $server)
+    public function create(ProjectInterface $project, ServerInterface $server)
     {
         $gitLog = [];
         $connection = App::make(
@@ -57,11 +57,11 @@ class DeploymentController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param Project $project
-     * @param Server $server
-     * @return \Illuminate\Http\RedirectResponse
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function store(Project $project, Server $server)
+    public function store(ProjectInterface $project, ServerInterface $server)
     {
         $deployment = $server->executeDeployment([
             'user_id' => auth()->id(),
@@ -75,10 +75,12 @@ class DeploymentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Deployment  $deployment
-     * @return \Illuminate\Http\Response
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
+     * @param DeploymentInterface $deployment
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Project $project,Server $server,Deployment $deployment)
+    public function show(ProjectInterface $project, ServerInterface $server, DeploymentInterface $deployment)
     {
         return view('deployments.show', compact('project','server', 'deployment'));
     }
@@ -120,11 +122,11 @@ class DeploymentController extends Controller
     /**
      * Show git diff
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function gitDiff(Project $project,Server $server)
+    public function gitDiff(ProjectInterface $project,ServerInterface $server)
     {
         $gitDiff = [];
         $commitRef = request('commit');

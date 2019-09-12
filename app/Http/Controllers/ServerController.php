@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App;
-use App\Project;
-use App\Server;
+use App\ProjectInterface;
+use App\ServerInterface;
 
 class ServerController extends Controller
 {
@@ -16,10 +16,10 @@ class ServerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Http\Response
      */
-    public function index(Project $project)
+    public function index(ProjectInterface $project)
     {
         $serversCollection = $project->servers()
             ->orderBy('created_at', 'desc')
@@ -30,10 +30,10 @@ class ServerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Http\Response
      */
-    public function create(Project $project)
+    public function create(ProjectInterface $project)
     {
         $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
             ->getGitBranches($project->repository);
@@ -42,10 +42,10 @@ class ServerController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param Project $project
+     * @param ProjectInterface $project
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Project $project)
+    public function store(ProjectInterface $project)
     {
         $project->addServer([
             'project_id' => $project->id,
@@ -68,10 +68,11 @@ class ServerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Server  $server
-     * @return \Illuminate\Http\Response
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function show(Project $project, Server $server)
+    public function show(ProjectInterface $project, ServerInterface $server)
     {
         return view('servers.show', compact('project', 'server'));
     }
@@ -79,11 +80,11 @@ class ServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit(Project $project, Server $server)
+    public function edit(ProjectInterface $project, ServerInterface $server)
     {
         $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
             ->getGitBranches($project->repository);
@@ -93,11 +94,11 @@ class ServerController extends Controller
     /**
      * Show the form for deleting the specified resource.
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function delete(Project $project, Server $server)
+    public function delete(ProjectInterface $project, ServerInterface $server)
     {
         return view('servers.delete', compact('project', 'server'));
     }
@@ -105,11 +106,11 @@ class ServerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Project $project
-     * @param Server $server
-     * @return Server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function update(Project $project, Server $server)
+    public function update(ProjectInterface $project, ServerInterface $server)
     {
         $server->update(request([
             'name',
@@ -129,12 +130,12 @@ class ServerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Project $project
-     * @param Server $server
+     * @param ProjectInterface $project
+     * @param ServerInterface $server
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
-    public function destroy(Project $project, Server $server)
+    public function destroy(ProjectInterface $project, ServerInterface $server)
     {
         if(!request('confirm')){
             $error = \Illuminate\Validation\ValidationException::withMessages([

@@ -17,7 +17,7 @@ class Server extends Model implements ServerInterface
      */
     public function path(): string
     {
-        return $this->project()->first()->path().'/servers/'.$this->slug;
+        return $this->project()->first()->path().'/servers/'.$this->{$this->getRouteKeyName()};
     }
 
     /**
