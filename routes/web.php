@@ -1,39 +1,4 @@
 <?php
-App::bind('App\DeploymentActions\DeploymentActionsAbstractInterface',
-    'App\DeploymentActions\DeploymentActionsAbstract');
-App::bind('App\DeploymentActions\PostDeploymentCommandsInterface',
-    'App\DeploymentActions\PostDeploymentCommands');
-App::bind('App\DeploymentActions\PreDeploymentCommandsInterface',
-    'App\DeploymentActions\PreDeploymentCommands');
-App::bind('App\DeploymentActions\RemoveOldReleasesInterface',
-    'App\DeploymentActions\RemoveOldReleases');
-App::bind('App\DeploymentActions\LinkSharedFilesInterface','App\DeploymentActions\LinkSharedFiles');
-App::bind('App\DeploymentActions\UpdateCurrentAndPreviousLinksInterface',
-    'App\DeploymentActions\UpdateCurrentAndPreviousLinks');
-App::bind('App\GitInteractions\GitLocalInterface',
-    'App\GitInteractions\GitLocal');
-App::bind('App\GitInteractions\GitMirrorInterface',
-    'App\GitInteractions\GitMirror');
-App::bind('App\GitInteractions\GitInterface',
-    'App\GitInteractions\Git');
-App::bind('App\DeploymentMessageInterface',
-    'App\DeploymentMessage');
-App::bind('App\DeploymentInterface',
-    'App\Deployment');
-App::bind('App\ProjectInterface',
-    'App\Project');
-App::bind('App\ServerInterface',
-    'App\Server');
-App::bind('App\SshConnectionInterface',
-    'App\SshConnection');
-App::bind('App\UserInterface',
-    'App\User');
-
-App::singleton('App\DeploymentMessageCollectionSingletonInterface', function()
-{
-    return \App\DeploymentMessageCollectionSingleton::getInstance();
-});
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
