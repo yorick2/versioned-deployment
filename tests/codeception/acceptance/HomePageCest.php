@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class HomePageCest extends standardPageTests
 {
-
     protected $page;
 
     public function _before(AcceptanceTester $I)
@@ -20,6 +19,5 @@ class HomePageCest extends standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $publicKey = (new App\SshConnection)->getPublicKey();
         $I->see($publicKey);
-
     }
 }

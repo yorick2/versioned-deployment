@@ -11,16 +11,16 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFil
 
     public function execute(): void
     {
-        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $this->server = $this->deployment->server;
         $files = $this->server->shared_files;
 
         // remove white space
-        $files = preg_replace('/\s*,\s*/',',',trim($files));
+        $files = preg_replace('/\s*,\s*/', ',', trim($files));
         // replace \ with /
-        $files = preg_replace('/\\+ /','/ ',$files);
+        $files = preg_replace('/\\+ /', '/ ', $files);
         // replace multiple / with single /
-        $filesArray = explode(',', preg_replace('/\/+ /','/ ',$files));
+        $filesArray = explode(',', preg_replace('/\/+ /', '/ ', $files));
         $responseCollection->push($this->createFolders($filesArray));
         $responseCollection->push($this->linkFiles($filesArray));
     }
@@ -32,10 +32,10 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFil
     protected function createFolders(array $files): DeploymentMessageInterface
     {
         $command = '';
-        for($i=0;$i<count($files);$i++){
-            $fileName = ltrim($files[$i],'/');
-            $fileName = preg_replace('/\/+[^\/]*$/','',$fileName);
-            if(!strlen($fileName)){
+        for ($i=0;$i<count($files);$i++) {
+            $fileName = ltrim($files[$i], '/');
+            $fileName = preg_replace('/\/+[^\/]*$/', '', $fileName);
+            if (!strlen($fileName)) {
                 continue;
             }
             $command .= (strlen($command)) ? ' && ' : '' ;
@@ -53,13 +53,12 @@ class LinkSharedFiles extends DeploymentActionsAbstract implements LinkSharedFil
     {
         $location = $this->server->deploy_location;
         $command = '';
-        for($i=0;$i<count($files);$i++){
-            $fileName = ltrim($files[$i],'/');
+        for ($i=0;$i<count($files);$i++) {
+            $fileName = ltrim($files[$i], '/');
             $command .= (strlen($command)) ? ' && ' : '' ;
             $command .= "ln -s {$location}/shared/{$fileName} {$this->deployment->getCurrentReleaseLocation()}/{$fileName}";
         }
         $command .= '&& echo "files linked successfully"';
         return $this->connection->execute($command);
     }
-
 }

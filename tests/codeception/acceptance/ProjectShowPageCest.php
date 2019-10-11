@@ -5,14 +5,13 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ProjectShowPageCest extends standardPageTests
 {
-
     protected $page;
     protected $project;
 
     public function _before(AcceptanceTester $I)
     {
         $this->project = factory('App\Project')->create();
-        $this->page = route( 'ShowProject', [$this->project],false);
+        $this->page = route('ShowProject', [$this->project], false);
     }
 
     public function _after(AcceptanceTester $I)

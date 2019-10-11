@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Concerns\GuardsAttributes;
 use Illuminate\Database\Eloquent\Concerns\HidesAttributes;
 use phpDocumentor\Reflection\Types\This;
 
-abstract class SingletonAbstract {
-
+abstract class SingletonAbstract
+{
     use GuardsAttributes,
         HidesAttributes;
 
@@ -17,8 +17,7 @@ abstract class SingletonAbstract {
     public static function getInstance(): SingletonAbstract
     {
         static $instance = false;
-        if( $instance === false )
-        {
+        if ($instance === false) {
             $instance = new static();
         }
 
@@ -35,17 +34,23 @@ abstract class SingletonAbstract {
     /**
      * Make clone magic method private, so nobody can clone instance.
      */
-    private function __clone() {}
+    private function __clone()
+    {
+    }
 
     /**
      * Make sleep magic method private, so nobody can serialize instance.
      */
-    private function __sleep() {}
+    private function __sleep()
+    {
+    }
 
     /**
      * Make wakeup magic method private, so nobody can unserialize instance.
      */
-    private function __wakeup() {}
+    private function __wakeup()
+    {
+    }
 
     /**
      * Dynamically retrieve attributes on the model.
@@ -84,12 +89,15 @@ abstract class SingletonAbstract {
      *
      * @param  string  $key
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function getAttribute(string $key)
     {
         if (isset($this->{$key})) {
             return $this->{$key};
         }
+        return null;
     }
 
     /**
@@ -99,13 +107,14 @@ abstract class SingletonAbstract {
      */
     public function setAttribute(string $key, $value): this
     {
-        if(!$this->isFillable($key)){
+        if (!$this->isFillable($key)) {
             throw new \InvalidArgumentException(sprintf(
-                'Method %s::Attribute "%s" is not fillable', static::class, $key
+                'Method %s::Attribute "%s" is not fillable',
+                static::class,
+                $key
             ));
         }
         $this->{$key} = $value;
         return $this;
     }
-
 }

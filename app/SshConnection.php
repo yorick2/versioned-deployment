@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 
 class SshConnection extends Model implements SshConnectionInterface
@@ -38,7 +38,7 @@ class SshConnection extends Model implements SshConnectionInterface
      */
     protected function connectWithKey(): DeploymentMessageInterface
     {
-        if($message = $this->makeSshConnection()['success'] == 0){
+        if ($message = $this->makeSshConnection()['success'] == 0) {
             return App::make(
                 'App\DeploymentMessageInterface',
                 $message
@@ -50,7 +50,7 @@ class SshConnection extends Model implements SshConnectionInterface
 //                  $message
 //            );
 //        }
-        if($message = $this->authenticateWithPublicKey()['success'] == 0){
+        if ($message = $this->authenticateWithPublicKey()['success'] == 0) {
             return App::make(
                 'App\DeploymentMessageInterface',
                 $message
@@ -67,11 +67,11 @@ class SshConnection extends Model implements SshConnectionInterface
     }
 
     /**
-     * @return App\DeploymentMessageInterface
+     * @return \App\DeploymentMessageInterface
      */
     protected function connectWithPassword(): DeploymentMessageInterface
     {
-        if($message = $this->makeSshConnection()['success'] == 0){
+        if ($message = $this->makeSshConnection()['success'] == 0) {
             return App::make(
                 'App\DeploymentMessageInterface',
                 $message
@@ -79,11 +79,11 @@ class SshConnection extends Model implements SshConnectionInterface
         }
 //        if($message = $this->checkServerFingerprint()){
 //            return App::make(
-    //            'App\DeploymentMessageInterface',
-    //            $message
+        //            'App\DeploymentMessageInterface',
+        //            $message
 //              );
 //        }
-        if($message = $this->authenticateWithPassword()['success'] == 0){
+        if ($message = $this->authenticateWithPassword()['success'] == 0) {
             return App::make(
                 'App\DeploymentMessageInterface',
                 $message
@@ -104,7 +104,9 @@ class SshConnection extends Model implements SshConnectionInterface
      */
     protected function makeSshConnection(): array
     {
-        if (!($this->sshConnection=@ssh2_connect($this->getAttribute('deploy_host'), $this->getAttribute('deploy_port')))) {
+        $host = $this->getAttribute('deploy_host');
+        $port = $this->getAttribute('deploy_port');
+        if (!($this->sshConnection=@ssh2_connect($host, $port))) {
             return [
                     'name'=>'connect with password',
                     'success' => 0,
@@ -119,11 +121,19 @@ class SshConnection extends Model implements SshConnectionInterface
      */
     protected function authenticateWithPublicKey(): array
     {
-        if (!@ssh2_auth_pubkey_file($this->sshConnection, $this->getAttribute('deploy_user'), $this->ssh_auth_pub, $this->ssh_auth_priv, $this->ssh_auth_pass)) {
+        $user = $this->getAttribute('deploy_user');
+        if (!@ssh2_auth_pubkey_file(
+            $this->sshConnection,
+            $user,
+            $this->ssh_auth_pub,
+            $this->ssh_auth_priv,
+            $this->ssh_auth_pass
+        )) {
             return [
                     'name'=>'test ssh connection',
                     'success' => 0,
-                    'message'=>'Authentication with ssh key rejected by server'
+                    'message'=>'Authentication with ssh '.
+                        'key rejected by server'
                 ];
         }
         return ['success'=>1];
@@ -162,7 +172,7 @@ class SshConnection extends Model implements SshConnectionInterface
     public function getPublicKey(): string
     {
         $string = file_get_contents($this->getPublicKeyLocation());
-        if($string){
+        if ($string) {
             return $string;
         }
         return '';
@@ -213,6 +223,4 @@ class SshConnection extends Model implements SshConnectionInterface
         $this->execute('echo "EXITING" && exit;');
         $this->sshConnection = null;
     }
-
-
 }

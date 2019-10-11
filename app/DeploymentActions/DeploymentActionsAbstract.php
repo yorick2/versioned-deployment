@@ -2,7 +2,6 @@
 
 namespace App\DeploymentActions;
 
-
 use App\DeploymentInterface;
 use App\SshConnectionInterface;
 

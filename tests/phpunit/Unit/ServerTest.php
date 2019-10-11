@@ -23,17 +23,19 @@ class ServerTest extends TestCase
 
     public function testItHasAnOwner()
     {
-        $this->assertInstanceOf('App\User',$this->server->owner);
+        $this->assertInstanceOf('App\User', $this->server->owner);
     }
 
-    public function testItHasAUrlPath(){
+    public function testItHasAUrlPath()
+    {
         $this->assertEquals(
-            route('ShowServer',['server'=> $this->server, 'project' => $this->project], false),
+            route('ShowServer', ['server'=> $this->server, 'project' => $this->project], false),
             $this->server->path()
         );
     }
 
-    public function testCanAddADeployment(){
+    public function testCanAddADeployment()
+    {
         $this->server->executeDeployment([
             'user_id' => 1,
             'notes' => 'some notes',

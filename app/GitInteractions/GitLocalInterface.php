@@ -3,7 +3,6 @@
 
 namespace App\GitInteractions;
 
-
 interface GitLocalInterface
 {
     /**

@@ -26,7 +26,7 @@ class ViewDeploymentTest extends TestCase
     public function testAnAuthenticatedUserCanSeeAllDeploymentsForServer()
     {
         $this->be($this->user);
-        $response = $this->get(route('DeploymentsIndex',['server'=>$this->server,'project'=> $this->project]));
+        $response = $this->get(route('DeploymentsIndex', ['server'=>$this->server,'project'=> $this->project]));
         $response->assertStatus(200);
         $response->assertSee($this->deployment->name);
     }
@@ -35,7 +35,7 @@ class ViewDeploymentTest extends TestCase
     public function testAnUnauthenticatedUserCanNotSeeAllDeploymentsForServer()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->get(route('DeploymentsIndex',['server'=>$this->server,'project'=> $this->project]));
+        $this->get(route('DeploymentsIndex', ['server'=>$this->server,'project'=> $this->project]));
     }
 
     public function testAnAuthenticatedUserCanViewASingleDeployment()
@@ -57,5 +57,4 @@ class ViewDeploymentTest extends TestCase
             ['deployment'=>$this->deployment,'server'=>$this->server,'project'=> $this->project]
         ));
     }
-
 }

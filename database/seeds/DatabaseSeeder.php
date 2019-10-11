@@ -22,11 +22,12 @@ class DatabaseSeeder extends Seeder
     /**
      * @return $this
      */
-    protected function addDeploymentData(){
+    protected function addDeploymentData()
+    {
         $projects = factory('App\Project', 5)->create();
-        $projects->each(function ($project){
+        $projects->each(function ($project) {
             $servers = factory('App\Server', 5)->create(['project_id'=>$project->id]);
-            $servers->each(function ($server){
+            $servers->each(function ($server) {
                 factory('App\Deployment', 5)->create(['server_id'=>$server->id]);
             });
         });
@@ -36,10 +37,11 @@ class DatabaseSeeder extends Seeder
     /**
      * @return $this
      */
-    protected function addMyUser(){
+    protected function addMyUser()
+    {
         $password = 'password1';
-        $user = User::where('email','test@test.com')->first();
-        if($user){
+        $user = User::where('email', 'test@test.com')->first();
+        if ($user) {
             $user->password = Hash::make($password);
             $user->save();
             return $this;

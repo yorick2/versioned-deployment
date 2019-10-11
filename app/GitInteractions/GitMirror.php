@@ -58,7 +58,7 @@ class GitMirror
      */
     public function update(): void
     {
-        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $this->deployLocation = $this->server->deploy_location;
         $repository = $this->server->project->repository;
         $cmd = "cd {$this->deployLocation} && mkdir -p {$this->refFolder} && echo folders created";
@@ -93,7 +93,7 @@ BASH;
      */
     public function clear(): DeploymentMessageCollectionSingletonInterface
     {
-        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $success = 0;
         $cmd = <<<'BASH'
         function clearGitMirrorFolder() {
@@ -106,7 +106,7 @@ BASH;
 BASH;
         $cmd .= "\n clearGitMirrorFolder $this->refFolder";
         $response = $this->connection->execute($cmd);
-        if($response->success == true){
+        if ($response->success == true) {
             $response_two = $this->connection->execute('ls '.$this->refFolder);
             $success = (strlen($response_two->message))? 0 : 1 ;
         }

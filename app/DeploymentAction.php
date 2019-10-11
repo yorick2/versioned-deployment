@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 
 class DeploymentAction extends Model implements DeploymentActionInterface
@@ -23,11 +23,6 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      */
     protected $connection;
 
-    /**
-     * @var Git
-     */
-    protected $git;
-
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -39,9 +34,9 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      */
     public function execute(Deployment $deployment)
     {
-        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $server = $deployment->server;
-        if($this->getSshConnection($server) === false) {
+        if ($this->getSshConnection($server) === false) {
             return $this->responses;
         }
         (App::make(
@@ -78,17 +73,17 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      * @param Server $server
      * @return bool
      */
-    protected function getSshConnection($server){
+    protected function getSshConnection($server)
+    {
         $this->connection = App::make(
             'App\SshConnectionInterface',
             ['attributes'=>$server->toArray()]
         );
         $response = $this->connection->connect();
         $this->responses->push($response);
-        if ($response->success == 0 ) {
+        if ($response->success == 0) {
             return 0;
         }
         return 1;
     }
-
 }

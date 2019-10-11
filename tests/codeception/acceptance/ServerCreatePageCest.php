@@ -5,7 +5,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ServerCreatePageCest extends standardPageTests
 {
-
     protected $page;
     protected $project;
     protected $server;
@@ -36,7 +35,8 @@ class ServerCreatePageCest extends standardPageTests
         );
     }
 
-    protected function removeFieldsNotOnForm($data){
+    protected function removeFieldsNotOnForm($data)
+    {
         unset(
             $data['project_id'],
             $data['user_id'],
@@ -55,8 +55,8 @@ class ServerCreatePageCest extends standardPageTests
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
         $data = $this->removeFieldsNotOnForm($this->server->toArray());
-        foreach($data as $key => $value){
-            if($key == 'deploy_branch') {
+        foreach ($data as $key => $value) {
+            if ($key == 'deploy_branch') {
                 continue;
             }
             $I->fillField("[name={$key}]", $value);

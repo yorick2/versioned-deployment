@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class UserIndexPageCest extends standardPageTests
 {
-
     protected $page;
     protected $user;
 
@@ -48,7 +47,7 @@ class UserIndexPageCest extends standardPageTests
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
         try {
-        $I->click('ul.pagination li.page-item:nth-last-child(2) a');
+            $I->click('ul.pagination li.page-item:nth-last-child(2) a');
         } catch (Exception $e) {
         }
         $I->seeElement('a[href="'.route('users.show', [$this->user]).'"]');
@@ -74,5 +73,4 @@ class UserIndexPageCest extends standardPageTests
 //        $I->waitForElementNotVisible('#confirmDelete', 15);
 //        $I->dontSeeRecord('users', ['id' => $this->user->id]);
 //    }
-
 }

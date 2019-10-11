@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ProjectIndexPageCest extends standardPageTests
 {
-
     protected $page;
     protected $projectCollection;
 
@@ -17,7 +16,7 @@ class ProjectIndexPageCest extends standardPageTests
 
     public function _after(AcceptanceTester $I)
     {
-        foreach ($this->projectCollection as $project){
+        foreach ($this->projectCollection as $project) {
             $project->owner->delete();
             $project->delete();
         }
@@ -29,9 +28,8 @@ class ProjectIndexPageCest extends standardPageTests
         $I->loginAsTheTestUser();
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
-        foreach($this->projectCollection as $project){
-            $I->seeLink($project->name,$project->slug);
+        foreach ($this->projectCollection as $project) {
+            $I->seeLink($project->name, $project->slug);
         }
     }
-
 }

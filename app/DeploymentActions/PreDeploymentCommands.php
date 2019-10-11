@@ -8,9 +8,9 @@ class PreDeploymentCommands extends DeploymentActionsAbstract implements PreDepl
 {
     public function execute(): void
     {
-        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $cmd = "cd {$this->deployment->getCurrentReleaseLocation()} && {$this->deployment->server->pre_deploy_commands}";
         $response = $this->connection->execute($cmd);
-        $responseCollection->push($response->setAttribute('name','pre-deploy custom commands'));
+        $responseCollection->push($response->setAttribute('name', 'pre-deploy custom commands'));
     }
 }

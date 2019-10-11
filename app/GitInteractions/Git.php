@@ -3,7 +3,7 @@
 
 namespace App\GitInteractions;
 
-Use App;
+use App;
 use App\DeploymentInterface;
 use App\ServerInterface;
 use App\SshConnectionInterface;
@@ -50,7 +50,8 @@ class Git
      * @param SshConnectionInterface $sshConnection
      * @param ServerInterface $server
      */
-    public function __construct(SshConnectionInterface $sshConnection, ServerInterface $server){
+    public function __construct(SshConnectionInterface $sshConnection, ServerInterface $server)
+    {
         $this->connection = $sshConnection;
         $this->server = $server;
         $this->deployLocation = $this->server->deploy_location;
@@ -67,7 +68,7 @@ class Git
      */
     public function deploy(DeploymentInterface $deployment): void
     {
-        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $this->gitMirror->update();
         $this->makeReleaseAndSharedDirectories($deployment);
         $this->cloneAndCheckout($deployment);
@@ -82,8 +83,8 @@ class Git
         $cmd = "cd {$this->refFolder} && git rev-list --max-count=20 --pretty='%H ; %h : %s' {$this->server->deploy_branch}";
         $res = $this->connection->execute($cmd);
         $log = explode("\n", $res['message']);
-        for($i=0;$i<count($log);$i++){
-            if (strpos( $log[$i], ';') === false) {
+        for ($i=0;$i<count($log);$i++) {
+            if (strpos($log[$i], ';') === false) {
                 continue;
             }
             list($key, $val) = explode(' ; ', $log[$i]);
@@ -107,7 +108,7 @@ class Git
 BASH;
         $response = $this->connection->execute($cmd);
         $response->name = 'make release folder';
-        $response->success = (strpos($response->message,'folders created') === false) ? 0 : 1;
+        $response->success = (strpos($response->message, 'folders created') === false) ? 0 : 1;
         $this->responses->push($response);
     }
 
@@ -136,7 +137,7 @@ BASH;
         $cmd .= "\n deployGit $this->repository $this->refFolder $commitRef {$deployment->getCurrentReleaseLocation()}";
         $response = $this->connection->execute($cmd);
         $response->name = 'clone into release folder using the mirror repository';
-        $response->success = (strpos($response->message,'git clone created') === false) ? 0 : 1;
+        $response->success = (strpos($response->message, 'git clone created') === false) ? 0 : 1;
         $this->responses->push($response);
     }
 
@@ -151,7 +152,7 @@ BASH;
             local deployLocation="${1}";
             local commitRef="${2}";
             cd ${deployLocation}/current
-            $(git pull origin master)
+            $(git fetch origin master)
             git diff --name-only $commitRef
         }
 BASH;

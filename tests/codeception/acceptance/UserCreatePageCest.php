@@ -6,7 +6,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class UserCreatePageCest extends standardPageTests
 {
-
     protected $page;
     protected $user;
 
@@ -33,7 +32,8 @@ class UserCreatePageCest extends standardPageTests
         );
     }
 
-    protected function removeFieldsNotOnForm($data){
+    protected function removeFieldsNotOnForm($data)
+    {
         unset(
             $data['id'],
             $data['password'],
@@ -51,7 +51,7 @@ class UserCreatePageCest extends standardPageTests
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
         $data = $this->removeFieldsNotOnForm($this->user->toArray());
-        foreach($data as $key => $value){
+        foreach ($data as $key => $value) {
             $I->fillField("[name={$key}]", $value);
         }
         $I->fillField("[name=password]", 'password');

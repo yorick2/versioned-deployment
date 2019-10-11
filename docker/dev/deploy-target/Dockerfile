@@ -62,7 +62,7 @@ RUN chown :${SSH_MASTER_USER} /var/www/html-old
 RUN echo '<?php echo phpinfo(); ' > /var/www/html-old/index.php
 RUN chown ${SSH_MASTER_USER}:${SSH_MASTER_USER} /var/www/html-old/index.php
 
-RUN ln -s /var/www/html-old /var/www/html
+RUN ln -s /var/www/current /var/www/html
 
 # run services you want to continue to run in a single string of commands,
 # which finishes with a command non ending. This is cos docker closes services when complete.

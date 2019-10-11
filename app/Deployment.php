@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Deployment extends Model implements DeploymentInterface
 {
@@ -43,14 +43,15 @@ class Deployment extends Model implements DeploymentInterface
      */
     public function owner()
     {
-        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'), 'user_id');
     }
 
     /**
      * @return string relative location of the current release
      */
-    public function getCurrentReleaseLocation(){
-        if ($this->releaseLocation===null){
+    public function getCurrentReleaseLocation()
+    {
+        if ($this->releaseLocation===null) {
             $this->releaseLocation = "{$this->server->deploy_location}/releases/{$this->getServerDate()}";
         }
         return $this->releaseLocation;
@@ -59,8 +60,9 @@ class Deployment extends Model implements DeploymentInterface
     /**
      * @return string
      */
-    protected function getServerDate(){
-        if($this->serverDate){
+    protected function getServerDate()
+    {
+        if ($this->serverDate) {
             return $this->serverDate;
         }
         $this->serverDate = date("Y-m-d_H-i-s");

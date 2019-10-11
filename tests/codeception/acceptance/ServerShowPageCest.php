@@ -5,7 +5,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ServerShowPageCest extends standardPageTests
 {
-
     protected $page;
     protected $server;
     protected $project;
@@ -14,7 +13,7 @@ class ServerShowPageCest extends standardPageTests
     {
         $this->server = factory('App\Server')->create();
         $this->project = $this->server->project;
-        $this->page = route( 'ShowServer', [$this->project, $this->server],false);
+        $this->page = route('ShowServer', [$this->project, $this->server], false);
     }
 
     public function _after(AcceptanceTester $I)
@@ -29,7 +28,7 @@ class ServerShowPageCest extends standardPageTests
         $I->loginAsTheTestUser();
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
-        $I->seeInField('form input[name=name]',$this->server->name);
+        $I->seeInField('form input[name=name]', $this->server->name);
     }
 
     public function see_a_link_to_the_servers_list(AcceptanceTester $I)

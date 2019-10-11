@@ -26,7 +26,7 @@ class DeploymentController extends Controller
         $deploymentsCollection = $server->deployments()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('deployments.index',compact('deploymentsCollection','project','server'));
+        return view('deployments.index', compact('deploymentsCollection', 'project', 'server'));
     }
 
 
@@ -45,14 +45,14 @@ class DeploymentController extends Controller
             ['attributes'=>$server->toArray()]
         );
         $response = $connection->connect();
-        if ($response['success'] != 0 ) {
+        if ($response['success'] != 0) {
             $git = App::make(
                 'App\GitInteractions\Git',
                 ['sshConnection'=>$connection, 'server'=>$server]
             );
             $gitLog = $git->getGitLog();
         }
-        return view('deployments.create',compact('server','project','gitLog'));
+        return view('deployments.create', compact('server', 'project', 'gitLog'));
     }
 
     /**
@@ -69,7 +69,7 @@ class DeploymentController extends Controller
             'commit' => request('commit')
         ]);
         // used as it shows the right url path in the breadcrumbs
-        return redirect(route('ShowDeployment',compact('server','project', 'deployment')));
+        return redirect(route('ShowDeployment', compact('server', 'project', 'deployment')));
     }
 
     /**
@@ -82,7 +82,7 @@ class DeploymentController extends Controller
      */
     public function show(ProjectInterface $project, ServerInterface $server, DeploymentInterface $deployment)
     {
-        return view('deployments.show', compact('project','server', 'deployment'));
+        return view('deployments.show', compact('project', 'server', 'deployment'));
     }
 
 //    /**
@@ -126,7 +126,7 @@ class DeploymentController extends Controller
      * @param ServerInterface $server
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function gitDiff(ProjectInterface $project,ServerInterface $server)
+    public function gitDiff(ProjectInterface $project, ServerInterface $server)
     {
         $gitDiff = [];
         $commitRef = request('commit');
@@ -135,15 +135,13 @@ class DeploymentController extends Controller
             ['attributes'=>$server->toArray()]
         );
         $response = $connection->connect();
-        if ($response['success'] != 0 ) {
+        if ($response['success'] != 0) {
             $git = App::make(
                 'App\GitInteractions\GitInterface',
                 ['sshConnection'=>$connection, 'server'=>$server]
             );
             $gitDiff = $git->getGitDiff($commitRef);
         }
-        return view('deployments.gitDiff',compact('server','project', 'commitRef', 'gitDiff'));
+        return view('deployments.gitDiff', compact('server', 'project', 'commitRef', 'gitDiff'));
     }
-
-
 }

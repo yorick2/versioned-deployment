@@ -4,7 +4,8 @@ namespace App;
 
 use Illuminate\Support\Collection;
 
-interface DeploymentMessageCollectionSingletonInterface {
+interface DeploymentMessageCollectionSingletonInterface
+{
 
     /**
      * @param bool $success
@@ -17,6 +18,5 @@ interface DeploymentMessageCollectionSingletonInterface {
      * @param DeploymentMessageInterface $item
      * @return Collection
      */
-    function push(DeploymentMessageInterface $item): Collection;
-
+    public function push(DeploymentMessageInterface $item): Collection;
 }

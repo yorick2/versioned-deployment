@@ -30,7 +30,7 @@ class CreateServersTable extends Migration
             $table->text('notes')->nullable();
             $table->timestamps();
         });
-        Schema::table('servers', function($table) {
+        Schema::table('servers', function ($table) {
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }

@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ProjectEditPageCest extends standardPageTests
 {
-
     protected $page;
     protected $project;
 
@@ -16,8 +15,8 @@ class ProjectEditPageCest extends standardPageTests
             'notes' => 'some test notes goe here'
         ];
         $this->project = factory('App\Project')->create($originalProjectData);
-        $I->seeRecord('projects',$originalProjectData);
-        $this->page = route( 'EditProject', [$this->project],false);
+        $I->seeRecord('projects', $originalProjectData);
+        $this->page = route('EditProject', [$this->project], false);
     }
 
     public function _after(AcceptanceTester $I)
@@ -49,7 +48,7 @@ class ProjectEditPageCest extends standardPageTests
             'repository' => 'https://github.com/test/test',
             'notes' => 'some test new notes goe here, replacing old ones'
         ];
-        foreach($newData as $key => $data){
+        foreach ($newData as $key => $data) {
             $I->fillField("[name={$key}]", $data);
         }
         $I->click('button[type=submit]');
@@ -57,8 +56,6 @@ class ProjectEditPageCest extends standardPageTests
             route('ProjectsIndex', [], false)
         );
         $newData['id'] = $this->project->id;
-        $I->seeRecord('projects',$newData);
+        $I->seeRecord('projects', $newData);
     }
-
-
 }

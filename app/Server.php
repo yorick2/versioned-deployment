@@ -2,14 +2,14 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Server extends Model implements ServerInterface
 {
-
     protected $guarded = [];
 
     /**
@@ -41,7 +41,7 @@ class Server extends Model implements ServerInterface
      */
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'), 'user_id');
     }
 
     public function getRouteKeyName(): string
@@ -55,15 +55,15 @@ class Server extends Model implements ServerInterface
     public function setNameAttribute($value): void
     {
         $this->attributes['name'] = $value;
-        if($this->getOriginal('name') == $this->getAttribute('name')) {
+        if ($this->getOriginal('name') == $this->getAttribute('name')) {
             return;
         }
-        $slug = str_slug($value);
+        $slug = Str::slug($value);
         $slugExists = static::where([
             ['slug', '=', $slug],
             ['project_id', '=', $this->project_id]
         ])->exists();
-        if($slugExists){
+        if ($slugExists) {
             $slug = $this->incrementSlug($value);
         }
         $this->attributes['slug'] = $slug;
@@ -79,16 +79,21 @@ class Server extends Model implements ServerInterface
             ['name', '=', $name],
             ['project_id', '=', $this->project_id],
         ])->latest('id')->value('slug');
-        if (is_numeric(substr($maxSlug,-1))){
-            return preg_replace_callback('/(\d+)$/',function ($matches) {
+        if (is_numeric(substr($maxSlug, -1))) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
                 return $matches[1] + 1;
             }, $maxSlug);
         }
-        $slug = str_slug($name);
+        $slug = Str::slug($name);
         return "{$slug}-2";
     }
 
 
+    /**
+     * @param array $deploymentData
+     * @return Deployment
+     *
+     */
     public function executeDeployment(array $deploymentData): Deployment
     {
         $deployments = $this->deployments();
@@ -106,7 +111,7 @@ class Server extends Model implements ServerInterface
                 'success' => $response->success,
                 'output' => $response->collection->toJson()
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $deployment->update([
                 'success' => 0,
                 'output' => ''
@@ -114,5 +119,4 @@ class Server extends Model implements ServerInterface
         }
         return $deployment;
     }
-
 }
