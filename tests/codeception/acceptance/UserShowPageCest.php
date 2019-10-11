@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class UserShowPageCest extends standardPageTests
 {
-
     protected $page;
     protected $user;
 
@@ -48,5 +47,4 @@ class UserShowPageCest extends standardPageTests
         $I->seeElement('a[href="'.route('users.edit', [$this->user], false).'"]');
         $I->seeElement('form[action="'.route('user.destroy', [$this->user]).'"] button[data-title="Delete User"]');
     }
-
 }

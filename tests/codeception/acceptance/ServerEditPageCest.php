@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ServerEditPageCest extends standardPageTests
 {
-
     protected $page;
     protected $server;
     protected $project;
@@ -26,8 +25,8 @@ class ServerEditPageCest extends standardPageTests
             'notes' => 'some test notes goe here'
         ];
         $this->server = factory('App\Server')->create($originalServerData);
-        $I->seeRecord('servers',$originalServerData);
-        $this->page = route( 'EditServer', [$this->project, $this->server],false);
+        $I->seeRecord('servers', $originalServerData);
+        $this->page = route('EditServer', [$this->project, $this->server], false);
     }
 
     public function _after(AcceptanceTester $I)
@@ -66,8 +65,8 @@ class ServerEditPageCest extends standardPageTests
             'post_deploy_commands' => 'rm placeholder_two.txt',
             'notes' => 'some test new notes goe here, replacing old ones'
         ];
-        foreach($newData as $key => $data){
-            if($key == 'deploy_branch'){
+        foreach ($newData as $key => $data) {
+            if ($key == 'deploy_branch') {
                 continue;
             }
             $I->fillField('[name="'.$key.'"]', $data);
@@ -78,8 +77,6 @@ class ServerEditPageCest extends standardPageTests
             route('ServersIndex', [$this->project], false)
         );
         $newData['id'] = $this->server->id;
-        $I->seeRecord('servers',$newData);
+        $I->seeRecord('servers', $newData);
     }
-
-
 }

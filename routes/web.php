@@ -9,9 +9,9 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::model('project','App\ProjectInterface');
-Route::model('server','App\ServerInterface');
-Route::model('deployment','App\DeploymentInterface');
+Route::model('project', 'App\ProjectInterface');
+Route::model('server', 'App\ServerInterface');
+Route::model('deployment', 'App\DeploymentInterface');
 
 Route::get('/', function () {
     return view('welcome');

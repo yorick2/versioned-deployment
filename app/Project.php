@@ -32,7 +32,7 @@ class Project extends Model implements ProjectInterface
      */
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'), 'user_id');
     }
 
     /**
@@ -57,10 +57,10 @@ class Project extends Model implements ProjectInterface
     public function setNameAttribute(string $value): void
     {
         $this->attributes['name'] = $value;
-        if($this->getOriginal('name') == $this->getAttribute('name')) {
+        if ($this->getOriginal('name') == $this->getAttribute('name')) {
             return;
         }
-        if(static::whereSlug($slug = str_slug($value))->exists()){
+        if (static::whereSlug($slug = str_slug($value))->exists()) {
             $slug = $this->incrementSlug($value);
         }
         $this->attributes['slug'] = $slug;
@@ -73,13 +73,12 @@ class Project extends Model implements ProjectInterface
     public function incrementSlug(string $name): string
     {
         $maxSlug = static::whereName($name)->latest('id')->value('slug');
-        if (is_numeric(substr($maxSlug,-1))){
-            return preg_replace_callback('/(\d+)$/',function ($matches) {
+        if (is_numeric(substr($maxSlug, -1))) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
                 return $matches[1] + 1;
             }, $maxSlug);
         }
         $slug = str_slug($name);
         return "{$slug}-2";
     }
-
 }

@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class ServerDeletePageCest extends standardPageTests
 {
-
     protected $page;
     protected $server;
     protected $project;

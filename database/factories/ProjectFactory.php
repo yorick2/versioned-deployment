@@ -7,7 +7,7 @@ $factory->define(App\Project::class, function (Faker $faker) {
     return [
         'name' => $name,
         'slug' => str_slug($name),
-        'user_id' => function(){
+        'user_id' => function () {
             return factory('App\User')->create()->id;
         },
         'repository' => 'https://github.com/octocat/Hello-World',

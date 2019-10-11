@@ -39,9 +39,9 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      */
     public function execute(Deployment $deployment)
     {
-        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');;
+        $this->responses = App::make('App\DeploymentMessageCollectionSingletonInterface');
         $server = $deployment->server;
-        if($this->getSshConnection($server) === false) {
+        if ($this->getSshConnection($server) === false) {
             return $this->responses;
         }
         (App::make(
@@ -78,17 +78,17 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      * @param Server $server
      * @return bool
      */
-    protected function getSshConnection($server){
+    protected function getSshConnection($server)
+    {
         $this->connection = App::make(
             'App\SshConnectionInterface',
             ['attributes'=>$server->toArray()]
         );
         $response = $this->connection->connect();
         $this->responses->push($response);
-        if ($response->success == 0 ) {
+        if ($response->success == 0) {
             return 0;
         }
         return 1;
     }
-
 }

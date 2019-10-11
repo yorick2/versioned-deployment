@@ -16,7 +16,8 @@ abstract class standardPageTests
      */
     protected $page;
 
-    public function can_see_the_top_navigation_links(\AcceptanceTester $I) {
+    public function can_see_the_top_navigation_links(\AcceptanceTester $I)
+    {
         $I->wantTo('see the top navigation links');
         $I->assertNotNull($this->page);
         $I->loginAsTheTestUser();
@@ -24,13 +25,13 @@ abstract class standardPageTests
         $I->seeCurrentUrlEquals($this->page);
         $links = [
             'Version Deployment' => '',
-            'Home' => route('home',[],false),
-            'Users' => route('users',[],false),
-            'Projects' => route('ProjectsIndex',[],false),
-            'Logout' => route('logout',[],false),
+            'Home' => route('home', [], false),
+            'Users' => route('users', [], false),
+            'Projects' => route('ProjectsIndex', [], false),
+            'Logout' => route('logout', [], false),
         ];
         $keys = array_keys($links);
-        for($j=0;$j<count($links);$j++){
+        for ($j=0;$j<count($links);$j++) {
             $I->seeLink($keys[$j], $links[$keys[$j]]);
         }
     }

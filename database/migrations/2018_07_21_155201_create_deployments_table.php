@@ -23,7 +23,7 @@ class CreateDeploymentsTable extends Migration
             $table->text('output')->nullable();
             $table->timestamps();
         });
-        Schema::table('deployments', function($table) {
+        Schema::table('deployments', function ($table) {
             $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');
         });
     }

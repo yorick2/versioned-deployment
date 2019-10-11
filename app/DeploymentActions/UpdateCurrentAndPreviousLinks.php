@@ -6,7 +6,6 @@ use App;
 
 class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements UpdateCurrentAndPreviousLinksInterface
 {
-
     public function execute():void
     {
         $responseCollection = App::make('App\DeploymentMessageCollectionSingletonInterface');
@@ -25,7 +24,7 @@ class UpdateCurrentAndPreviousLinks extends DeploymentActionsAbstract implements
 BASH;
         $response = $this->connection->execute($cmd);
         $response->name = 'Update Current and Previous Links';
-        $response->success = (strpos($response->message,'current link updated successfully') === false) ? 0 : 1;
+        $response->success = (strpos($response->message, 'current link updated successfully') === false) ? 0 : 1;
         $responseCollection->push($response);
     }
 }

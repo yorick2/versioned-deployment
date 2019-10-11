@@ -21,5 +21,4 @@ interface SshConnectionInterface
      * @return void
      */
     public function disconnect(): void;
-
 }

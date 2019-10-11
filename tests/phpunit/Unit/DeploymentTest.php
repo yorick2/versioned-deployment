@@ -40,10 +40,11 @@ class DeploymentTest extends TestCase
 
     public function testItHasAnOwner()
     {
-        $this->assertInstanceOf('App\User',$this->deployment->owner);
+        $this->assertInstanceOf('App\User', $this->deployment->owner);
     }
 
-    public function testItHasAUrlPath(){
+    public function testItHasAUrlPath()
+    {
         $this->assertEquals(
             route(
                 'ShowDeployment',
@@ -64,7 +65,8 @@ class DeploymentTest extends TestCase
         $this->assertStringStartsWith('foo', $response['message']);
     }
 
-    public function testCreateMirrorWorks(){
+    public function testCreateMirrorWorks()
+    {
         $reflectedGitMirrorClass = new ReflectedGitMirrorClass($this->connection, $this->server);
         $mirrorFolder = $reflectedGitMirrorClass->getRefFolder();
         $gitMirror = new GitMirror(
@@ -76,8 +78,8 @@ class DeploymentTest extends TestCase
         $this->assertEmpty($response['message']);
         $gitMirror->update();
         $response = $this->connection->execute("ls $mirrorFolder");
-        $this->assertRegExp('/HEAD/',$response['message']);
-        $this->assertRegExp('/branches/',$response['message']);
+        $this->assertRegExp('/HEAD/', $response['message']);
+        $this->assertRegExp('/branches/', $response['message']);
     }
 
     public function testGitCloneWorks()
@@ -106,7 +108,8 @@ class DeploymentTest extends TestCase
         $this->assertStringStartsWith('7fd1a60b01f91b314f59955a4e4d4e80d8edf11d', $response['message']);
     }
 
-    public function testPreDeploymentCustomCommandsWorks(){
+    public function testPreDeploymentCustomCommandsWorks()
+    {
         $git = new Git(
             $this->connection,
             $this->server
@@ -129,7 +132,8 @@ class DeploymentTest extends TestCase
         );
     }
 
-    public function testPostDeploymentCustomCommandsWorks(){
+    public function testPostDeploymentCustomCommandsWorks()
+    {
         $location = $this->server->deploy_location;
         $this->connection->execute("touch {$location}/placeholder.txt");
         $this->assertStringStartsWith(
@@ -144,7 +148,8 @@ class DeploymentTest extends TestCase
         );
     }
 
-    public function testSharedFoldersLinked(){
+    public function testSharedFoldersLinked()
+    {
         $sharedFiles = [
             "test/testFolder",
             "test/testFolder2",
@@ -163,15 +168,15 @@ class DeploymentTest extends TestCase
         $rootLocation = $this->server->deploy_location;
         $cmd = "cd $rootLocation";
         // ensure the files are not already linked
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
-            $cmd .= " && rm -rf {$releaseLocation}/".preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && rm -rf {$releaseLocation}/".preg_replace('/\/+[^\/]*$/', '', $sharedFiles[$i]);
         }
         // create shared files
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $cmd .= " && mkdir -p shared/{$sharedFiles[$i]}";
         }
         $this->connection->execute($cmd);
-        for($i=0;$i<sizeof($sharedFiles);$i++){
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertEmpty(
                 $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
                 "{$releaseLocation}/{$sharedFiles[$i]} exists already. So the test is invalid"
@@ -179,14 +184,14 @@ class DeploymentTest extends TestCase
         }
         $linkSharedFiles = new LinkSharedFiles($this->connection, $deployment);
         $linkSharedFiles->execute();
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertStringStartsWith(
                 "{$releaseLocation}/{$sharedFiles[$i]}",
                 $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
                 "{$releaseLocation}/{$sharedFiles[$i]} dose not exist"
             );
         }
-        for($i=0;$i<sizeof($sharedFiles);$i++){
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertStringStartsWith(
                 'true',
                 $this->connection->execute(
@@ -199,7 +204,8 @@ EOF
         }
     }
 
-    public function testSharedFilesLinked(){
+    public function testSharedFilesLinked()
+    {
         $sharedFiles = [
             "/test/test.txt",
             "/test/test2.txt",
@@ -218,18 +224,18 @@ EOF
         $rootLocation = $this->server->deploy_location;
         $cmd = "cd $rootLocation";
         // ensure the files are not already linked
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
-            $cmd .= " && rm -f {$releaseLocation}/".preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= " && rm -f {$releaseLocation}/".preg_replace('/\/+[^\/]*$/', '', $sharedFiles[$i]);
         }
         // create shared files
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
-            $cmd .= ' && mkdir -p shared/'.preg_replace('/\/+[^\/]*$/','',$sharedFiles[$i]);
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
+            $cmd .= ' && mkdir -p shared/'.preg_replace('/\/+[^\/]*$/', '', $sharedFiles[$i]);
         }
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $cmd .= " && touch shared/{$sharedFiles[$i]}";
         }
         $this->connection->execute($cmd);
-        for($i=0;$i<sizeof($sharedFiles);$i++){
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertEmpty(
                 $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
                 "{$releaseLocation}/{$sharedFiles[$i]} exists already. So the test is invalid"
@@ -237,14 +243,14 @@ EOF
         }
         $linkSharedFiles = new LinkSharedFiles($this->connection, $deployment);
         $linkSharedFiles->execute();
-        for($i=0;$i<sizeof($sharedFiles);$i++) {
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertStringStartsWith(
                 "{$releaseLocation}/{$sharedFiles[$i]}",
                 $this->connection->execute("ls -d {$releaseLocation}/{$sharedFiles[$i]}")['message'],
                 "{$releaseLocation}/{$sharedFiles[$i]} dose not exist"
             );
         }
-        for($i=0;$i<sizeof($sharedFiles);$i++){
+        for ($i=0;$i<sizeof($sharedFiles);$i++) {
             $this->assertStringStartsWith(
                 'true',
                 $this->connection->execute(
@@ -257,7 +263,8 @@ EOF
         }
     }
 
-    public function testCurrentAndPreviousSymlinksWork(){
+    public function testCurrentAndPreviousSymlinksWork()
+    {
         $git = new Git(
             $this->connection,
             $this->server
@@ -284,14 +291,15 @@ EOF
     }
 
 
-    public function testOldReleasesAreRemoved(){
+    public function testOldReleasesAreRemoved()
+    {
         $deployment = null;
         $rootLocation = $this->server->deploy_location;
         $git = new Git(
             $this->connection,
             $this->server
         );
-        for($i=0; $i<7; $i++){
+        for ($i=0; $i<7; $i++) {
             $deployment = factory('App\Deployment')->create([
                 'server_id' => $this->server->id,
                 'commit' => '553c2077f0edc3d5dc5d17262f6aa498e69d6f8e',

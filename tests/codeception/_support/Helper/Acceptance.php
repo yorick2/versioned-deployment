@@ -24,9 +24,9 @@ class Acceptance extends \Codeception\Module
     public function createOrUpdateTestUser()
     {
         $userData = $this->getTestUserDataArray();
-        $user = User::where('email',$userData['email'])
+        $user = User::where('email', $userData['email'])
             ->first();
-        if(!$user){
+        if (!$user) {
             $user = new User($userData);
         }
         $user->password = Hash::make($userData['password']);
@@ -48,7 +48,7 @@ class Acceptance extends \Codeception\Module
         $phpBrowserModule->fillField('email', $userData['email']);
         $phpBrowserModule->fillField('password', $userData['password']);
         $phpBrowserModule->click('button[type=submit]');
-        $phpBrowserModule->seeCurrentUrlEquals(route('home',[],false));
+        $phpBrowserModule->seeCurrentUrlEquals(route('home', [], false));
         return $user;
     }
 }

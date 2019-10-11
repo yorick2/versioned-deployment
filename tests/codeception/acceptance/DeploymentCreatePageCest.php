@@ -5,7 +5,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class DeploymentCreatePageCest extends standardPageTests
 {
-
     protected $page;
     protected $server;
     protected $project;
@@ -20,7 +19,7 @@ class DeploymentCreatePageCest extends standardPageTests
 
     public function _after(AcceptanceTester $I)
     {
-        if($this->deployment){
+        if ($this->deployment) {
             $this->deployment->owner->delete();
         }
         $this->server->owner->delete();
@@ -41,7 +40,8 @@ class DeploymentCreatePageCest extends standardPageTests
     }
 
 
-    public function run_a_deployment(AcceptanceTester $I){
+    public function run_a_deployment(AcceptanceTester $I)
+    {
         $I->wantTo('run a Deployment');
         $I->loginAsTheTestUser();
         $I->amOnPage($this->page);
@@ -53,8 +53,8 @@ class DeploymentCreatePageCest extends standardPageTests
         $I->see('success');
         $I->seeRecord('deployments', [ 'server_id' => $this->server->id, 'notes' => $notes ]);
         $this->deployment = Deployment::where(
-                [ 'server_id' => $this->server->id, 'notes' => $notes ]
-            )
+            [ 'server_id' => $this->server->id, 'notes' => $notes ]
+        )
             ->first();
         $I->seeCurrentUrlEquals(
             route('ShowDeployment', [$this->project, $this->server, $this->deployment], false)

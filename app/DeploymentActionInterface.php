@@ -4,8 +4,6 @@ namespace App;
 
 interface DeploymentActionInterface
 {
-
-
     public function __construct(array $attributes = []);
 
     /**
@@ -13,5 +11,4 @@ interface DeploymentActionInterface
      * @return mixed
      */
     public function execute(Deployment $deployment);
-
 }

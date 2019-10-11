@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -45,5 +44,4 @@ interface ProjectInterface
      * @return string
      */
     public function incrementSlug(string $name): string;
-
 }

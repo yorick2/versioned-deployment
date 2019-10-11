@@ -37,7 +37,7 @@ class ViewProjectTest extends TestCase
     public function testAnAuthenticatedUserCanViewASingleProject()
     {
         $this->be($this->user);
-        $response = $this->get(route('ShowProject',['project'=> $this->project]));
+        $response = $this->get(route('ShowProject', ['project'=> $this->project]));
         $response->assertStatus(200);
         $response->assertSee($this->project->Name);
     }
@@ -45,7 +45,7 @@ class ViewProjectTest extends TestCase
     public function testAnUnauthenticatedUserCanNotViewASingleProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->get(route('ShowProject',['project'=> $this->project]));
+        $this->get(route('ShowProject', ['project'=> $this->project]));
     }
 
 
@@ -62,5 +62,4 @@ class ViewProjectTest extends TestCase
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $this->get(route('CreateProject'));
     }
-
 }

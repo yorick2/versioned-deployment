@@ -5,7 +5,8 @@ namespace App;
 use App;
 use Illuminate\Support\Collection;
 
-class DeploymentMessageCollectionSingleton extends SingletonAbstract implements DeploymentMessageCollectionSingletonInterface {
+class DeploymentMessageCollectionSingleton extends SingletonAbstract implements DeploymentMessageCollectionSingletonInterface
+{
 
     /**
      * @var array
@@ -47,9 +48,8 @@ class DeploymentMessageCollectionSingleton extends SingletonAbstract implements 
      * @param DeploymentMessageInterface $item
      * @return Collection
      */
-    function push(DeploymentMessageInterface $item): Collection
+    public function push(DeploymentMessageInterface $item): Collection
     {
         return $this->collection->push($item);
     }
-
 }

@@ -4,7 +4,6 @@ use tests\codeception\acceptance\standardPageTests;
 
 class DeploymentIndexPageCest extends standardPageTests
 {
-
     protected $page;
     protected $project;
     protected $server;
@@ -14,16 +13,15 @@ class DeploymentIndexPageCest extends standardPageTests
     {
         $this->server = factory('App\Server')->create();
         $this->project = $this->server->project;
-        $this->deploymentCollection = factory('App\Deployment',5)
+        $this->deploymentCollection = factory('App\Deployment', 5)
             ->create(['server_id' => $this->server->id]);
         $this->page = route('DeploymentsIndex', [$this->project,$this->server], false);
     }
 
     public function _after(AcceptanceTester $I)
     {
-        foreach($this->deploymentCollection as $deployment){
+        foreach ($this->deploymentCollection as $deployment) {
             $deployment->owner->delete();
-
         }
         $this->server->owner->delete();
         $this->project->owner->delete();
@@ -36,8 +34,8 @@ class DeploymentIndexPageCest extends standardPageTests
         $I->loginAsTheTestUser();
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
-        foreach($this->deploymentCollection as $deployment){
-            $I->seeLink($deployment->created_at,$deployment->id);
+        foreach ($this->deploymentCollection as $deployment) {
+            $I->seeLink($deployment->created_at, $deployment->id);
         }
     }
 

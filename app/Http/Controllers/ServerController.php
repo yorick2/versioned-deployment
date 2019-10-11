@@ -24,7 +24,7 @@ class ServerController extends Controller
         $serversCollection = $project->servers()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('servers.index',compact('serversCollection','project'));
+        return view('servers.index', compact('serversCollection', 'project'));
     }
 
     /**
@@ -37,7 +37,7 @@ class ServerController extends Controller
     {
         $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
             ->getGitBranches($project->repository);
-        return view('servers.create',compact('project','gitBranches'));
+        return view('servers.create', compact('project', 'gitBranches'));
     }
 
     /**
@@ -62,7 +62,7 @@ class ServerController extends Controller
             'post_deploy_commands' => request('post_deploy_commands'),
             'notes' => request('notes')
         ]);
-        return redirect(route('ServersIndex',compact('project')));
+        return redirect(route('ServersIndex', compact('project')));
     }
 
     /**
@@ -88,7 +88,7 @@ class ServerController extends Controller
     {
         $gitBranches  = (App::make('App\GitInteractions\GitLocalInterface'))
             ->getGitBranches($project->repository);
-        return view('servers.edit', compact('project', 'server','gitBranches'));
+        return view('servers.edit', compact('project', 'server', 'gitBranches'));
     }
 
     /**
@@ -124,7 +124,7 @@ class ServerController extends Controller
             'post_deploy_commands',
             'notes'
         ]));
-        return redirect(route('ServersIndex',compact('project')));
+        return redirect(route('ServersIndex', compact('project')));
     }
 
     /**
@@ -137,17 +137,17 @@ class ServerController extends Controller
      */
     public function destroy(ProjectInterface $project, ServerInterface $server)
     {
-        if(!request('confirm')){
+        if (!request('confirm')) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'confirm' => ['Please confirm you want to delete'],
             ]);
             throw $error;
         }
-        $returnRoute = route('ServersIndex',compact('project')); // this is loaded here as deletion can mess with the route
+        $returnRoute = route('ServersIndex', compact('project')); // this is loaded here as deletion can mess with the route
         $server->deployments()->delete();
         $server->delete();
-        if(request()->wantsJson()) {
-            return response([],204);
+        if (request()->wantsJson()) {
+            return response([], 204);
         }
         return redirect($returnRoute);
     }

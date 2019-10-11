@@ -1,9 +1,9 @@
 <?php
 
 use App\Deployment;
+
 class DeploymentGitDiffPageCest
 {
-
     protected $page;
     protected $deployPage;
     protected $server;
@@ -20,7 +20,7 @@ class DeploymentGitDiffPageCest
 
     public function _after(AcceptanceTester $I)
     {
-        if($this->deployment){
+        if ($this->deployment) {
             $this->deployment->owner->delete();
         }
         $this->server->owner->delete();
@@ -75,5 +75,4 @@ class DeploymentGitDiffPageCest
             'deployment failed'
         );
     }
-
 }

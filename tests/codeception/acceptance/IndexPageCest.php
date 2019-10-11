@@ -25,12 +25,11 @@ class IndexPageCest
         $I->dontSee('Logout');
         $I->seeLink(
             'Login',
-            route('login',[],false)
+            route('login', [], false)
         );
         $I->click('Login');
         $I->seeCurrentUrlEquals(
-            route('login',[],false)
+            route('login', [], false)
         );
     }
-
 }

@@ -4,14 +4,13 @@ use tests\codeception\acceptance\standardPageTests;
 
 class UserEditPageCest extends standardPageTests
 {
-
     protected $page;
     protected $user;
 
     public function _before(AcceptanceTester $I)
     {
         $this->user = factory('App\User')->create();
-        $this->page = route( 'users.edit', [$this->user],false);
+        $this->page = route('users.edit', [$this->user], false);
     }
 
     public function _after()
@@ -28,7 +27,7 @@ class UserEditPageCest extends standardPageTests
         $I->seeLink('Users', route('users', [], false));
     }
 
-// the current setup dosnt work with js, so can test this atm
+    // the current setup dosnt work with js, so can test this atm
 //    public function edit_a_user(AcceptanceTester $I)
 //    {
 //        $I->wantTo('edit a server');

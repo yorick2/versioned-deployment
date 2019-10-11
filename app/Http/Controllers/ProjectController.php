@@ -22,7 +22,7 @@ class ProjectController extends Controller
         $projectsCollection = (App::make('App\ProjectInterface'))::latest()
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return view('projects.index',compact('projectsCollection'));
+        return view('projects.index', compact('projectsCollection'));
     }
 
     /**
@@ -109,7 +109,7 @@ class ProjectController extends Controller
      */
     public function destroy(ProjectInterface $project)
     {
-        if(!request('confirm')){
+        if (!request('confirm')) {
             $error = \Illuminate\Validation\ValidationException::withMessages([
                 'confirm' => ['Please confirm you want to delete'],
             ]);
@@ -120,8 +120,8 @@ class ProjectController extends Controller
         });
         $project->servers()->delete();
         $project->delete();
-        if(request()->wantsJson()) {
-            return response([],204);
+        if (request()->wantsJson()) {
+            return response([], 204);
         }
         return redirect(route('ProjectsIndex'));
     }

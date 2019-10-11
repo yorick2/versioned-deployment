@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Server extends Model implements ServerInterface
 {
-
     protected $guarded = [];
 
     /**
@@ -41,7 +40,7 @@ class Server extends Model implements ServerInterface
      */
     public function owner(): BelongsTo
     {
-        return $this->belongsTo(App::make('App\UserInterface'),'user_id');
+        return $this->belongsTo(App::make('App\UserInterface'), 'user_id');
     }
 
     public function getRouteKeyName(): string
@@ -55,7 +54,7 @@ class Server extends Model implements ServerInterface
     public function setNameAttribute($value): void
     {
         $this->attributes['name'] = $value;
-        if($this->getOriginal('name') == $this->getAttribute('name')) {
+        if ($this->getOriginal('name') == $this->getAttribute('name')) {
             return;
         }
         $slug = str_slug($value);
@@ -63,7 +62,7 @@ class Server extends Model implements ServerInterface
             ['slug', '=', $slug],
             ['project_id', '=', $this->project_id]
         ])->exists();
-        if($slugExists){
+        if ($slugExists) {
             $slug = $this->incrementSlug($value);
         }
         $this->attributes['slug'] = $slug;
@@ -79,8 +78,8 @@ class Server extends Model implements ServerInterface
             ['name', '=', $name],
             ['project_id', '=', $this->project_id],
         ])->latest('id')->value('slug');
-        if (is_numeric(substr($maxSlug,-1))){
-            return preg_replace_callback('/(\d+)$/',function ($matches) {
+        if (is_numeric(substr($maxSlug, -1))) {
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
                 return $matches[1] + 1;
             }, $maxSlug);
         }
@@ -114,5 +113,4 @@ class Server extends Model implements ServerInterface
         }
         return $deployment;
     }
-
 }

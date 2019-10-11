@@ -3,7 +3,6 @@
 
 namespace App\GitInteractions;
 
-
 use App\DeploymentInterface;
 use App\ServerInterface;
 use App\SshConnectionInterface;

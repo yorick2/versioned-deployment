@@ -21,10 +21,11 @@ class ProjectTest extends TestCase
 
     public function testItHasAnOwner()
     {
-        $this->assertInstanceOf('App\User',$this->project->owner);
+        $this->assertInstanceOf('App\User', $this->project->owner);
     }
 
-    public function testCanAddAServer(){
+    public function testCanAddAServer()
+    {
         $this->project->addServer([
             'name' => 'foo',
             'user_id' => 1,
@@ -46,8 +47,8 @@ class ProjectTest extends TestCase
         $this->assertCount(2, $this->project->servers);
     }
 
-    public function testItHasAUrlPath(){
-        $this->assertEquals(route('ShowProject',['project'=> $this->project], false), $this->project->path());
+    public function testItHasAUrlPath()
+    {
+        $this->assertEquals(route('ShowProject', ['project'=> $this->project], false), $this->project->path());
     }
-
 }

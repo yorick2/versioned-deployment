@@ -3,7 +3,6 @@
 
 namespace App\GitInteractions;
 
-
 class GitLocal
 {
     /**
@@ -12,22 +11,22 @@ class GitLocal
      */
     public function getGitBranches($remoteUrl): array
     {
-        if(strlen($remoteUrl)===false){
+        if (strlen($remoteUrl)===false) {
             return [];
         }
         $gitBranchesRes = `git ls-remote --heads  https://github.com/octocat/Hello-World`;
-        $gitBranches = explode("\n",$gitBranchesRes);
+        $gitBranches = explode("\n", $gitBranchesRes);
         for ($i=0;$i<count($gitBranches);$i++) {
             if (strlen($gitBranches[$i]) == 0) {
                 unset($gitBranches[$i]);
                 continue;
             }
-            if (strpos($gitBranches[$i],"\t") === false) {
+            if (strpos($gitBranches[$i], "\t") === false) {
                 unset($gitBranches[$i]);
                 continue;
             }
             $branch = explode("\t", $gitBranches[$i])[1];
-            $gitBranches[$i] = preg_replace('/refs\/heads\//','',$branch);
+            $gitBranches[$i] = preg_replace('/refs\/heads\//', '', $branch);
         }
         return $gitBranches;
     }

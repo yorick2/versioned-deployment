@@ -44,6 +44,6 @@ class RemoveOldReleases extends DeploymentActionsAbstract implements RemoveOldRe
             echo 
         }
         removeOldReleases;';
-        $responseCollection->push($this->connection->execute($cmd)->setAttribute('name','Remove Old Releases'));
+        $responseCollection->push($this->connection->execute($cmd)->setAttribute('name', 'Remove Old Releases'));
     }
 }

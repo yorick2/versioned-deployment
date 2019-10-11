@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -46,5 +45,4 @@ interface ServerInterface
 
 
     public function executeDeployment(array $deploymentData): Deployment;
-
 }

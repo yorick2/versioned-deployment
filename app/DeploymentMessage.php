@@ -50,11 +50,9 @@ class DeploymentMessage extends Model implements DeploymentMessageInterface
      */
     public function setAttribute($key, $value)
     {
-        if($key === 'success'){
+        if ($key === 'success') {
             $value = boolval($value);
         }
         return parent::setAttribute($key, $value);
     }
-
-
 }

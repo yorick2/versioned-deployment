@@ -8,7 +8,6 @@
 
 namespace Tests\phpunit\ReflectionClasses;
 
-
 use App\GitInteractions\GitMirror;
 
 class ReflectedGitMirrorClass extends GitMirror

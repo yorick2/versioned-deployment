@@ -53,22 +53,22 @@ class ManageProjectsTest extends TestCase
     {
         $this->be($this->user);
         $project = factory('App\Project')->create();
-        $this->patch(route('SubmitEditProject',['project'=> $project]),[
+        $this->patch(route('SubmitEditProject', ['project'=> $project]), [
             'name' => 'edited name',
             'repository' => 'git@github.com:w3c/csswg-test.git',
             'notes' => 'I was edited'
         ]);
         $project = $project->fresh(); # refresh from database
-        $this->assertEquals('edited name',$project->name);
-        $this->assertEquals('git@github.com:w3c/csswg-test.git',$project->repository);
-        $this->assertEquals('I was edited',$project->notes);
+        $this->assertEquals('edited name', $project->name);
+        $this->assertEquals('git@github.com:w3c/csswg-test.git', $project->repository);
+        $this->assertEquals('I was edited', $project->notes);
     }
 
     public function testAnUnAuthenticatedUserCanNotEditAProject()
     {
         $this->expectException('Illuminate\Auth\AuthenticationException');
         $project = factory('App\Project')->create();
-        $this->patch(route('SubmitEditProject',['project'=> $project]),[]);
+        $this->patch(route('SubmitEditProject', ['project'=> $project]), []);
     }
 
     public function testAnAuthenticatedUserCanDeleteAProject()
@@ -78,11 +78,11 @@ class ManageProjectsTest extends TestCase
         $servers = factory('App\Server', 3)->create(['project_id' => $project->id]);
         $serverId = $servers->first()->id;
         factory('App\Deployment', 3)->create(['server_id' => $serverId]);
-        $response = $this->json('DELETE', $project->path(),['confirm'=>'true']);
+        $response = $this->json('DELETE', $project->path(), ['confirm'=>'true']);
         $response->assertStatus(204);
-        $this->assertDatabaseMissing('projects',['id' => $project->id]);
-        $this->assertDatabaseMissing('servers',['project_id' => $project->id]);
-        $this->assertDatabaseMissing('deployments',['server_id' => $serverId]);
+        $this->assertDatabaseMissing('projects', ['id' => $project->id]);
+        $this->assertDatabaseMissing('servers', ['project_id' => $project->id]);
+        $this->assertDatabaseMissing('deployments', ['server_id' => $serverId]);
     }
 
     public function testAnUnAuthenticatedUserCanNotDeleteAProject()
@@ -93,4 +93,3 @@ class ManageProjectsTest extends TestCase
         $response->assertRedirect('/login');
     }
 }
-
