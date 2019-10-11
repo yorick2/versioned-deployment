@@ -152,7 +152,7 @@ BASH;
             local deployLocation="${1}";
             local commitRef="${2}";
             cd ${deployLocation}/current
-            $(git pull origin master)
+            $(git fetch origin master)
             git diff --name-only $commitRef
         }
 BASH;
