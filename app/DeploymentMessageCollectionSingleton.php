@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App;
 use Illuminate\Support\Collection;
 
 class DeploymentMessageCollectionSingleton extends SingletonAbstract implements DeploymentMessageCollectionSingletonInterface

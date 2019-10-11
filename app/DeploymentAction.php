@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 
 class DeploymentAction extends Model implements DeploymentActionInterface
@@ -22,11 +22,6 @@ class DeploymentAction extends Model implements DeploymentActionInterface
      * @var SshConnection
      */
     protected $connection;
-
-    /**
-     * @var Git
-     */
-    protected $git;
 
     public function __construct(array $attributes = [])
     {

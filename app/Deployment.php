@@ -2,8 +2,8 @@
 
 namespace App;
 
-use App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 
 class Deployment extends Model implements DeploymentInterface
 {

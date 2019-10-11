@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 
 class SshConnection extends Model implements SshConnectionInterface
@@ -67,7 +67,7 @@ class SshConnection extends Model implements SshConnectionInterface
     }
 
     /**
-     * @return App\DeploymentMessageInterface
+     * @return \App\DeploymentMessageInterface
      */
     protected function connectWithPassword(): DeploymentMessageInterface
     {
@@ -104,7 +104,9 @@ class SshConnection extends Model implements SshConnectionInterface
      */
     protected function makeSshConnection(): array
     {
-        if (!($this->sshConnection=@ssh2_connect($this->getAttribute('deploy_host'), $this->getAttribute('deploy_port')))) {
+        $host = $this->getAttribute('deploy_host');
+        $port = $this->getAttribute('deploy_port');
+        if (!($this->sshConnection=@ssh2_connect($host, $port))) {
             return [
                     'name'=>'connect with password',
                     'success' => 0,
@@ -119,11 +121,19 @@ class SshConnection extends Model implements SshConnectionInterface
      */
     protected function authenticateWithPublicKey(): array
     {
-        if (!@ssh2_auth_pubkey_file($this->sshConnection, $this->getAttribute('deploy_user'), $this->ssh_auth_pub, $this->ssh_auth_priv, $this->ssh_auth_pass)) {
+        $user = $this->getAttribute('deploy_user');
+        if (!@ssh2_auth_pubkey_file(
+            $this->sshConnection,
+            $user,
+            $this->ssh_auth_pub,
+            $this->ssh_auth_priv,
+            $this->ssh_auth_pass
+        )) {
             return [
                     'name'=>'test ssh connection',
                     'success' => 0,
-                    'message'=>'Authentication with ssh key rejected by server'
+                    'message'=>'Authentication with ssh '.
+                        'key rejected by server'
                 ];
         }
         return ['success'=>1];

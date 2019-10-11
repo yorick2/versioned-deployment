@@ -2,10 +2,11 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Project extends Model implements ProjectInterface
 {
@@ -60,7 +61,7 @@ class Project extends Model implements ProjectInterface
         if ($this->getOriginal('name') == $this->getAttribute('name')) {
             return;
         }
-        if (static::whereSlug($slug = str_slug($value))->exists()) {
+        if (static::whereSlug($slug = Str::slug($value))->exists()) {
             $slug = $this->incrementSlug($value);
         }
         $this->attributes['slug'] = $slug;
@@ -78,7 +79,7 @@ class Project extends Model implements ProjectInterface
                 return $matches[1] + 1;
             }, $maxSlug);
         }
-        $slug = str_slug($name);
+        $slug = Str::slug($name);
         return "{$slug}-2";
     }
 }

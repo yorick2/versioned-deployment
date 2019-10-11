@@ -89,12 +89,15 @@ abstract class SingletonAbstract
      *
      * @param  string  $key
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function getAttribute(string $key)
     {
         if (isset($this->{$key})) {
             return $this->{$key};
         }
+        return null;
     }
 
     /**

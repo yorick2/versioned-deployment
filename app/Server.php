@@ -2,10 +2,11 @@
 
 namespace App;
 
-use App;
+use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Server extends Model implements ServerInterface
 {
@@ -57,7 +58,7 @@ class Server extends Model implements ServerInterface
         if ($this->getOriginal('name') == $this->getAttribute('name')) {
             return;
         }
-        $slug = str_slug($value);
+        $slug = Str::slug($value);
         $slugExists = static::where([
             ['slug', '=', $slug],
             ['project_id', '=', $this->project_id]
@@ -83,11 +84,16 @@ class Server extends Model implements ServerInterface
                 return $matches[1] + 1;
             }, $maxSlug);
         }
-        $slug = str_slug($name);
+        $slug = Str::slug($name);
         return "{$slug}-2";
     }
 
 
+    /**
+     * @param array $deploymentData
+     * @return Deployment
+     *
+     */
     public function executeDeployment(array $deploymentData): Deployment
     {
         $deployments = $this->deployments();
@@ -105,7 +111,7 @@ class Server extends Model implements ServerInterface
                 'success' => $response->success,
                 'output' => $response->collection->toJson()
             ]);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $deployment->update([
                 'success' => 0,
                 'output' => ''
