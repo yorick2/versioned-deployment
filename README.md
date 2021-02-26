@@ -14,6 +14,11 @@
 |Term                |Definition                                                              |
 | ------------------ |:----------------------------------------------------------------------:|
 |Target system/server|The system/server you are deploying to from you server with this program|
+|symlink             |A shortcut to a file from a different location|
+|Target system/server|The system/server you are deploying to from you server with this program|
+|Git cache           |A cache on a system used to store a repository so it dosnt need downloading multiple times. Used for speeding up git cloning dupliocate copies of a repository multiple times|
+|phpunit             |An automatic command line testing tool used to test sections of code in isolation|
+|Codeception         |An automatic command line testing tool. Performing acceptance testing as if with a mouse an keyboard in a web browser (e.g. Firefox, Chrome, Safari ..), using Selenium WebDriver|
 
 # Version deployment proof of concept
 An early proof of concept for deployment based on a versioned system.
@@ -40,11 +45,13 @@ remove your html symlink. Then after the next deployment the new release will be
 - If it didnt work remove the html symlink and rename the web folder back to html
 
 # Deployed folder structure
-gitcache : this folder is clone of your git repository. It is used as a mirror when cloning the new release. This means we dont download a new git repository each time
-current : this is a symlink to the current release folder used
-previous : this is a symlink to the previous release folder used
-release : during each release a new folder is created here e.g. 2019-09-10_14-23-32
-shared : put files/folders that are shared between deployed versions and not in the git repository e.g. media folder, environment setting file
+|Folder|Use|
+| ------------------ |:----------------------------------------------------------------------:|
+|gitcache|This folder is clone of your git repository. It is used as a mirror when cloning the new release. This means we dont download a new git repository each time|
+|current|This is a symlink to the current release folder used|
+|previous|this is a symlink to the previous release folder used|
+|release|uring each release a new folder is created here e.g. 2019-09-10_14-23-32|
+|shared|Put files/folders that are shared between deployed versions and not in the git repository e.g. media folder, environment setting file|
 
 ## example structure
 - current -> /var/www/releases/2019-09-11_09-05-50
@@ -76,15 +83,16 @@ The test user is:
 - user: test@test.com
 - password: password1
 
-# Unit tests 
-RunPhpunitTest.php and RunCodeceptionTest.php files in the docker-tests folder run through the browser and can be used with xdebug as normal. This means not having to setup a command line xdebug, which can be problematic (especially with docker). Use view source in your browser to read the text. It is best used for only for single test files because running commands through the browser is slower that using phpunit/codeception directly.
-
+# Acceptance and Unit tests 
 ## Codeception tests
 All code tests can be run on the version_deployment docker container using the command: "vendor/bin/codecept run -n"
 This Will run the phpunit and codeception tests. The acceptance tests are run on the main database, so should not be run on production.
 
-## phpunit
+## Phpunit tests
 The tests are run inside the docker container, using phpunit inside the vendor/bin folder. Phpunit is uses an sqlite database in memory for its tests. However, ensure the database has been migrated creating all the tables and has been seeded with data. If there is still an issue use "php artisan config:clear; php artisan cache:clear; composer dump-autoload"
+
+## Debugging tests
+RunPhpunitTest.php and RunCodeceptionTest.php files in the docker-tests folder run through the browser ie. at http://localhost:8000/docker-tests/RunPhpunitTest.php  and http://localhost:8000/docker-tests/RunCodeceptionTest.php. They return plain text so view the page source to view the responce. They can be used with xdebug as normal. This means not having to setup a command line xdebug, which can be problematic (especially with docker). Use view source in your browser to read the text. It is best used for only for single test files because running commands through the browser is slower that using phpunit/codeception directly.
 
 ## Requirements
 - Docker
