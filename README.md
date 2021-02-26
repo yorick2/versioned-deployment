@@ -59,8 +59,8 @@ Currently I only have a test/development version of docker working currently and
 Go to docker/dev and run 'sudo docker-compose up'. This will create a set of three docker containers and the project will be accessible at http://localhost:8080 in your web browser. A set of simple server tests can be found at http://localhost:8080/docker-tests/ and used to ensure the docker instances are working correctly.
 
 The test user is:
- user: test@test.com
- password: password1
+- user: test@test.com
+- password: password1
 
 # Unit tests 
 RunPhpunitTest.php and RunCodeceptionTest.php files in the docker-tests folder run through the browser and can be used with xdebug as normal. This means not having to setup a command line xdebug, which can be problematic (especially with docker). Use view source in your browser to read the text. It is best used for only for single test files because running commands through the browser is slower that using phpunit/codeception directly.
@@ -73,8 +73,8 @@ This Will run the phpunit and codeception tests. The acceptance tests are run on
 The tests are run inside the docker container, using phpunit inside the vendor/bin folder. Phpunit is uses an sqlite database in memory for its tests. However, ensure the database has been migrated creating all the tables and has been seeded with data. If there is still an issue use "php artisan config:clear; php artisan cache:clear; composer dump-autoload"
 
 ## Requirements
-Docker
-Docker-compose
+- Docker
+- Docker-compose
 
 # Credits
 
