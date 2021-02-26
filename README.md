@@ -10,10 +10,15 @@
 [![icon-commit-version]](../../releases)
 [![icon-latest-tag]](../../releases)
 
+# Terms used 
+|Term                |Definition                                                              |
+| ------------------ |:----------------------------------------------------------------------:|
+|Target system/server|The system/server you are deploying to from you server with this program|
+
 # Version deployment proof of concept
 An early proof of concept for deployment based on a versioned system.
 
-Symlinks are heavily used, so this needs to be enabled on your web server software (apache/nginx).
+Symlinks are heavily used, so this needs to be enabled on your target web server software (apache/nginx).
 
 The system clones a new copy of the code into the releases folder, symlinks a current link to this folder and a previous
 symlink to the last version.
@@ -21,7 +26,8 @@ symlink to the last version.
 For ease of use the deployment server doesnt need access to the git and uses a mirror on the destination server for
 reference data and to speed up git clone on the destination server. 
 
-## Starting to use this system
+## Setup your deployment target server
+The deployment target server is the one you are going to deploy to
 This is a rough process I have used in the past and tries to limit down time and chances of things going wrong. Note I
 have not mentioned shared files and folders like any media folder, which will have to be dealt with too.
 - Deploy into the folder above your web folder. If you server your website form /var/www/html then that would be
@@ -53,7 +59,15 @@ shared : put files/folders that are shared between deployed versions and not in 
 - shared
 
 # Setup
+# Installation
 Currently I only have a test/development version of docker working currently and isn't meant to be secure for production use as yet. There is more detail in the readme inside the docker folder.
+
+``` sh
+cd docker/dev;
+docker-compose up;
+```
+
+Wait to see "site ready" in big letters in your terminal, then go to http://localhost:8000/ in your browser
 
 ## Setup for testing/development
 Go to docker/dev and run 'sudo docker-compose up'. This will create a set of three docker containers and the project will be accessible at http://localhost:8080 in your web browser. A set of simple server tests can be found at http://localhost:8080/docker-tests/ and used to ensure the docker instances are working correctly.
@@ -77,12 +91,10 @@ The tests are run inside the docker container, using phpunit inside the vendor/b
 - Docker-compose
 
 # Credits
-
 - [Paul Millband][link-author]
 - [All Contributors][link-contributors]
 
 # License
-
 The MIT License (MIT). Please see my [License File](LICENSE.md) for more information.
 
 [icon-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
