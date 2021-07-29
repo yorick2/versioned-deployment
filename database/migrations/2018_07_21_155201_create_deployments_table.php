@@ -13,6 +13,9 @@ class CreateDeploymentsTable extends Migration
      */
     public function up()
     {
+        if(Schema::hasTable('deployments')){
+            return;
+        }
         Schema::create('deployments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('server_id')->unsigned();
