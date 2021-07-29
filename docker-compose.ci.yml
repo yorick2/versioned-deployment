@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+        web:
+                build:
+                        context: .
+                        dockerfile: Dockerfile-ci
+                container_name: "version_deployment"
+                ports:
+                        - "8000:80"
+                restart: always
+                depends_on:
+                        - "version_deployment_db"
+        version_deployment_db:
+                image: mysql:5.7
+                container_name: "version_deployment_db"
+                restart: always
+                volumes:
+                        - 'version_deployment_db:/var/lib/mysql'
+                environment:
+                        MYSQL_ROOT_PASSWORD: root
+                        MYSQL_DATABASE: deploy
+                        MYSQL_USER: devuser
+                        MYSQL_PASSWORD: devpass
+                ports:
+                        - "9906:3306"
+        example.com:
+                build:
+                        context: ./docker/dev/deploy-target
+                        args:
+                                SSH_MASTER_USER: test
+                                SSH_MASTER_PASS: password1
+                container_name: "example.com"
+                restart: always
+                ports:
+                        - "8001:80"
+                        - "2222:22"
+volumes:
+  version_deployment_db:
+    driver: local
