@@ -24,11 +24,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: isbang/compose-action@v1.0.0
-        with:
-          compose-file: './docker/dev/docker-compose.yml'
-          down-flags: '--volumes'
-      
+            
       - name: Run containers
         run: docker-compose  -f "/docker/dev/docker-compose.yml" build
         
@@ -57,3 +53,6 @@ jobs:
       
       - name: run codeception tests
         run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web /var/www/html/docker/dev/test.sh
+
+      - name: Run containers
+        run: docker-compose  -f "/docker/dev/docker-compose.yml" down --volumes
