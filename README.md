@@ -90,8 +90,7 @@ note:
 The acceptance tests are run on the main database, so should not be run on production.
 
 ``` sh
-cd docker/dev;
-docker-compose run web /var/www/html/docker/dev/test.sh
+docker-compose -f docker/dev/docker-compose.yml exec web docker/dev/test.sh
 ```
 
 or to run codeception as normal with a containers shell
@@ -106,7 +105,7 @@ The tests are run inside the docker container, using phpunit inside the vendor/b
 
 
 ``` sh
-docker-compose run web vendor/bin/phpunit
+docker-compose -f docker/dev/docker-compose.yml exec web vendor/bin/phpunit
 ```
 
 or to run codeception as normal with a containers shell
