@@ -26,11 +26,11 @@ jobs:
       - uses: actions/checkout@v2
             
       - name: Run containers
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" build
+        run: docker-compose  -f "docker/dev/docker-compose.yml" build
         
       
       - name: ls working directory
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" up -d
+        run: docker-compose  -f "docker/dev/docker-compose.yml" up -d
 
           
       - name: Show containers
@@ -40,19 +40,19 @@ jobs:
         run: docker volume ls
 
       - name: ls working directory
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web ls
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web ls
 
       - name: ls /code directory
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web ls /code
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web ls /code
           
       - name: ls setup laravel
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web /code/setup_test_laravel.sh
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /code/setup_test_laravel.sh
           
       - name: run phpunit tests
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web /var/www/html/vendor/bin/phpunit
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /var/www/html/vendor/bin/phpunit
       
       - name: run codeception tests
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" exec -T web /var/www/html/docker/dev/test.sh
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /var/www/html/docker/dev/test.sh
 
       - name: Run containers
-        run: docker-compose  -f "/docker/dev/docker-compose.yml" down --volumes
+        run: docker-compose  -f "docker/dev/docker-compose.yml" down --volumes
