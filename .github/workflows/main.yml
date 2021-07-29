@@ -45,8 +45,11 @@ jobs:
           
       - name: setup laravel
         run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /code/setup_test_laravel.sh
+
+      - name: setup example.com
+        run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T example.com service ssh start
                  
-      - name: ssh key connection test
+      - name: ssh key connection setup test
         run: docker-compose -f docker/dev/docker-compose.yml exec -T web php docker/dev/docker-tests/sshKeyConnection.php
 
       - name: run phpunit tests
