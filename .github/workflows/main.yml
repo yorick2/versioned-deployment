@@ -25,10 +25,10 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
             
-      - name: Run containers
+      - name: Build containers
         run: docker-compose  -f "docker-compose.ci.yml" build
       
-      - name: ls working directory
+      - name: Run containers
         run: docker-compose  -f "docker-compose.ci.yml" up -d
 
       - name: Show containers
@@ -43,10 +43,10 @@ jobs:
       - name: ls /code directory
         run: docker-compose  -f "docker-compose.ci.yml" exec -T web ls /code
           
-      - name: setup laravel
+      - name: setup laravel (cmd dosent seem to run)
         run: docker-compose  -f "docker-compose.ci.yml" exec -T web /code/setup_test_laravel.sh
 
-      - name: setup example.com
+      - name: setup example.com (cmd dosent seem to run)
         run: docker-compose  -f "docker-compose.ci.yml" exec -T example.com service ssh start
                  
       - name: ssh key connection setup test

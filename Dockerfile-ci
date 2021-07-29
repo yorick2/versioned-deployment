@@ -47,7 +47,11 @@ RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/php.ini
 
 # create ssh keys
 RUN mkdir -p /home/www-data/.ssh
-RUN ssh-keygen -t rsa -f /home/www-data/.ssh/id_rsa -P ''
+#RUN ssh-keygen -t rsa -f /home/www-data/.ssh/id_rsa -P ''
+COPY docker/dev/deploy-target/.ssh/id_rsa /home/www-data/.ssh/id_rsa
+RUN ssh-keygen -y -f /home/www-data/.ssh//id_rsa > /home/www-data/.ssh/id_rsa.pub
+
+
 RUN chown www-data:www-data -R /home/www-data
 RUN chmod g+r -R /home/www-data
 
@@ -82,4 +86,4 @@ COPY docker/dev/. /code
 COPY docker/dev/apache-config.conf /etc/apache2/sites-enabled/000-default.conf
 
 # prepare laravel for use
-CMD wait-for-it version_deployment_db:3306 -- /code/setup_test_laravel.sh; sleep infinity
+CMD wait-for-it version_deployment_db:3306 -- /code/setup_test_laravel.sh && sleep infinity

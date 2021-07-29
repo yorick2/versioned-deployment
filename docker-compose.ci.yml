@@ -15,8 +15,6 @@ services:
                 image: mysql:5.7
                 container_name: "version_deployment_db"
                 restart: always
-                volumes:
-                        - 'version_deployment_db:/var/lib/mysql'
                 environment:
                         MYSQL_ROOT_PASSWORD: root
                         MYSQL_DATABASE: deploy
@@ -35,6 +33,3 @@ services:
                 ports:
                         - "8001:80"
                         - "2222:22"
-volumes:
-  version_deployment_db:
-    driver: local
