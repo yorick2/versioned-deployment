@@ -28,10 +28,14 @@ jobs:
         with:
           compose-file: './docker/dev/docker-compose.yml'
           down-flags: '--volumes'
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      
+      - name: Run containers
+        run: docker-compose  -f "/docker/dev/docker-compose.yml" build
+        
+      
+      - name: ls working directory
+        run: docker-compose  -f "/docker/dev/docker-compose.yml" up -d
+
           
       - name: Show containers
         run: docker ps -a
