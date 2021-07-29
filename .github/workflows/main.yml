@@ -27,12 +27,10 @@ jobs:
             
       - name: Run containers
         run: docker-compose  -f "docker/dev/docker-compose.yml" build
-        
       
       - name: ls working directory
         run: docker-compose  -f "docker/dev/docker-compose.yml" up -d
 
-          
       - name: Show containers
         run: docker ps -a
         
@@ -45,9 +43,12 @@ jobs:
       - name: ls /code directory
         run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web ls /code
           
-      - name: ls setup laravel
+      - name: setup laravel
         run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /code/setup_test_laravel.sh
-          
+                 
+      - name: ssh key connection test
+        run: docker-compose -f docker/dev/docker-compose.yml exec -T web php docker/dev/docker-tests/sshKeyConnection.php
+
       - name: run phpunit tests
         run: docker-compose  -f "docker/dev/docker-compose.yml" exec -T web /var/www/html/vendor/bin/phpunit
       
