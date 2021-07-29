@@ -56,7 +56,7 @@ jobs:
         run: docker-compose  -f "docker-compose.ci.yml" exec -T web /var/www/html/vendor/bin/phpunit
       
       - name: run codeception tests
-        run: docker-compose  -f "docker-compose.ci.yml" exec -T web /var/www/html/docker/dev/test.sh
+        run: docker-compose  -f "docker-compose.ci.yml" exec -T web /var/www/html/docker/dev/runCodeception.sh.sh
 
       - name: Run containers
         run: docker-compose  -f "docker-compose.ci.yml" down --volumes
