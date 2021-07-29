@@ -19,7 +19,7 @@ services:
                 container_name: "version_deployment_db"
                 restart: always
                 volumes:
-                        - ./db_data/main_db:/var/lib/mysql
+                        - 'version_deployment_db:/var/lib/mysql'
                 environment:
                         MYSQL_ROOT_PASSWORD: root
                         MYSQL_DATABASE: deploy
@@ -41,3 +41,6 @@ services:
                 volumes:
                         - .:/code
                         - ./deploy-target/.ssh:/home/test/.ssh
+volumes:
+  version_deployment_db:
+    driver: local

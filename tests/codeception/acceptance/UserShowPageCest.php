@@ -45,6 +45,6 @@ class UserShowPageCest extends standardPageTests
         $I->amOnPage($this->page);
         $I->seeCurrentUrlEquals($this->page);
         $I->seeElement('a[href="'.route('users.edit', [$this->user], false).'"]');
-        $I->seeElement('form[action="'.route('user.destroy', [$this->user]).'"] button[data-title="Delete User"]');
+        $I->seeElement('form[action$="'.route('user.destroy', [$this->user],false).'"] button[data-title="Delete User"]');
     }
 }

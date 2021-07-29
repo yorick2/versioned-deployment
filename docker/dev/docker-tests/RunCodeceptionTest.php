@@ -6,6 +6,7 @@
  */
 
 echo <<<EOF
+<pre>
 ------------------------------------------
 Clearing caches
 ------------------------------------------
@@ -49,3 +50,4 @@ EOF;
 
 require '/var/www/html/vendor/bin/codecept';
 
+echo '</pre>';
