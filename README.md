@@ -5,7 +5,7 @@
 [![icon-php-version]](docker/dev/Dockerfile)
 [![icon-commit-activity]](../../commits)
 [![icon-last-commit-date]](../../commits)
-
+![Code Tests](https://github.com/yorick2/versioned-deployment/actions/workflows/codeTests.yml/badge.svg)
 
 [![icon-commit-version]](../../releases)
 [![icon-latest-tag]](../../releases)

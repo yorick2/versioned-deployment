@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # add private key to authorised keys on example.com container
+echo "-----BEGIN PUBLIC KEY-----" >> /code/deploy-target/.ssh/authorized_keys
 cat /home/www-data/.ssh/id_rsa.pub >> /code/deploy-target/.ssh/authorized_keys
+echo "-----END PUBLIC KEY-----" >> /code/deploy-target/.ssh/authorized_keys
 
 # setup laravel
 apache2ctl restart

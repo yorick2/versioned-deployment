@@ -5,7 +5,7 @@ services:
                 build:
                         context: .
                         dockerfile: Dockerfile-ci
-                container_name: "version_deployment"
+                container_name: "version_deployment_ci"
                 ports:
                         - "8000:80"
                 restart: always
@@ -13,7 +13,7 @@ services:
                         - "version_deployment_db"
         version_deployment_db:
                 image: mysql:5.7
-                container_name: "version_deployment_db"
+                container_name: "version_deployment_db_ci"
                 restart: always
                 environment:
                         MYSQL_ROOT_PASSWORD: root
@@ -28,7 +28,7 @@ services:
                         args:
                                 SSH_MASTER_USER: test
                                 SSH_MASTER_PASS: password1
-                container_name: "example.com"
+                                container_name: "example.com_ci"
                 restart: always
                 ports:
                         - "8001:80"
