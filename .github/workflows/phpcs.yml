@@ -1,7 +1,15 @@
 name: "phpcs"
 
 on:
+  push:
+    branches: [ master ]
+    paths:
+      - "**.php"
+      - "phpcs.xml"
+      - ".github/workflows/phpcs.yml"
+
   pull_request:
+    branches: [ master ]
     paths:
       - "**.php"
       - "phpcs.xml"
@@ -26,4 +34,4 @@ jobs:
         with:
           files: "**.php" # you may customize glob as needed
           phpcs_path: php phpcs.phar
-          standard: phpcs.xml
+          standard: PSR12
