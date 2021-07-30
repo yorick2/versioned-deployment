@@ -13,6 +13,9 @@ class CreateServersTable extends Migration
      */
     public function up()
     {
+        if(Schema::hasTable('servers')){
+            return;
+        }
         Schema::create('servers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug');

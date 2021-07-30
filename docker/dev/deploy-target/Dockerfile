@@ -47,23 +47,25 @@ ENV APACHE_PID_FILE /var/run/apache2.pid
 # add ssh
 COPY ssh_config /etc/ssh/ssh_config
 COPY sshd_config /etc/ssh/sshd_config
-
 COPY user.sh /usr/local/bin/user.sh
-RUN chmod +x /usr/local/bin/user.sh
-RUN /usr/local/bin/user.sh
-RUN rm /usr/local/bin/user.sh
+RUN chmod +x /usr/local/bin/user.sh && \
+     /usr/local/bin/user.sh && \
+     rm /usr/local/bin/user.sh
+COPY .ssh/authorized_keys /home/test/.ssh/authorized_keys
+RUN chown test:test /home/test/.ssh/authorized_keys; \
+     chmod 644 /home/test/.ssh/authorized_keys
 
 ## allow access to web folder
-RUN chmod -R g+rwx /var/www
-RUN chown :${SSH_MASTER_USER} /var/www
-RUN mv /var/www/html /var/www/html-old
-RUN chmod -R g+rwx /var/www/html-old
-RUN chown :${SSH_MASTER_USER} /var/www/html-old
-RUN echo '<?php echo phpinfo(); ' > /var/www/html-old/index.php
-RUN chown ${SSH_MASTER_USER}:${SSH_MASTER_USER} /var/www/html-old/index.php
+RUN chmod -R g+rwx /var/www; \
+    chown :${SSH_MASTER_USER} /var/www; \
+    mv /var/www/html /var/www/html-old; \
+    chmod -R g+rwx /var/www/html-old; \
+    chown :${SSH_MASTER_USER} /var/www/html-old; \
+    echo '<?php echo phpinfo(); ' > /var/www/html-old/index.php; \
+    chown ${SSH_MASTER_USER}:${SSH_MASTER_USER} /var/www/html-old/index.php
 
 RUN ln -s /var/www/current /var/www/html
 
 # run services you want to continue to run in a single string of commands,
-# which finishes with a command non ending. This is cos docker closes services when complete.
-CMD service ssh start && apache2ctl start && tail -f /dev/null
+# which finishes with a command non ending. This is cos docker closes services when complete.t
+CMD service ssh start; apache2ctl start; tail -f /dev/null

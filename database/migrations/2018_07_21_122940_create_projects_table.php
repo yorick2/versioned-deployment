@@ -13,6 +13,9 @@ class CreateProjectsTable extends Migration
      */
     public function up()
     {
+        if(Schema::hasTable('projects')){
+            return;
+        }
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('slug')->unique();

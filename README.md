@@ -85,11 +85,34 @@ The test user is:
 
 # Acceptance and Unit tests 
 ## Codeception tests
-All code tests can be run on the version_deployment docker container using the command: "vendor/bin/codecept run -n"
-This Will run the phpunit and codeception tests. The acceptance tests are run on the main database, so should not be run on production.
+All code tests can be run on the version_deployment docker container using the below command:
+note:
+The acceptance tests are run on the main database, so should not be run on production.
+
+``` sh
+docker-compose -f docker/dev/docker-compose.yml exec web docker/dev/test.sh
+```
+
+or to run codeception as normal with a containers shell
+```
+cd docker/dev;
+docker-compose run web bash
+vendor/bin/codecept run -n
+```
 
 ## Phpunit tests
 The tests are run inside the docker container, using phpunit inside the vendor/bin folder. Phpunit is uses an sqlite database in memory for its tests. However, ensure the database has been migrated creating all the tables and has been seeded with data. If there is still an issue use "php artisan config:clear; php artisan cache:clear; composer dump-autoload"
+
+
+``` sh
+docker-compose -f docker/dev/docker-compose.yml exec web vendor/bin/phpunit
+```
+
+or to run codeception as normal with a containers shell
+```
+docker-compose run web bash
+vendor/bin/phpunit
+```
 
 ## Debugging tests
 RunPhpunitTest.php and RunCodeceptionTest.php files in the docker-tests folder run through the browser ie. at http://localhost:8000/docker-tests/RunPhpunitTest.php  and http://localhost:8000/docker-tests/RunCodeceptionTest.php. They return plain text so view the page source to view the responce. They can be used with xdebug as normal. This means not having to setup a command line xdebug, which can be problematic (especially with docker). Use view source in your browser to read the text. It is best used for only for single test files because running commands through the browser is slower that using phpunit/codeception directly.

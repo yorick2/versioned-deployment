@@ -4,6 +4,7 @@
  */
 
 echo <<<EOF
+<pre>
 ------------------------------------------
 Clearing caches
 ------------------------------------------
@@ -40,3 +41,5 @@ $command
 EOF;
 
 require '/var/www/html/vendor/bin/phpunit';
+
+echo '</pre>';
